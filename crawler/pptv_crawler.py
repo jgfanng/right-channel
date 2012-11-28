@@ -69,9 +69,9 @@ class PPTVCrawler:
 #                movie_cast_elements = movie_element.xpath('./p[@class="p_actor"]/a')
 #                movie_image_element = movie_element.xpath('./p[@class="pic"]/a/img')[0]
                 # TODO: If original url has been changed, the 'play_times' should be set to ZERO.
-                self.__collection.update({'title': actual_movie_title_elements[0].text.trim(), 'year': year}, {'$set': {'pptv.link': movie_element.attrib['href']}, '$inc': {'pptv.play_times': 0}}, True)
+                self.__collection.update({'title': actual_movie_title_elements[0].text.strip(), 'year': year}, {'$set': {'pptv.link': movie_element.attrib['href']}, '$inc': {'pptv.play_times': 0}}, True)
 
-                print movie_index, actual_movie_title_elements[0].text.trim(), year, movie_element.attrib['href']
+                print movie_index, actual_movie_title_elements[0].text.strip(), year, movie_element.attrib['href']
 #                for movie_cast_element in movie_cast_elements:
 #                    print movie_cast_element.text,
 #                print movie_image_element.attrib['src']
