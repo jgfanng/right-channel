@@ -3,12 +3,11 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from crawler_base import CrawlerBase
 from lxml.html import fromstring
 import time
 import urllib2
 
-class DoubanCrawler(CrawlerBase):
+class DoubanCrawler:
     '''
     Crawler for douban move site (http://www.douban.com/).
     '''

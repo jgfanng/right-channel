@@ -4,13 +4,12 @@ Created on Nov 25, 2012
 @author: Fang Jiaguo
 '''
 
-from crawler_base import CrawlerBase
 from lxml.html import fromstring
 from pymongo.connection import Connection
 import time
 import urllib2
 
-class PPTVCrawler(CrawlerBase):
+class PPTVCrawler:
     '''
     Crawler for PPTV move site (http://www.pptv.com/).
     '''
@@ -22,33 +21,64 @@ class PPTVCrawler(CrawlerBase):
         self.__collection = self.__db['movies']
 
     def crawl(self):
-        page_index = 172
+        page_index = 174
         movie_index = 1
         while True:
-            response = urllib2.urlopen('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
-            page_index += 1
-
+            request = urllib2.Request('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
+            request.add_header('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
+            response = urllib2.urlopen(request)
+#            response = urllib2.urlopen('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
             plain_text = response.read().decode('utf-8', 'ignore')
             html_element = fromstring(plain_text)
+            page_index += 1
+#            print plain_text
 
-            movie_elements = html_element.xpath('/html/body/div/div/div/div[@class="bd"]/ul/li')
+            movie_elements = html_element.xpath('/html/body/div/div/div/div[@class="bd"]/ul/li/p[@class="txt"]/a')
             if len(movie_elements) == 0:
                 break
 
             for movie_element in movie_elements:
-                movie_title_element = movie_element.xpath('./p[@class="txt"]/a')[0]
-                movie_cast_elements = movie_element.xpath('./p[@class="p_actor"]/a')
-                movie_image_element = movie_element.xpath('./p[@class="pic"]/a/img')[0]
-                self.__collection.update({'title': movie_title_element.text}, {'$set': {'pptv.link': movie_title_element.attrib['href']}, '$inc': {'pptv.play_times': 0}}, True)
+                if not movie_element.attrib['href'].startswith('http://v.pptv.com/show'):
+                    print movie_index, 'Bad format 1 ====================>', movie_element.attrib['href']
+                    movie_index += 1
+                    continue
 
-                print movie_index, movie_title_element.text, movie_title_element.attrib['href'],
-                for movie_cast_element in movie_cast_elements:
-                    print movie_cast_element.text,
-                print movie_image_element.attrib['src']
+                time.sleep(self.__sleep_time)
+
+                response = urllib2.urlopen(movie_element.attrib['href'])
+                plain_text = response.read().decode('utf-8', 'ignore')
+                html_element = fromstring(plain_text)
+                movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a')
+                if len(movie_title_elements) == 0:
+                    print movie_index, 'Bad format 2 ====================>', movie_element.attrib['href']
+                    movie_index += 1
+                    continue
+
+                year = movie_title_elements[0].tail[1:-1]
+
+                time.sleep(self.__sleep_time)
+                
+                response = urllib2.urlopen(movie_title_elements[0].attrib['href'])
+                plain_text = response.read().decode('utf-8', 'ignore')
+                html_element = fromstring(plain_text)
+                actual_movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
+                if len(actual_movie_title_elements) == 0:
+                    print movie_index, 'Bad format 3 ====================>', movie_title_elements[0].attrib['href']
+                    movie_index += 1
+                    continue
+#                movie_cast_elements = movie_element.xpath('./p[@class="p_actor"]/a')
+#                movie_image_element = movie_element.xpath('./p[@class="pic"]/a/img')[0]
+                # TODO: If original url has been changed, the 'play_times' should be set to ZERO.
+                self.__collection.update({'title': actual_movie_title_elements[0].text.trim(), 'year': year}, {'$set': {'pptv.link': movie_element.attrib['href']}, '$inc': {'pptv.play_times': 0}}, True)
+
+                print movie_index, actual_movie_title_elements[0].text.trim(), year, movie_element.attrib['href']
+#                for movie_cast_element in movie_cast_elements:
+#                    print movie_cast_element.text,
+#                print movie_image_element.attrib['src']
                 movie_index += 1
 
             time.sleep(self.__sleep_time)
 
 if __name__ == '__main__':
-    c = PPTVCrawler(5)
+    c = PPTVCrawler(2)
     c.crawl()
