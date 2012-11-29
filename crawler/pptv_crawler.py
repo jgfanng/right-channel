@@ -22,7 +22,7 @@ class PPTVCrawler:
         self.__collection = self.__db['movies']
 
     def crawl(self):
-        page_index = 15
+        page_index = 1
         movie_index = 1
         while True:
             request = urllib2.Request('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
@@ -50,7 +50,13 @@ class PPTVCrawler:
                 response = urllib2.urlopen(movie_element.attrib['href'])
                 plain_text = response.read().decode('utf-8', 'ignore')
                 print "Parsing", movie_element.attrib['href']
-                html_element = fromstring(plain_text)
+                html_element = None
+                try:
+                    html_element = fromstring(plain_text)
+                except Exception, e:
+                    print e
+                    movie_index += 1
+                    continue
                 movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a')
                 if len(movie_title_elements) == 0:
                     print movie_index, movie_element.text, 'Bad format 2 ====================>', movie_element.attrib['href']
@@ -60,11 +66,22 @@ class PPTVCrawler:
                 year = movie_title_elements[0].tail[1:-1]
 
                 time.sleep(self.__sleep_time)
-                
-                response = urllib2.urlopen(movie_title_elements[0].attrib['href'])
+
+                response = None
+                try:
+                    response = urllib2.urlopen(movie_title_elements[0].attrib['href'])
+                except:
+                    movie_index += 1
+                    continue
                 plain_text = response.read().decode('utf-8', 'ignore')
                 print "Parsing", movie_title_elements[0].attrib['href']
-                html_element = fromstring(plain_text)
+                html_element = None
+                try:
+                    html_element = fromstring(plain_text)
+                except Exception, e:
+                    print e
+                    movie_index += 1
+                    continue
                 actual_movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
                 if len(actual_movie_title_elements) == 0:
                     print movie_index, movie_element.text, 'Bad format 3 ====================>', movie_title_elements[0].attrib['href']
