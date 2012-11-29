@@ -6,6 +6,7 @@ Created on Nov 25, 2012
 
 from lxml.html import fromstring
 from pymongo.connection import Connection
+import datetime
 import time
 import urllib2
 
@@ -21,7 +22,7 @@ class PPTVCrawler:
         self.__collection = self.__db['movies']
 
     def crawl(self):
-        page_index = 174
+        page_index = 15
         movie_index = 1
         while True:
             request = urllib2.Request('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
@@ -29,6 +30,7 @@ class PPTVCrawler:
             response = urllib2.urlopen(request)
 #            response = urllib2.urlopen('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
             plain_text = response.read().decode('utf-8', 'ignore')
+            print "Parsing", 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
             html_element = fromstring(plain_text)
             page_index += 1
 #            print plain_text
@@ -39,7 +41,7 @@ class PPTVCrawler:
 
             for movie_element in movie_elements:
                 if not movie_element.attrib['href'].startswith('http://v.pptv.com/show'):
-                    print movie_index, 'Bad format 1 ====================>', movie_element.attrib['href']
+                    print movie_index, movie_element.text, 'Bad format 1 ====================>', movie_element.attrib['href']
                     movie_index += 1
                     continue
 
@@ -47,10 +49,11 @@ class PPTVCrawler:
 
                 response = urllib2.urlopen(movie_element.attrib['href'])
                 plain_text = response.read().decode('utf-8', 'ignore')
+                print "Parsing", movie_element.attrib['href']
                 html_element = fromstring(plain_text)
                 movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a')
                 if len(movie_title_elements) == 0:
-                    print movie_index, 'Bad format 2 ====================>', movie_element.attrib['href']
+                    print movie_index, movie_element.text, 'Bad format 2 ====================>', movie_element.attrib['href']
                     movie_index += 1
                     continue
 
@@ -60,16 +63,19 @@ class PPTVCrawler:
                 
                 response = urllib2.urlopen(movie_title_elements[0].attrib['href'])
                 plain_text = response.read().decode('utf-8', 'ignore')
+                print "Parsing", movie_title_elements[0].attrib['href']
                 html_element = fromstring(plain_text)
                 actual_movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
                 if len(actual_movie_title_elements) == 0:
-                    print movie_index, 'Bad format 3 ====================>', movie_title_elements[0].attrib['href']
+                    print movie_index, movie_element.text, 'Bad format 3 ====================>', movie_title_elements[0].attrib['href']
                     movie_index += 1
                     continue
 #                movie_cast_elements = movie_element.xpath('./p[@class="p_actor"]/a')
 #                movie_image_element = movie_element.xpath('./p[@class="pic"]/a/img')[0]
                 # TODO: If original url has been changed, the 'play_times' should be set to ZERO.
-                self.__collection.update({'title': actual_movie_title_elements[0].text.strip(), 'year': year}, {'$set': {'pptv.link': movie_element.attrib['href']}, '$inc': {'pptv.play_times': 0}}, True)
+                self.__collection.update({'title': actual_movie_title_elements[0].text.strip(), 'year': int(year)},
+                                         {'$set': {'pptv.link': movie_element.attrib['href'], 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
+                                         True)
 
                 print movie_index, actual_movie_title_elements[0].text.strip(), year, movie_element.attrib['href']
 #                for movie_cast_element in movie_cast_elements:

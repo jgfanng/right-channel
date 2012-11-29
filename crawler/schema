@@ -1,0 +1,63 @@
+1. Document "movies"
+1.1 Schema
+{
+    "title": "The Shawshank Redemption",
+    "year": 1994,
+    "douban": {
+        "directors": [
+            "弗兰克·德拉邦特 Frank Darabont"
+        ],
+        "writers": [
+            "弗兰克·德拉邦特 Frank Darabont",
+            "斯蒂芬·金 Stephen King"
+        ],
+        "casts": [
+            "蒂姆·罗宾斯 Tim Robbins",
+            "摩根·弗里曼 Morgan Freeman"
+        ],
+        "types": [
+            "犯罪",
+            "剧情"
+        ],
+        "countries": [
+            "美国"
+        ],
+        "languages": [
+            "英语"
+        ],
+        "pubdates": [
+            "1994-09-23"
+        ],
+        "durations": [
+            "142 分钟"
+        ],
+        "alt_title": "肖申克的救赎 / 刺激1995(台)",
+        "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生。银行家出身的安迪很快就在监狱里很吃得开，他懂得如何帮助狱卒逃税，懂得如何帮监狱长（鲍勃·冈顿 Bob Gunton 饰）将他收到的非法收入“洗白”，很快，安迪就成为了狱长的 私人助理。 一名小偷因盗窃入狱，他知道安迪妻子和她情人的死亡真相，兴奋的安迪找到了狱长，希望狱长能帮他翻案。虚伪的狱长表面上答应了安迪，暗中却派人杀死了小偷，只因他想安迪一直留在监狱帮他做帐。 安迪知道真相后，决定通过自己的救赎去获得自由！",
+        "score": 9.5,
+        "link": "http://movie.douban.com/movie/1292052",
+        "image": "http://img3.douban.com/spic/s1311361.jpg",
+        "tags": [
+            "经典",
+            "励志",
+            "信念",
+            "自由"
+        ],
+        "lase_updated": 2012
+    },
+    "imdb": {
+        "score": 7,
+        "link": "http://www.imdb.com/title/tt0111161",
+        "lase_updated": 2012
+    },
+    "pptv": {
+        "link": "http://movie.pptv.com/123",
+        "play_times": 10,
+        "lase_updated": 2012
+    }
+}
+
+1.2 Indexes:
+db.movies.ensureIndex({"title": 1})
+db.movies.ensureIndex({"year": -1})
+[Compound Index]: db.movies.ensureIndex({"year": -1, "title": 1}, {unique: true})
+[Multikey Index]: db.movies.ensureIndex({"tags": 1})
