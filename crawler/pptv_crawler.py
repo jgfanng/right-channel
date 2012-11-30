@@ -10,9 +10,9 @@ import datetime
 import time
 import urllib2
 
-class PPTVCrawler:
+class PPTVCrawler(object):
     '''
-    Crawler for PPTV move site (http://www.pptv.com/).
+    Crawler for PPTV move site (http://movie.pptv.com/).
     '''
 
     def __init__(self, sleep_time):

@@ -3,37 +3,29 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from lxml.html import fromstring
-import time
-import urllib2
+from sets import Set
+from urlparse import urlparse
+from web_crawler import WebCrawler
 
-class DoubanCrawler:
+class DoubanCrawler(WebCrawler):
     '''
-    Crawler for douban move site (http://www.douban.com/).
+    Crawler for douban move site (http://movie.douban.com/).
     '''
 
-    def __init__(self, sleep_time):
-        self.__sleep_time = sleep_time
+    def __init__(self, start_urls=None, allowed_domains=None, depth= -1, sleep_time=0):
+        super(DoubanCrawler, self).__init__(start_urls, allowed_domains, depth, sleep_time)
+        self.__crawled_movie_ids = Set()
 
-    def crawl(self):
-        year = 2012
-        movie_index = 0
-        while True:
-            response = urllib2.urlopen('http://movie.douban.com/tag/%s?start=%s' % (year, movie_index))
-
-            plain_text = response.read().decode('utf-8', 'ignore')
-            html_element = fromstring(plain_text)
-
-            movie_elements = html_element.xpath('/html/body/div/div[@id="content"]/div/div[@class="article"]/div[@id="subject_list"]/table/tr[@class="item"]/td[2]/div[1]/a')
-            if len(movie_elements) == 0:
-                break
-
-            for movie_element in movie_elements:
-                print movie_index, movie_element.attrib['href'], movie_element.text_content()
-                movie_index += 1
-
-            time.sleep(self.__sleep_time)
+    def parse(self, response):
+        link_elements = response.xpath('//a[@href]')
+        for link_element in link_elements:
+            url = link_element.attrib['href']
+            if url.startswith('http://movie.douban.com/subject'):
+                paths = [x for x in urlparse(url).path.split('/') if x]
+                if len(paths) >= 2 and paths[0] == 'subject' and paths[1].isdigit() and paths[1] not in self.__crawled_movie_ids:
+                    self.__crawled_movie_ids.add(paths[1])
+                    print len(self.__crawled_movie_ids), url, paths[1]
 
 if __name__ == '__main__':
-    c = DoubanCrawler(6)
-    c.crawl()
+    c = DoubanCrawler(['http://movie.douban.com/tag'], ['movie.douban.com'], 2, 6)
+    c.start_crawl()
