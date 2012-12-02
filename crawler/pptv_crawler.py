@@ -5,7 +5,7 @@ Created on Nov 25, 2012
 '''
 
 from lxml.html import fromstring
-from pymongo.connection import Connection
+from mongodb import movies_collection
 import datetime
 import time
 import urllib2
@@ -17,9 +17,6 @@ class PPTVCrawler(object):
 
     def __init__(self, sleep_time):
         self.__sleep_time = sleep_time
-        self.__connection = Connection()
-        self.__db = self.__connection['videocabindb']
-        self.__collection = self.__db['movies']
 
     def crawl(self):
         page_index = 1
@@ -90,7 +87,7 @@ class PPTVCrawler(object):
 #                movie_cast_elements = movie_element.xpath('./p[@class="p_actor"]/a')
 #                movie_image_element = movie_element.xpath('./p[@class="pic"]/a/img')[0]
                 # TODO: If original url has been changed, the 'play_times' should be set to ZERO.
-                self.__collection.update({'title': actual_movie_title_elements[0].text.strip(), 'year': int(year)},
+                movies_collection.update({'title': actual_movie_title_elements[0].text.strip(), 'year': int(year)},
                                          {'$set': {'pptv.link': movie_element.attrib['href'], 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
                                          True)
 

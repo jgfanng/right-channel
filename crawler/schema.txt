@@ -57,7 +57,7 @@
 }
 
 1.2 Indexes:
-db.movies.ensureIndex({"title": 1})
 db.movies.ensureIndex({"year": -1})
+db.movies.ensureIndex({"title": 1})
 [Compound Index]: db.movies.ensureIndex({"year": -1, "title": 1}, {unique: true})
-[Multikey Index]: db.movies.ensureIndex({"tags": 1})
+[Multikey Index]: db.movies.ensureIndex({"types": 1})
