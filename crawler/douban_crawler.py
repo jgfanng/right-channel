@@ -3,11 +3,11 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from mongodb import movies_collection
+from datetime import datetime
+from mongodb import movies_store_collection
 from sets import Set
 from urlparse import urlparse
 from web_crawler import WebCrawler
-from datetime import datetime
 import json
 import time
 import urllib2
@@ -17,7 +17,7 @@ class DoubanCrawler(WebCrawler):
     Crawler for douban move site (http://movie.douban.com/).
     '''
 
-    def __init__(self, start_urls=None, allowed_domains=None, depth= -1, sleep_time=0):
+    def __init__(self, start_urls, allowed_domains=None, depth= -1, sleep_time=1):
         super(DoubanCrawler, self).__init__(start_urls, allowed_domains, depth, sleep_time)
         self.__sleep_time = sleep_time
         self.__crawled_movie_ids = Set()
@@ -34,7 +34,7 @@ class DoubanCrawler(WebCrawler):
                     response_text = request.read().decode('utf-8', 'ignore')
                     movie_obj = json.loads(response_text)
                     try:
-                        movies_collection.update({'title': movie_obj['title'], 'year': int(movie_obj['attrs']['year'][0]) if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else -1},
+                        movies_store_collection.update({'title': movie_obj['title'], 'year': int(movie_obj['attrs']['year'][0]) if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else -1},
                                                  {'$set': {'douban': {'directors': movie_obj['attrs']['director'] if 'attrs' in movie_obj and 'director' in movie_obj['attrs'] else [],
                                                                       'writers': movie_obj['attrs']['writer'] if 'attrs' in movie_obj and 'writer' in movie_obj['attrs'] else [],
                                                                       'casts': movie_obj['attrs']['cast'] if 'attrs' in movie_obj and 'cast' in movie_obj['attrs'] else [],

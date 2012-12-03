@@ -1,47 +1,70 @@
 1. Document "movies"
 1.1 Schema
+1.1.1 movies.unmatched
 {
-    "title": "The Shawshank Redemption",
+    "year": 2012,
+    "title": "赛德克·巴莱",
+    "directors": [
+        "魏德圣"
+    ],
+    "casts": [
+        "林庆台",
+        "马志翔",
+        "安藤政信"
+    ],
+    "languages": [
+        "多语种"
+    ],
+    "definition": "高清",
+    "summary": "此片为国内上映合集，上下集分别为：在险恶的日据时代，赛德克族被迫失去自己的文化信仰，男人须服劳役不得狩猎、女人帮佣不能编织彩衣，骁勇善战的英雄莫那鲁道（林庆台 Ching-tai Lin 饰），见证三十年来的压...",
+    "link": "http://v.pptv.com/show/l7PBP6cNfbsenAQ.html",
+    "source": "pptv"
+}
+db.movies.unmatched.ensureIndex({"year": -1})
+db.movies.unmatched.ensureIndex({"title": 1})
+db.movies.unmatched.ensureIndex({"source": 1})
+db.movies.unmatched.ensureIndex({"year": -1, "title": 1}, {unique: true})
+
+1.1.2 movies.store
+{
     "year": 1994,
+    "title": "The Shawshank Redemption",
+    "alt_titles": [
+        "肖申克的救赎",
+        "刺激1995(台)"
+    ],
+    "directors": [
+        "弗兰克·德拉邦特 Frank Darabont"
+    ],
+    "writers": [
+        "弗兰克·德拉邦特 Frank Darabont",
+        "斯蒂芬·金 Stephen King"
+    ],
+    "casts": [
+        "蒂姆·罗宾斯 Tim Robbins",
+        "摩根·弗里曼 Morgan Freeman"
+    ],
+    "types": [
+        "犯罪",
+        "剧情"
+    ],
+    "countries": [
+        "美国"
+    ],
+    "languages": [
+        "英语"
+    ],
+    "pubdates": [
+        "1994-09-23"
+    ],
+    "durations": [
+        "142 分钟"
+    ],
+    "image": "http://img3.douban.com/spic/s1311361.jpg",
+    "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
     "douban": {
-        "directors": [
-            "弗兰克·德拉邦特 Frank Darabont"
-        ],
-        "writers": [
-            "弗兰克·德拉邦特 Frank Darabont",
-            "斯蒂芬·金 Stephen King"
-        ],
-        "casts": [
-            "蒂姆·罗宾斯 Tim Robbins",
-            "摩根·弗里曼 Morgan Freeman"
-        ],
-        "types": [
-            "犯罪",
-            "剧情"
-        ],
-        "countries": [
-            "美国"
-        ],
-        "languages": [
-            "英语"
-        ],
-        "pubdates": [
-            "1994-09-23"
-        ],
-        "durations": [
-            "142 分钟"
-        ],
-        "alt_title": "肖申克的救赎 / 刺激1995(台)",
-        "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生。银行家出身的安迪很快就在监狱里很吃得开，他懂得如何帮助狱卒逃税，懂得如何帮监狱长（鲍勃·冈顿 Bob Gunton 饰）将他收到的非法收入“洗白”，很快，安迪就成为了狱长的 私人助理。 一名小偷因盗窃入狱，他知道安迪妻子和她情人的死亡真相，兴奋的安迪找到了狱长，希望狱长能帮他翻案。虚伪的狱长表面上答应了安迪，暗中却派人杀死了小偷，只因他想安迪一直留在监狱帮他做帐。 安迪知道真相后，决定通过自己的救赎去获得自由！",
         "score": 9.5,
         "link": "http://movie.douban.com/movie/1292052",
-        "image": "http://img3.douban.com/spic/s1311361.jpg",
-        "tags": [
-            "经典",
-            "励志",
-            "信念",
-            "自由"
-        ],
         "lase_updated": 2012
     },
     "imdb": {
@@ -55,9 +78,9 @@
         "lase_updated": 2012
     }
 }
-
-1.2 Indexes:
-db.movies.ensureIndex({"year": -1})
-db.movies.ensureIndex({"title": 1})
-[Compound Index]: db.movies.ensureIndex({"year": -1, "title": 1}, {unique: true})
-[Multikey Index]: db.movies.ensureIndex({"types": 1})
+db.movies.store.ensureIndex({"year": -1})
+db.movies.store.ensureIndex({"title": 1})
+db.movies.store.ensureIndex({"alt_titles": 1})
+db.movies.store.ensureIndex({"year": -1, "title": 1}, {unique: true})
+db.movies.store.ensureIndex({"year": -1, "alt_titles": 1}, {unique: true})
+db.movies.store.ensureIndex({"types": 1})

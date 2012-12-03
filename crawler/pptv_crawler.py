@@ -5,7 +5,6 @@ Created on Nov 25, 2012
 '''
 
 from lxml.html import fromstring
-from mongodb import movies_collection
 import datetime
 import time
 import urllib2
@@ -18,7 +17,7 @@ class PPTVCrawler(object):
     def __init__(self, sleep_time):
         self.__sleep_time = sleep_time
 
-    def crawl(self):
+    def start_crawl(self):
         page_index = 1
         movie_index = 1
         while True:
@@ -101,4 +100,4 @@ class PPTVCrawler(object):
 
 if __name__ == '__main__':
     c = PPTVCrawler(2)
-    c.crawl()
+    c.start_crawl()

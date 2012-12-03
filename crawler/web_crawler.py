@@ -12,13 +12,17 @@ import urllib2
 
 class WebCrawler(object):
     '''
-    Base crawler
+    Base crawler (Binary First Search)
     '''
 
-    def __init__(self, start_urls=None, allowed_domains=None, depth= -1, sleep_time=0):
+    def __init__(self, start_urls, allowed_domains=None, depth= -1, sleep_time=1):
+        # A list of URLs where the crawler will begin to crawl from.
         self.__start_urls = start_urls
+        # An optional list of strings containing domains that this crawler is allowed to crawl.
         self.__allowed_domains = allowed_domains
-        self.__depth = depth  # The maximum depth that will be allowed to crawl for any site. If -1, no limit will be imposed.
+        # The maximum depth that will be allowed to crawl for any site. If -1, no limit will be imposed.
+        self.__depth = depth
+        # Sleep some time after crawl a page to avoid Dos attacks.
         self.__sleep_time = sleep_time
         self.__to_crawl_urls = []  # store urls to crawl
         self.__crawled_urls = Set()  # store crawled urls
@@ -82,5 +86,5 @@ class WebCrawler(object):
         pass
 
 if __name__ == '__main__':
-    wc = WebCrawler(['http://movie.douban.com/tag'], ['movie.douban.com'], 2, 6)
+    wc = WebCrawler(start_urls=['http://movie.douban.com/tag'], allowed_domains=['movie.douban.com'], depth=2, sleep_time=1.5)
     wc.start_crawl()
