@@ -3,61 +3,98 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from datetime import datetime
 from mongodb import movies_store_collection
+from pymongo.errors import PyMongoError
 from sets import Set
+from urllib2 import HTTPError, URLError
 from urlparse import urlparse
+from utils import request
+from utils.log import log
 from web_crawler import WebCrawler
+import datetime
 import json
 import time
-import urllib2
+
+# douban api key
+apikey = '05bc4743e8f8808a1134d5cbbae9819e'
 
 class DoubanCrawler(WebCrawler):
     '''
     Crawler for douban move site (http://movie.douban.com/).
     '''
 
-    def __init__(self, start_urls, allowed_domains=None, depth= -1, sleep_time=1):
-        super(DoubanCrawler, self).__init__(start_urls, allowed_domains, depth, sleep_time)
+    def __init__(self, start_urls, allowed_domains=None, query_params=None, sleep_time=5):
+        super(DoubanCrawler, self).__init__(start_urls, allowed_domains, query_params, sleep_time)
         self.__sleep_time = sleep_time
         self.__crawled_movie_ids = Set()
 
-    def parse(self, response):
-        link_elements = response.xpath('//a[@href]')
+    def start_crawl(self):
+        log.info('Start to crawl douban movie site')
+        super(DoubanCrawler, self).start_crawl()
+        log.info('Finish crawling douban movie site')
+        log.info('Total douban movies crawled: %s' % len(self.__crawled_movie_ids))
+
+    def parse(self, html_element):
+        link_elements = html_element.xpath('//a[@href]')
         for link_element in link_elements:
             url = link_element.attrib['href']
+            # The URL must be link 'http://movie.douban.com/subject/12345678/blabla'
             if url.startswith('http://movie.douban.com/subject'):
                 paths = [x for x in urlparse(url).path.split('/') if x]
                 if len(paths) >= 2 and paths[0] == 'subject' and paths[1].isdigit() and paths[1] not in self.__crawled_movie_ids:
-                    self.__crawled_movie_ids.add(paths[1])
-                    request = urllib2.urlopen('https://api.douban.com/v2/movie/%s?apikey=%s' % (paths[1], '05bc4743e8f8808a1134d5cbbae9819e'))
-                    response_text = request.read().decode('utf-8', 'ignore')
-                    movie_obj = json.loads(response_text)
                     try:
-                        movies_store_collection.update({'title': movie_obj['title'], 'year': int(movie_obj['attrs']['year'][0]) if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else -1},
-                                                 {'$set': {'douban': {'directors': movie_obj['attrs']['director'] if 'attrs' in movie_obj and 'director' in movie_obj['attrs'] else [],
-                                                                      'writers': movie_obj['attrs']['writer'] if 'attrs' in movie_obj and 'writer' in movie_obj['attrs'] else [],
-                                                                      'casts': movie_obj['attrs']['cast'] if 'attrs' in movie_obj and 'cast' in movie_obj['attrs'] else [],
-                                                                      'types': movie_obj['attrs']['movie_type'] if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs'] else [],
-                                                                      'countries': movie_obj['attrs']['country'] if 'attrs' in movie_obj and 'country' in movie_obj['attrs'] else [],
-                                                                      'languages': movie_obj['attrs']['language'] if 'attrs' in movie_obj and 'language' in movie_obj['attrs'] else [],
-                                                                      'pubdates': movie_obj['attrs']['pubdate'] if 'attrs' in movie_obj and 'pubdate' in movie_obj['attrs'] else [],
-                                                                      'durations': movie_obj['attrs']['movie_duration'] if 'attrs' in movie_obj and 'movie_duration' in movie_obj['attrs'] else [],
-                                                                      'alt_title': movie_obj['alt_title'] if 'alt_title' in movie_obj else '',
-                                                                      'summary': movie_obj['summary'] if 'summary' in movie_obj else '',
-                                                                      'score': float(movie_obj['rating']['average']) if 'rating' in movie_obj and 'average' in movie_obj['rating'] else -1,
-                                                                      'link': movie_obj['alt'] if 'alt' in movie_obj else '',
-                                                                      'image': movie_obj['image'] if 'image' in movie_obj else '',
-                                                                      'tags': [item['name'] for item in movie_obj['tags']] if 'tags' in movie_obj else [],
-                                                                      'last_updated': datetime.utcnow()}}},
-                                                 True)
-                    except:
-                        print movie_obj
-                    print len(self.__crawled_movie_ids), movie_obj['title']
-                    time.sleep(self.__sleep_time)
+                        response = request.get('https://api.douban.com/v2/movie/%s' % paths[1], params={'apikey': apikey}, retry_interval=self.__sleep_time)
+                        response_text = response.read().decode('utf-8', 'ignore')
+                        movie_obj = json.loads(response_text)
+                        movie_year = movie_obj['attrs']['year'][0] if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else 'Unknown'
+                        movie_title = movie_obj['title'] if 'title' in movie_obj else 'Unknown'
+                        new_movie_obj = {'year': movie_year, 'title': movie_title}
+                        if 'alt_title' in movie_obj:
+                            new_movie_obj['alt_titles'] = [x.strip() for x in movie_obj['alt_title'].split('/')]
+                        if 'attrs' in movie_obj and 'director' in movie_obj['attrs']:
+                            new_movie_obj['directors'] = movie_obj['attrs']['director']
+                        if 'attrs' in movie_obj and 'writer' in movie_obj['attrs']:
+                            new_movie_obj['writers'] = movie_obj['attrs']['writer']
+                        if 'attrs' in movie_obj and 'cast' in movie_obj['attrs']:
+                            new_movie_obj['casts'] = movie_obj['attrs']['cast']
+                        if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs']:
+                            new_movie_obj['types'] = movie_obj['attrs']['movie_type']
+                        if 'attrs' in movie_obj and 'country' in movie_obj['attrs']:
+                            new_movie_obj['countries'] = movie_obj['attrs']['country']
+                        if 'attrs' in movie_obj and 'language' in movie_obj['attrs']:
+                            new_movie_obj['languages'] = movie_obj['attrs']['language']
+                        if 'attrs' in movie_obj and 'pubdate' in movie_obj['attrs']:
+                            new_movie_obj['pubdates'] = movie_obj['attrs']['pubdate']
+                        if 'attrs' in movie_obj and 'movie_duration' in movie_obj['attrs']:
+                            new_movie_obj['durations'] = movie_obj['attrs']['movie_duration']
+                        if 'image' in movie_obj:
+                            new_movie_obj['image'] = movie_obj['image']
+                        if 'summary' in movie_obj:
+                            new_movie_obj['summary'] = movie_obj['summary']
+                        new_movie_obj['douban'] = {'last_updated': datetime.datetime.utcnow()}
+                        if 'rating' in movie_obj and 'average' in movie_obj['rating']:
+                            new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
+                        if 'alt' in movie_obj:
+                            new_movie_obj['douban']['link'] = movie_obj['alt']
+
+                        movies_store_collection.update({'year': movie_year, 'year': movie_title}, {'$set': new_movie_obj}, True)
+                        log.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
+
+                        self.__crawled_movie_ids.add(paths[1])
+
+                        if self.__sleep_time > 0:
+                            time.sleep(self.__sleep_time)
+
+                    except HTTPError, e:
+                        log.error('Server cannot fulfill the request. <URL: %s HTTP Error %s: %s>' % (url, e.code, e.msg))
+                    except URLError, e:
+                        log.error('Failed to reach server. <URL: %s Reason: %s>' % (url, e.reason))
+                    except PyMongoError, e:
+                        log.error(e)
+                    except Exception, e:
+                        log.error('Unknow exception: %s <URL: %s>' % (e, url))
 
 if __name__ == '__main__':
-    print datetime.now()
-    c = DoubanCrawler(['http://movie.douban.com/tag'], ['movie.douban.com'], 2, 1.5)
-    c.start_crawl()
-    print datetime.now()
+    dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],
+                       query_params={'apikey': apikey}, sleep_time=1.5)
+    dc.start_crawl()

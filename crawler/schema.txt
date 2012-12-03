@@ -2,7 +2,7 @@
 1.1 Schema
 1.1.1 movies.unmatched
 {
-    "year": 2012,
+    "year": "2012",
     "title": "赛德克·巴莱",
     "directors": [
         "魏德圣"
@@ -27,7 +27,7 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1}, {unique: true})
 
 1.1.2 movies.store
 {
-    "year": 1994,
+    "year": "1994",
     "title": "The Shawshank Redemption",
     "alt_titles": [
         "肖申克的救赎",

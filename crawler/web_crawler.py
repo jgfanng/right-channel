@@ -3,78 +3,79 @@ Created on Nov 29, 2012
 
 @author: Fang Jiaguo
 '''
-from lxml.html import fromstring
+from lxml import etree
+from lxml.html import fromstring, tostring
 from sets import Set
+from urllib2 import HTTPError, URLError
 from urlparse import urlparse
+from utils import request
+from utils.log import log
 import md5
 import time
-import urllib2
 
 class WebCrawler(object):
     '''
     Base crawler (Binary First Search)
     '''
 
-    def __init__(self, start_urls, allowed_domains=None, depth= -1, sleep_time=1):
+    def __init__(self, start_urls, allowed_domains=None, query_params=None, sleep_time=5):
         # A list of URLs where the crawler will begin to crawl from.
         self.__start_urls = start_urls
         # An optional list of strings containing domains that this crawler is allowed to crawl.
         self.__allowed_domains = allowed_domains
-        # The maximum depth that will be allowed to crawl for any site. If -1, no limit will be imposed.
-        self.__depth = depth
-        # Sleep some time after crawl a page to avoid Dos attacks.
+        # Query string parameters when sending a request.
+        self.__query_params = query_params
+        # Sleep some time after crawl a page for throttle.
         self.__sleep_time = sleep_time
-        self.__to_crawl_urls = []  # store urls to crawl
-        self.__crawled_urls = Set()  # store crawled urls
-        self.__current_depth_urls = 0  # url count in the current depth
+        # A list of URLs the crawler will crawl.
+        self.__urls_to_crawl = []
+        # Distinct URLs (md5) the crawler has crawled.
+        self.__urls_crawled = Set()
 
     def start_crawl(self):
-        # push all start urls to crawl
-        if self.__depth != 0:
-            for start_url in self.__start_urls:
-                if self.__url_is_allowed(start_url):
-                    url_md5 = md5.new(start_url).digest()
-                    if url_md5 not in self.__crawled_urls:
-                        self.__crawled_urls.add(url_md5)
-                        self.__to_crawl_urls.append(start_url)
-                        if self.__depth > 0:
-                            self.__current_depth_urls += 1
+        # Push all start URLs to crawl.
+        for start_url in self.__start_urls:
+            if self.__url_is_allowed(start_url):
+                url_md5 = md5.new(start_url).digest()
+                if url_md5 not in self.__urls_crawled:
+                    self.__urls_crawled.add(url_md5)
+                    self.__urls_to_crawl.append(start_url)
 
-        while self.__depth != 0 and self.__to_crawl_urls:
-            # get first url, then remove it
-            to_crawl_url = self.__to_crawl_urls.pop(0)
-            request = urllib2.urlopen(to_crawl_url)
-            response_text = request.read().decode('utf-8', 'ignore')
-            # extract all links
-            html_element = fromstring(response_text)
-            html_element.make_links_absolute(request.url)
-            link_elements = html_element.xpath('//a[@href]')
-            for link_element in link_elements:
-                url = link_element.attrib['href']
-                # if domain is allowed, and url has not been crawled
-                if self.__url_is_allowed(url):
+        while self.__urls_to_crawl:
+            # Pop out the first URL.
+            url_to_crawl = self.__urls_to_crawl.pop(0)
+            try:
+                response = request.get(url_to_crawl, params=self.__query_params, retry_interval=self.__sleep_time)
+                log.info('Crawled <%s>' % url_to_crawl)
+                response_text = response.read().decode('utf-8', 'ignore')
+                # Extract links in the document.
+                html_element = fromstring(response_text)
+                # Makes all links in the document absolute.
+                html_element.make_links_absolute(url_to_crawl)
+                link_elements = html_element.xpath('//a[@href]')
+                for link_element in link_elements:
+                    url = link_element.attrib['href']
+                    # Add the URL if its domain is allowed, and has not been crawled.
                     url_md5 = md5.new(url).digest()
-                    if url_md5 not in self.__crawled_urls:
-                        self.__crawled_urls.add(url_md5)
-                        self.__to_crawl_urls.append(url)
-#                        print len(self.__to_crawl_urls), len(self.__crawled_urls), url, link_element.text
+                    if  self.__url_is_allowed(url) and url_md5 not in self.__urls_crawled:
+                        self.__urls_crawled.add(url_md5)
+                        self.__urls_to_crawl.append(url)
 
-            # for throttle
-            if self.__sleep_time > 0:
-                time.sleep(self.__sleep_time)
-            # customized stuff
-            self.parse(html_element)
+                if self.__sleep_time > 0:
+                    time.sleep(self.__sleep_time)
 
-            # decrease url count by 1 in the current depth
-            if self.__depth > 0:
-                self.__current_depth_urls -= 1
-                if self.__current_depth_urls == 0:
-                    self.__depth -= 1
-                    if self.__depth > 0:
-                        self.__current_depth_urls = len(self.__to_crawl_urls)
+                # Customized stuff provided by derived class.
+                self.parse(html_element)
+
+            except HTTPError, e:
+                log.error('Server cannot fulfill the request. <URL: %s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
+            except URLError, e:
+                log.error('Failed to reach server. <URL: %s Reason: %s>' % (url_to_crawl, e.reason))
+            except Exception, e:
+                log.error('Unknow exception: %s <URL: %s>' % (e, url_to_crawl))
 
     def __url_is_allowed(self, url):
-        # validate domain name
+        # Return True if the domain of url is in allowed list, otherwise False.
         hostname = urlparse(url).hostname
         if hostname:
             for domain in self.__allowed_domains:
@@ -86,5 +87,6 @@ class WebCrawler(object):
         pass
 
 if __name__ == '__main__':
-    wc = WebCrawler(start_urls=['http://movie.douban.com/tag'], allowed_domains=['movie.douban.com'], depth=2, sleep_time=1.5)
+    wc = WebCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],
+                    query_params={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'}, sleep_time=1.5)
     wc.start_crawl()

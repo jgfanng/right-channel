@@ -7,14 +7,14 @@ import time
 import urllib
 import urllib2
 
-def get(url, params=None, retry_count=3, retry_interval=1):
+def get(url, params=None, retry_interval=5, retry_count=3):
     '''Send a get request'''
-    
+
     if params:
         url += '?' + urllib.urlencode(params)
     while True:
         try:
-            return urllib2.urlopen(url)
+            return urllib2.urlopen(url, timeout=30)
         except:
             retry_count -= 1
             if retry_count < 0:
