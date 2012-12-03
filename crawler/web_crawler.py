@@ -3,8 +3,7 @@ Created on Nov 29, 2012
 
 @author: Fang Jiaguo
 '''
-from lxml import etree
-from lxml.html import fromstring, tostring
+from lxml.html import fromstring
 from sets import Set
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
