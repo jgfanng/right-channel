@@ -27,12 +27,13 @@ class DoubanCrawler(WebCrawler):
         super(DoubanCrawler, self).__init__(start_urls, allowed_domains, query_params, sleep_time)
         self.__sleep_time = sleep_time
         self.__crawled_movie_ids = Set()
+        self.__logger = log.get_child_logger('DoubanCrawler')
 
     def start_crawl(self):
-        log.info('Start to crawl douban movie site')
+        self.__logger.info('Start to crawl douban movie site')
         super(DoubanCrawler, self).start_crawl()
-        log.info('Finish crawling douban movie site')
-        log.info('Total douban movies crawled: %s' % len(self.__crawled_movie_ids))
+        self.__logger.info('Finish crawling douban movie site')
+        self.__logger.info('Total douban movies crawled: %s' % len(self.__crawled_movie_ids))
 
     def parse(self, html_element):
         # Extract all links in the document.
@@ -85,16 +86,16 @@ class DoubanCrawler(WebCrawler):
 
                         self.__crawled_movie_ids.add(paths[1])
 
-                        log.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
+                        self.__logger.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
 
                     except HTTPError, e:
-                        log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
+                        self.__logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
                     except URLError, e:
-                        log.error('Failed to reach server <%s Reason: %s>' % (api_url, e.reason))
+                        self.__logger.error('Failed to reach server <%s Reason: %s>' % (api_url, e.reason))
                     except PyMongoError, e:
-                        log.error('Mongodb error: %s <%s>' % (e, api_url))
+                        self.__logger.error('Mongodb error: %s <%s>' % (e, api_url))
                     except Exception, e:
-                        log.error('Unknow exception: %s <%s>' % (e, api_url))
+                        self.__logger.error('Unknow exception: %s <%s>' % (e, api_url))
 
 if __name__ == '__main__':
     dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],

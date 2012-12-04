@@ -6,12 +6,13 @@
     "title": "赛德克·巴莱",
     "definition": "高清",
     "link": "http://v.pptv.com/show/l7PBP6cNfbsenAQ.html",
-    "source": "pptv"
+    "source": "pptv",
+    "lase_updated": 2012
 }
 db.movies.unmatched.ensureIndex({"year": -1})
 db.movies.unmatched.ensureIndex({"title": 1})
 db.movies.unmatched.ensureIndex({"source": 1})
-db.movies.unmatched.ensureIndex({"year": -1, "title": 1}, {unique: true})
+db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: true})
 
 1.1.2 movies.store
 {
@@ -62,6 +63,7 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1}, {unique: true})
     },
     "pptv": {
         "link": "http://movie.pptv.com/123",
+        "definition": "高清",
         "play_times": 10,
         "lase_updated": 2012
     }

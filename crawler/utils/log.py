@@ -14,9 +14,10 @@ class Log():
     Log class
     '''
 
-    def __init__(self):
+    def __init__(self, name=None):
+        self.__name = name
         # Severity level: DEBUG/INFO/WARN/ERROR/CRITICAL
-        self.__logger = logging.getLogger()
+        self.__logger = logging.getLogger(name)
         # Set to DEBUG when the application is under debugging, otherwise INFO.
         self.__logger.setLevel(logging.DEBUG)
         # Create file handler with INFO log level accepting higher severity level than INFO.
@@ -26,23 +27,14 @@ class Log():
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
         # Create formatter and add it to the handlers
-        formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
+        formatter = logging.Formatter("[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s")
         file_handler.setFormatter(formatter)
         console_handler.setFormatter(formatter)
         # Add the handlers to logger.
         self.__logger.addHandler(file_handler)
         self.__logger.addHandler(console_handler)
 
-    def debug(self, msg):
-        self.__logger.debug(msg)
+    def get_child_logger(self, name):
+        return logging.getLogger('.'.join([self.__name, name]))
 
-    def info(self, msg):
-        self.__logger.info(msg)
-
-    def warning(self, msg):
-        self.__logger.warning(msg)
-
-    def error(self, msg):
-        self.__logger.exception(msg)
-
-log = Log()
+log = Log('VideoCabin')

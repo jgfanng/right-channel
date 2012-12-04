@@ -30,6 +30,8 @@ class WebCrawler(object):
         self.__urls_to_crawl = []
         # Distinct URLs (md5) the crawler has crawled.
         self.__urls_crawled = Set()
+        # Child logger of the main logger object
+        self.__logger = log.get_child_logger('WebCrawler')
 
     def start_crawl(self):
         # Push all start URLs to crawl.
@@ -46,7 +48,7 @@ class WebCrawler(object):
                 url_to_crawl = self.__urls_to_crawl.pop(0)
                 response = request.get(url_to_crawl, params=self.__query_params, retry_interval=self.__sleep_time)
                 response_text = response.read().decode('utf-8', 'ignore')
-                log.info('Crawled <%s>' % url_to_crawl)
+                self.__logger.info('Crawled <%s>' % url_to_crawl)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
@@ -67,11 +69,11 @@ class WebCrawler(object):
                 self.parse(html_element)
 
             except HTTPError, e:
-                log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
+                self.__logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
             except URLError, e:
-                log.error('Failed to reach server <%s Reason: %s>' % (url_to_crawl, e.reason))
+                self.__logger.error('Failed to reach server <%s Reason: %s>' % (url_to_crawl, e.reason))
             except Exception, e:
-                log.error('Unknow exception: %s <%s>' % (e, url_to_crawl))
+                self.__logger.error('Unknow exception: %s <%s>' % (e, url_to_crawl))
 
     def __url_is_allowed(self, url):
         # Return True if the domain of url is in allowed list, otherwise False.

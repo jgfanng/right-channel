@@ -7,10 +7,12 @@ Created on Nov 25, 2012
 '''
 
 from lxml.html import fromstring
+from mongodb import movies_store_collection, movies_unmatched_collection
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
 from utils import request
 from utils.log import log
+import datetime
 import time
 
 class PPTVCrawler(object):
@@ -20,6 +22,7 @@ class PPTVCrawler(object):
 
     def __init__(self, sleep_time):
         self.__sleep_time = sleep_time
+        self.__logger = log.get_child_logger('PPTVCrawler')
 
     def start_crawl(self):
         page_index = 0
@@ -32,7 +35,7 @@ class PPTVCrawler(object):
                 url = 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
                 response = request.get(url, retry_interval=self.__sleep_time)
                 response_text = response.read().decode('utf-8', 'ignore')
-                log.info('Crawled <%s>' % url)
+                self.__logger.info('Crawled <%s>' % url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
@@ -52,7 +55,7 @@ class PPTVCrawler(object):
                     if url.startswith('http://v.pptv.com/show/'):
                         response = request.get(url, retry_interval=self.__sleep_time)
                         response_text = response.read().decode('utf-8', 'ignore')
-                        log.info('Crawled <%s>' % url)
+                        self.__logger.info('Crawled <%s>' % url)
                         if self.__sleep_time > 0:
                             time.sleep(self.__sleep_time)
 
@@ -70,7 +73,7 @@ class PPTVCrawler(object):
                             if url.startswith('http://www.pptv.com/page/'):
                                 response = request.get(url, retry_interval=self.__sleep_time)
                                 response_text = response.read().decode('utf-8', 'ignore')
-                                log.info('Crawled <%s>' % url)
+                                self.__logger.info('Crawled <%s>' % url)
                                 if self.__sleep_time > 0:
                                     time.sleep(self.__sleep_time)
 
@@ -86,24 +89,40 @@ class PPTVCrawler(object):
                                         if element.text.strip().startswith(u'清晰度：'):
                                             movie_definition = element.text.strip()[len(u'清晰度：'):]
                                             break
-                                    log.info('Crawled movie "%s %s %s"' % (movie_year, movie_title, movie_definition))
+                                    self.__logger.info('Crawled movie "%s %s %s"' % (movie_year, movie_title, movie_definition))
+                                    #--------------------Update Mongodb--------------------------------------------
+                                    # Match the movie info with douban in collection 'movies.store'.
+                                    result = movies_store_collection.find_and_modify(query={'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
+                                                                                     update={'$set': {'pptv.link': movie_element.attrib['href'], 'pptv.definition': movie_definition, 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
+                                                                                     fields={'_id': 1})
+                                    if result:
+                                        self.__logger.info('Matched with douban')
+                                    else:
+                                        # If we cannot find the matching, it means this movie has not yet been crawled
+                                        # from douban, or douban does not contain related record of this movie. Then we
+                                        # store movie info temporarily in collection 'movie.unmatched'.
+                                        movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': 'pptv'},
+                                                                           {'$set': {'definition': movie_definition, 'link': movie_element.attrib['href'], 'last_updated': datetime.datetime.utcnow()}},
+                                                                           upsert=True)
+                                        self.__logger.info('Not matched with douban')
+                                    #------------------------------------------------------------------------------
                                 else:
-                                    log.warning('Movie title not found on details page <%s>' % movie_title_elements[0].attrib['href'])
+                                    self.__logger.warning('Movie title not found on details page <%s>' % movie_title_elements[0].attrib['href'])
                             else:
-                                log.warning('Invalid details page URL pattern <%s> on playing page <%s>' % (movie_title_elements[0].attrib['href'], movie_element.attrib['href']))
+                                self.__logger.warning('Invalid details page URL pattern <%s> on playing page <%s>' % (movie_title_elements[0].attrib['href'], movie_element.attrib['href']))
                         else:
-                            log.warning('Details page link not found on playing page <%s>' % movie_element.attrib['href'])
+                            self.__logger.warning('Details page link not found on playing page <%s>' % movie_element.attrib['href'])
                     else:
-                        log.warning('Invalid playing page URL pattern <%s>' % movie_element.attrib['href'])
+                        self.__logger.warning('Invalid playing page URL pattern <%s>' % movie_element.attrib['href'])
 
             except HTTPError, e:
-                log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url, e.code, e.msg))
+                self.__logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url, e.code, e.msg))
             except URLError, e:
-                log.error('Failed to reach server <%s Reason: %s>' % (url, e.reason))
+                self.__logger.error('Failed to reach server <%s Reason: %s>' % (url, e.reason))
             except PyMongoError, e:
-                log.error('Mongodb error: %s <%s>' % (e, url))
+                self.__logger.error('Mongodb error: %s <%s>' % (e, url))
             except Exception, e:
-                log.error('Unknow exception: %s <%s>' % (e, url))
+                self.__logger.error('Unknow exception: %s <%s>' % (e, url))
 
 if __name__ == '__main__':
     pc = PPTVCrawler(2)
