@@ -88,13 +88,13 @@ class DoubanCrawler(WebCrawler):
                         log.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
 
                     except HTTPError, e:
-                        log.error('Server cannot fulfill the request <URL: %s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
+                        log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
                     except URLError, e:
-                        log.error('Failed to reach server <URL: %s Reason: %s>' % (api_url, e.reason))
+                        log.error('Failed to reach server <%s Reason: %s>' % (api_url, e.reason))
                     except PyMongoError, e:
-                        log.error('Mongodb error: %s <URL: %s>' % (e, api_url))
+                        log.error('Mongodb error: %s <%s>' % (e, api_url))
                     except Exception, e:
-                        log.error('Unknow exception: %s <URL: %s>' % (e, api_url))
+                        log.error('Unknow exception: %s <%s>' % (e, api_url))
 
 if __name__ == '__main__':
     dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],

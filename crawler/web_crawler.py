@@ -67,11 +67,11 @@ class WebCrawler(object):
                 self.parse(html_element)
 
             except HTTPError, e:
-                log.error('Server cannot fulfill the request <URL: %s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
+                log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
             except URLError, e:
-                log.error('Failed to reach server <URL: %s Reason: %s>' % (url_to_crawl, e.reason))
+                log.error('Failed to reach server <%s Reason: %s>' % (url_to_crawl, e.reason))
             except Exception, e:
-                log.error('Unknow exception: %s <URL: %s>' % (e, url_to_crawl))
+                log.error('Unknow exception: %s <%s>' % (e, url_to_crawl))
 
     def __url_is_allowed(self, url):
         # Return True if the domain of url is in allowed list, otherwise False.
