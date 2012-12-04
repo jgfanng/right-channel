@@ -49,7 +49,7 @@ class PPTVCrawler(object):
                 #======================================================================================================
                 for movie_element in movie_elements:
                     url = movie_element.attrib['href']
-                    if url.startswith('http://v.pptv.com/show'):
+                    if url.startswith('http://v.pptv.com/show/'):
                         response = request.get(url, retry_interval=self.__sleep_time)
                         response_text = response.read().decode('utf-8', 'ignore')
                         log.info('Crawled <%s>' % url)
@@ -67,7 +67,7 @@ class PPTVCrawler(object):
                             # Step 3: Enter 'details page' with URL pattern <http://www.pptv.com/page/blabla> to extract 'title' and 'definition' fields
                             #===========================================================================================================================
                             url = movie_title_elements[0].attrib['href']
-                            if url.startswith('http://www.pptv.com/page'):
+                            if url.startswith('http://www.pptv.com/page/'):
                                 response = request.get(url, retry_interval=self.__sleep_time)
                                 response_text = response.read().decode('utf-8', 'ignore')
                                 log.info('Crawled <%s>' % url)
@@ -94,7 +94,7 @@ class PPTVCrawler(object):
                         else:
                             log.warning('Details page link not found on playing page <%s>' % movie_element.attrib['href'])
                     else:
-                        log.warning('Invalid playing page URL pattern on playing page <%s>' % movie_element.attrib['href'])
+                        log.warning('Invalid playing page URL pattern <%s>' % movie_element.attrib['href'])
 
             except HTTPError, e:
                 log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url, e.code, e.msg))
