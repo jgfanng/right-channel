@@ -41,16 +41,19 @@ class WebCrawler(object):
                     self.__urls_to_crawl.append(start_url)
 
         while self.__urls_to_crawl:
-            # Pop out the first URL.
-            url_to_crawl = self.__urls_to_crawl.pop(0)
             try:
+                # Pop out the first URL.
+                url_to_crawl = self.__urls_to_crawl.pop(0)
                 response = request.get(url_to_crawl, params=self.__query_params, retry_interval=self.__sleep_time)
-                log.info('Crawled <%s>' % url_to_crawl)
                 response_text = response.read().decode('utf-8', 'ignore')
-                # Extract links in the document.
+                log.info('Crawled <%s>' % url_to_crawl)
+                if self.__sleep_time > 0:
+                    time.sleep(self.__sleep_time)
+
                 html_element = fromstring(response_text)
                 # Makes all links in the document absolute.
                 html_element.make_links_absolute(url_to_crawl)
+                # Extract all links in the document.
                 link_elements = html_element.xpath('//a[@href]')
                 for link_element in link_elements:
                     url = link_element.attrib['href']
@@ -60,16 +63,13 @@ class WebCrawler(object):
                         self.__urls_crawled.add(url_md5)
                         self.__urls_to_crawl.append(url)
 
-                if self.__sleep_time > 0:
-                    time.sleep(self.__sleep_time)
-
                 # Customized stuff provided by derived class.
                 self.parse(html_element)
 
             except HTTPError, e:
-                log.error('Server cannot fulfill the request. <URL: %s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
+                log.error('Server cannot fulfill the request <URL: %s HTTP Error %s: %s>' % (url_to_crawl, e.code, e.msg))
             except URLError, e:
-                log.error('Failed to reach server. <URL: %s Reason: %s>' % (url_to_crawl, e.reason))
+                log.error('Failed to reach server <URL: %s Reason: %s>' % (url_to_crawl, e.reason))
             except Exception, e:
                 log.error('Unknow exception: %s <URL: %s>' % (e, url_to_crawl))
 

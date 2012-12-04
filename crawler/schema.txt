@@ -4,19 +4,7 @@
 {
     "year": "2012",
     "title": "赛德克·巴莱",
-    "directors": [
-        "魏德圣"
-    ],
-    "casts": [
-        "林庆台",
-        "马志翔",
-        "安藤政信"
-    ],
-    "languages": [
-        "多语种"
-    ],
     "definition": "高清",
-    "summary": "此片为国内上映合集，上下集分别为：在险恶的日据时代，赛德克族被迫失去自己的文化信仰，男人须服劳役不得狩猎、女人帮佣不能编织彩衣，骁勇善战的英雄莫那鲁道（林庆台 Ching-tai Lin 饰），见证三十年来的压...",
     "link": "http://v.pptv.com/show/l7PBP6cNfbsenAQ.html",
     "source": "pptv"
 }

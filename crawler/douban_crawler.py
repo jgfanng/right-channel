@@ -35,6 +35,7 @@ class DoubanCrawler(WebCrawler):
         log.info('Total douban movies crawled: %s' % len(self.__crawled_movie_ids))
 
     def parse(self, html_element):
+        # Extract all links in the document.
         link_elements = html_element.xpath('//a[@href]')
         for link_element in link_elements:
             url = link_element.attrib['href']
@@ -43,8 +44,12 @@ class DoubanCrawler(WebCrawler):
                 paths = [x for x in urlparse(url).path.split('/') if x]
                 if len(paths) >= 2 and paths[0] == 'subject' and paths[1].isdigit() and paths[1] not in self.__crawled_movie_ids:
                     try:
-                        response = request.get('https://api.douban.com/v2/movie/%s' % paths[1], params={'apikey': apikey}, retry_interval=self.__sleep_time)
+                        api_url = 'https://api.douban.com/v2/movie/%s' % paths[1]
+                        response = request.get(api_url, params={'apikey': apikey}, retry_interval=self.__sleep_time)
                         response_text = response.read().decode('utf-8', 'ignore')
+                        if self.__sleep_time > 0:
+                            time.sleep(self.__sleep_time)
+
                         movie_obj = json.loads(response_text)
                         movie_year = movie_obj['attrs']['year'][0] if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else 'Unknown'
                         movie_title = movie_obj['title'] if 'title' in movie_obj else 'Unknown'
@@ -76,23 +81,20 @@ class DoubanCrawler(WebCrawler):
                             new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
                         if 'alt' in movie_obj:
                             new_movie_obj['douban']['link'] = movie_obj['alt']
-
                         movies_store_collection.update({'year': movie_year, 'year': movie_title}, {'$set': new_movie_obj}, True)
-                        log.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
 
                         self.__crawled_movie_ids.add(paths[1])
 
-                        if self.__sleep_time > 0:
-                            time.sleep(self.__sleep_time)
+                        log.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
 
                     except HTTPError, e:
-                        log.error('Server cannot fulfill the request. <URL: %s HTTP Error %s: %s>' % (url, e.code, e.msg))
+                        log.error('Server cannot fulfill the request <URL: %s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
                     except URLError, e:
-                        log.error('Failed to reach server. <URL: %s Reason: %s>' % (url, e.reason))
+                        log.error('Failed to reach server <URL: %s Reason: %s>' % (api_url, e.reason))
                     except PyMongoError, e:
-                        log.error(e)
+                        log.error('Mongodb error: %s <URL: %s>' % (e, api_url))
                     except Exception, e:
-                        log.error('Unknow exception: %s <URL: %s>' % (e, url))
+                        log.error('Unknow exception: %s <URL: %s>' % (e, api_url))
 
 if __name__ == '__main__':
     dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],

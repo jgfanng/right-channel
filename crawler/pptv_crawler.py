@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Created on Nov 25, 2012
 
@@ -5,9 +7,11 @@ Created on Nov 25, 2012
 '''
 
 from lxml.html import fromstring
-import datetime
+from pymongo.errors import PyMongoError
+from urllib2 import HTTPError, URLError
+from utils import request
+from utils.log import log
 import time
-import urllib2
 
 class PPTVCrawler(object):
     '''
@@ -18,86 +22,89 @@ class PPTVCrawler(object):
         self.__sleep_time = sleep_time
 
     def start_crawl(self):
-        page_index = 1
-        movie_index = 1
+        page_index = 0
         while True:
-            request = urllib2.Request('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
-            request.add_header('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
-            response = urllib2.urlopen(request)
-#            response = urllib2.urlopen('http://list.pptv.com/sort_list/1---------%s.html' % page_index)
-            plain_text = response.read().decode('utf-8', 'ignore')
-            print "Parsing", 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
-            html_element = fromstring(plain_text)
             page_index += 1
-#            print plain_text
+            try:
+                #====================================================================================================
+                # Step 1: Crawl 'movie list page' with URL pattern <http://list.pptv.com/sort_list/1---------%s.html>
+                #====================================================================================================
+                url = 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
+                response = request.get(url, retry_interval=self.__sleep_time)
+                response_text = response.read().decode('utf-8', 'ignore')
+                log.info('Crawled <%s>' % url)
+                if self.__sleep_time > 0:
+                    time.sleep(self.__sleep_time)
 
-            movie_elements = html_element.xpath('/html/body/div/div/div/div[@class="bd"]/ul/li/p[@class="txt"]/a')
-            if len(movie_elements) == 0:
-                break
+                html_element = fromstring(response_text)
+                # Extract all links in the document.
+                movie_elements = html_element.xpath('/html/body/div/div/div/div[@class="bd"]/ul/li/p[@class="txt"]/a[@href]')
 
-            for movie_element in movie_elements:
-                if not movie_element.attrib['href'].startswith('http://v.pptv.com/show'):
-                    print movie_index, movie_element.text, 'Bad format 1 ====================>', movie_element.attrib['href']
-                    movie_index += 1
-                    continue
+                # If no links found, then finish crawling.
+                if not movie_elements:
+                    break
 
-                time.sleep(self.__sleep_time)
+                #======================================================================================================
+                # Step 2: Enter 'playing page' with URL pattern <http://v.pptv.com/show/blabla> to extract 'year' field
+                #======================================================================================================
+                for movie_element in movie_elements:
+                    url = movie_element.attrib['href']
+                    if url.startswith('http://v.pptv.com/show'):
+                        response = request.get(url, retry_interval=self.__sleep_time)
+                        response_text = response.read().decode('utf-8', 'ignore')
+                        log.info('Crawled <%s>' % url)
+                        if self.__sleep_time > 0:
+                            time.sleep(self.__sleep_time)
 
-                response = urllib2.urlopen(movie_element.attrib['href'])
-                plain_text = response.read().decode('utf-8', 'ignore')
-                print "Parsing", movie_element.attrib['href']
-                html_element = None
-                try:
-                    html_element = fromstring(plain_text)
-                except Exception, e:
-                    print e
-                    movie_index += 1
-                    continue
-                movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a')
-                if len(movie_title_elements) == 0:
-                    print movie_index, movie_element.text, 'Bad format 2 ====================>', movie_element.attrib['href']
-                    movie_index += 1
-                    continue
+                        html_element = fromstring(response_text)
+                        # Extract movie title element.
+                        movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a[@href]')
 
-                year = movie_title_elements[0].tail[1:-1]
+                        if movie_title_elements:
+                            # Extract 'year' field.
+                            movie_year = movie_title_elements[0].tail.strip()[1:-1]
+                            #===========================================================================================================================
+                            # Step 3: Enter 'details page' with URL pattern <http://www.pptv.com/page/blabla> to extract 'title' and 'definition' fields
+                            #===========================================================================================================================
+                            url = movie_title_elements[0].attrib['href']
+                            if url.startswith('http://www.pptv.com/page'):
+                                response = request.get(url, retry_interval=self.__sleep_time)
+                                response_text = response.read().decode('utf-8', 'ignore')
+                                log.info('Crawled <%s>' % url)
+                                if self.__sleep_time > 0:
+                                    time.sleep(self.__sleep_time)
 
-                time.sleep(self.__sleep_time)
+                                html_element = fromstring(response_text)
+                                # Extract actual movie title element.
+                                actual_movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
 
-                response = None
-                try:
-                    response = urllib2.urlopen(movie_title_elements[0].attrib['href'])
-                except:
-                    movie_index += 1
-                    continue
-                plain_text = response.read().decode('utf-8', 'ignore')
-                print "Parsing", movie_title_elements[0].attrib['href']
-                html_element = None
-                try:
-                    html_element = fromstring(plain_text)
-                except Exception, e:
-                    print e
-                    movie_index += 1
-                    continue
-                actual_movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
-                if len(actual_movie_title_elements) == 0:
-                    print movie_index, movie_element.text, 'Bad format 3 ====================>', movie_title_elements[0].attrib['href']
-                    movie_index += 1
-                    continue
-#                movie_cast_elements = movie_element.xpath('./p[@class="p_actor"]/a')
-#                movie_image_element = movie_element.xpath('./p[@class="pic"]/a/img')[0]
-                # TODO: If original url has been changed, the 'play_times' should be set to ZERO.
-                movies_collection.update({'title': actual_movie_title_elements[0].text.strip(), 'year': int(year)},
-                                         {'$set': {'pptv.link': movie_element.attrib['href'], 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
-                                         True)
+                                if actual_movie_title_elements:
+                                    movie_title = actual_movie_title_elements[0].text.strip()
+                                    movie_definition = 'Unknown'
+                                    movie_definition_elements = html_element.xpath('/html/body/div/p[@class="tabs"]/em')
+                                    for element in movie_definition_elements:
+                                        if element.text.strip().startswith(u'清晰度：'):
+                                            movie_definition = element.text.strip()[len(u'清晰度：'):]
+                                            break
+                                    log.info('Crawled movie "%s %s %s"' % (movie_year, movie_title, movie_definition))
+                                else:
+                                    log.warning('Movie title not found on details page <%s>' % movie_title_elements[0].attrib['href'])
+                            else:
+                                log.warning('Invalid details page URL pattern <%s> on playing page <%s>' % (movie_title_elements[0].attrib['href'], movie_element.attrib['href']))
+                        else:
+                            log.warning('Details page link not found on playing page <%s>' % movie_element.attrib['href'])
+                    else:
+                        log.warning('Invalid playing page URL pattern on playing page <%s>' % movie_element.attrib['href'])
 
-                print movie_index, actual_movie_title_elements[0].text.strip(), year, movie_element.attrib['href']
-#                for movie_cast_element in movie_cast_elements:
-#                    print movie_cast_element.text,
-#                print movie_image_element.attrib['src']
-                movie_index += 1
-
-            time.sleep(self.__sleep_time)
+            except HTTPError, e:
+                log.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url, e.code, e.msg))
+            except URLError, e:
+                log.error('Failed to reach server <%s Reason: %s>' % (url, e.reason))
+            except PyMongoError, e:
+                log.error('Mongodb error: %s <%s>' % (e, url))
+            except Exception, e:
+                log.error('Unknow exception: %s <%s>' % (e, url))
 
 if __name__ == '__main__':
-    c = PPTVCrawler(2)
-    c.start_crawl()
+    pc = PPTVCrawler(2)
+    pc.start_crawl()
