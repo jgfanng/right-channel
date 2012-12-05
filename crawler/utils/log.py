@@ -35,6 +35,7 @@ class Log():
         self.__logger.addHandler(console_handler)
 
     def get_child_logger(self, name):
+        # Create (but not configure) a child logger, and all logger calls to the child will pass up to the parent.
         return logging.getLogger('.'.join([self.__name, name]))
 
 log = Log('VideoCabin')

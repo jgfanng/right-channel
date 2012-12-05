@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Created on Nov 26, 2012
 
@@ -7,12 +9,12 @@ from mongodb import movies_store_collection
 from pymongo.errors import PyMongoError
 from sets import Set
 from urllib2 import HTTPError, URLError
-from urlparse import urlparse
 from utils import request
 from utils.log import log
 from web_crawler import WebCrawler
 import datetime
 import json
+import re
 import time
 
 # douban api key
@@ -22,11 +24,11 @@ class DoubanCrawler(WebCrawler):
     '''
     Crawler for douban move site (http://movie.douban.com/).
     '''
-    
+
     logger = log.get_child_logger('DoubanCrawler')
 
-    def __init__(self, start_urls, allowed_domains=None, query_params=None, sleep_time=5):
-        super(DoubanCrawler, self).__init__(start_urls, allowed_domains, query_params, sleep_time)
+    def __init__(self, start_urls, allowed_url_res=None, query_params=None, sleep_time=5):
+        super(DoubanCrawler, self).__init__(start_urls, allowed_url_res, query_params, sleep_time)
         self.__sleep_time = sleep_time
         self.__crawled_urls = Set()
 
@@ -37,18 +39,19 @@ class DoubanCrawler(WebCrawler):
         DoubanCrawler.logger.info('Total douban movies crawled: %s' % len(self.__crawled_urls))
 
     def parse(self, html_element):
-        # Extract all links in the document.
+        pattern = re.compile('^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/$')
+        # Extract all links in the document, and call douban api to those movie links.
         link_elements = html_element.xpath('//a[@href]')
         for link_element in link_elements:
             url = link_element.attrib['href']
-            # The URL must be link 'http://movie.douban.com/subject/12345678/'
-            if url.startswith('http://movie.douban.com/subject'):
-                paths = [x for x in urlparse(url).path.split('/') if x]
-                if len(paths) >= 2 and paths[0] == 'subject' and paths[1].isdigit() and paths[1] not in self.__crawled_urls:
+            # The URL must be like 'http://movie.douban.com/subject/blabla...'
+            if pattern.match(url):
+                movie_id = url[len('http://movie.douban.com/subject/'):-1] if url.endswith('/') else url[len('http://movie.douban.com/subject/'):]
+                if movie_id not in self.__crawled_urls:
                     try:
-                        api_url = 'https://api.douban.com/v2/movie/%s' % paths[1]
+                        api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
                         response = request.get(api_url, params={'apikey': apikey}, retry_interval=self.__sleep_time)
-                        response_text = response.read()#.decode('utf-8', 'ignore')
+                        response_text = response.read()  # .decode('utf-8', 'ignore')
                         if self.__sleep_time > 0:
                             time.sleep(self.__sleep_time)
 
@@ -85,7 +88,7 @@ class DoubanCrawler(WebCrawler):
                             new_movie_obj['douban']['link'] = movie_obj['alt']
                         movies_store_collection.update({'year': movie_year, 'year': movie_title}, {'$set': new_movie_obj}, True)
 
-                        self.__crawled_urls.add(paths[1])
+                        self.__crawled_urls.add(movie_id)
 
                         DoubanCrawler.logger.info('Crawled movie #%s <%s %s>' % (len(self.__crawled_urls), movie_year, movie_title))
 
@@ -99,6 +102,15 @@ class DoubanCrawler(WebCrawler):
                         DoubanCrawler.logger.error('Unknow exception: %s <%s>' % (e, api_url))
 
 if __name__ == '__main__':
-    dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],
-                       query_params={'apikey': apikey}, sleep_time=1.5)
+    dc = DoubanCrawler(start_urls=['http://movie.douban.com/nowplaying/beijing/',  # 正在上映
+                                   'http://movie.douban.com/coming',  # 即将上映
+                                   'http://movie.douban.com/chart',  # 排行榜
+                                   'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
+                                   'http://movie.douban.com/tag/'  # 豆瓣电影标签
+                                   ],
+                       allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
+                                        '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页
+                                        ],
+                       query_params={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
+                       sleep_time=1.5)
     dc.start_crawl()

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Created on Nov 29, 2012
 
@@ -6,24 +8,24 @@ Created on Nov 29, 2012
 from lxml.html import fromstring
 from sets import Set
 from urllib2 import HTTPError, URLError
-from urlparse import urlparse
 from utils import request
 from utils.log import log
 import md5
+import re
 import time
 
 class WebCrawler(object):
     '''
     Base crawler (Binary First Search)
     '''
-    
+
     logger = log.get_child_logger('WebCrawler')
 
-    def __init__(self, start_urls, allowed_domains=None, query_params=None, sleep_time=5):
+    def __init__(self, start_urls, allowed_url_res=None, query_params=None, sleep_time=5):
         # A list of URLs where the crawler will begin to crawl from.
         self.__start_urls = start_urls
-        # An optional list of strings containing domains that this crawler is allowed to crawl.
-        self.__allowed_domains = allowed_domains
+        # An optional list of strings containing URL regex that this crawler is allowed to crawl.
+        self.__allowed_url_res = [re.compile(x) for x in allowed_url_res]
         # Query string parameters when sending a request.
         self.__query_params = query_params
         # Sleep some time after crawl a page for throttle.
@@ -46,7 +48,7 @@ class WebCrawler(object):
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
                 response = request.get(url_to_crawl, params=self.__query_params, retry_interval=self.__sleep_time)
-                response_text = response.read()#.decode('utf-8', 'ignore')
+                response_text = response.read()  # .decode('utf-8', 'ignore')
                 WebCrawler.logger.info('Crawled <%s>' % url_to_crawl)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
@@ -59,10 +61,13 @@ class WebCrawler(object):
                 for link_element in link_elements:
                     url = link_element.attrib['href']
                     # Add the URL if its domain is allowed, and has not been crawled.
-                    url_md5 = md5.new(url).digest()
-                    if  self.__url_is_allowed(url) and url_md5 not in self.__crawled_urls:
-                        self.__crawled_urls.add(url_md5)
-                        self.__uncrawled_urls.append(url)
+                    if  self.__url_is_allowed(url):
+                        url_md5 = md5.new(url).digest()
+                        if url_md5 not in self.__crawled_urls:
+                            self.__crawled_urls.add(url_md5)
+                            self.__uncrawled_urls.append(url)
+                    else:
+                        WebCrawler.logger.warning('URL not allowed <%s>' % url)
 
                 # Customized stuff provided by derived class.
                 self.parse(html_element)
@@ -75,26 +80,28 @@ class WebCrawler(object):
                 WebCrawler.logger.error('Unknow exception: %s <%s>' % (e, url_to_crawl))
 
     def __url_is_allowed(self, url):
-        # Return True if the domain of url is in allowed list, otherwise False.
-        hostname = urlparse(url).hostname
-        if hostname:
-            for domain in self.__allowed_domains:
-                if hostname.endswith(domain):
-                    return True
+        # Return True if URL pattern is allowed, otherwise False.
+        if not self.__allowed_url_res:
+            return True
+
+        for re in self.__allowed_url_res:
+            if re.match(url):
+                return True
+
         return False
 
     def parse(self, response):
         pass
 
 if __name__ == '__main__':
-    wc = WebCrawler(start_urls=['http://movie.douban.com/nowplaying/beijing/',  #正在上映
-                                'http://movie.douban.com/coming',               #即将上映
-                                'http://movie.douban.com/chart',                #排行榜
-                                'http://movie.douban.com/top250?format=text',   #豆瓣电影250
-                                'http://movie.douban.com/tag/'                  #豆瓣电影标签
+    wc = WebCrawler(start_urls=['http://movie.douban.com/nowplaying/beijing/',  # 正在上映
+                                'http://movie.douban.com/coming',  # 即将上映
+                                'http://movie.douban.com/chart',  # 排行榜
+                                'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
+                                'http://movie.douban.com/tag/'  # 豆瓣电影标签
                                 ],
-                    allowed_domains=['http://movie.douban.com/tag/blabla...',   #豆瓣电影标签
-                                     'http://movie.douban.com/subject/10545971/'#电影主页
+                    allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
+                                     '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页
                                      ],
                     query_params={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
                     sleep_time=1.5)
