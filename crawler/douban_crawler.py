@@ -22,32 +22,33 @@ class DoubanCrawler(WebCrawler):
     '''
     Crawler for douban move site (http://movie.douban.com/).
     '''
+    
+    logger = log.get_child_logger('DoubanCrawler')
 
     def __init__(self, start_urls, allowed_domains=None, query_params=None, sleep_time=5):
         super(DoubanCrawler, self).__init__(start_urls, allowed_domains, query_params, sleep_time)
         self.__sleep_time = sleep_time
-        self.__crawled_movie_ids = Set()
-        self.__logger = log.get_child_logger('DoubanCrawler')
+        self.__crawled_urls = Set()
 
     def start_crawl(self):
-        self.__logger.info('Start to crawl douban movie site')
+        DoubanCrawler.logger.info('Start to crawl douban movie site')
         super(DoubanCrawler, self).start_crawl()
-        self.__logger.info('Finish crawling douban movie site')
-        self.__logger.info('Total douban movies crawled: %s' % len(self.__crawled_movie_ids))
+        DoubanCrawler.logger.info('Finish crawling douban movie site')
+        DoubanCrawler.logger.info('Total douban movies crawled: %s' % len(self.__crawled_urls))
 
     def parse(self, html_element):
         # Extract all links in the document.
         link_elements = html_element.xpath('//a[@href]')
         for link_element in link_elements:
             url = link_element.attrib['href']
-            # The URL must be link 'http://movie.douban.com/subject/12345678/blabla'
+            # The URL must be link 'http://movie.douban.com/subject/12345678/'
             if url.startswith('http://movie.douban.com/subject'):
                 paths = [x for x in urlparse(url).path.split('/') if x]
-                if len(paths) >= 2 and paths[0] == 'subject' and paths[1].isdigit() and paths[1] not in self.__crawled_movie_ids:
+                if len(paths) >= 2 and paths[0] == 'subject' and paths[1].isdigit() and paths[1] not in self.__crawled_urls:
                     try:
                         api_url = 'https://api.douban.com/v2/movie/%s' % paths[1]
                         response = request.get(api_url, params={'apikey': apikey}, retry_interval=self.__sleep_time)
-                        response_text = response.read().decode('utf-8', 'ignore')
+                        response_text = response.read()#.decode('utf-8', 'ignore')
                         if self.__sleep_time > 0:
                             time.sleep(self.__sleep_time)
 
@@ -84,18 +85,18 @@ class DoubanCrawler(WebCrawler):
                             new_movie_obj['douban']['link'] = movie_obj['alt']
                         movies_store_collection.update({'year': movie_year, 'year': movie_title}, {'$set': new_movie_obj}, True)
 
-                        self.__crawled_movie_ids.add(paths[1])
+                        self.__crawled_urls.add(paths[1])
 
-                        self.__logger.info('Crawled movie #%s "%s"' % (len(self.__crawled_movie_ids), movie_title))
+                        DoubanCrawler.logger.info('Crawled movie #%s <%s %s>' % (len(self.__crawled_urls), movie_year, movie_title))
 
                     except HTTPError, e:
-                        self.__logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
+                        DoubanCrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (api_url, e.code, e.msg))
                     except URLError, e:
-                        self.__logger.error('Failed to reach server <%s Reason: %s>' % (api_url, e.reason))
+                        DoubanCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (api_url, e.reason))
                     except PyMongoError, e:
-                        self.__logger.error('Mongodb error: %s <%s>' % (e, api_url))
+                        DoubanCrawler.logger.error('Mongodb error: %s <%s>' % (e, api_url))
                     except Exception, e:
-                        self.__logger.error('Unknow exception: %s <%s>' % (e, api_url))
+                        DoubanCrawler.logger.error('Unknow exception: %s <%s>' % (e, api_url))
 
 if __name__ == '__main__':
     dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'], allowed_domains=['movie.douban.com'],
