@@ -23,7 +23,7 @@ def get(url, additional_qs=None, retry_interval=5, retry_count=3):
 
     while True:
         try:
-            return urllib2.urlopen(url, timeout=30)
+            return urllib2.urlopen(url.encode('utf-8'), timeout=30)
         except:
             retry_count -= 1
             if retry_count < 0:
