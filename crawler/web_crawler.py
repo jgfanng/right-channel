@@ -21,13 +21,13 @@ class WebCrawler(object):
 
     logger = log.get_child_logger('WebCrawler')
 
-    def __init__(self, start_urls, allowed_url_res=None, query_params=None, sleep_time=5):
+    def __init__(self, start_urls, allowed_url_res=None, additional_qs=None, sleep_time=5):
         # A list of URLs where the crawler will begin to crawl from.
         self.__start_urls = start_urls
         # An optional list of strings containing URL regex that this crawler is allowed to crawl.
         self.__allowed_url_res = [re.compile(x) for x in allowed_url_res]
         # Query string parameters when sending a request.
-        self.__query_params = query_params
+        self.__additional_qs = additional_qs
         # Sleep some time after crawl a page for throttle.
         self.__sleep_time = sleep_time
         # A list of URLs the crawler will crawl.
@@ -47,7 +47,7 @@ class WebCrawler(object):
             try:
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
-                response = request.get(url_to_crawl, params=self.__query_params, retry_interval=self.__sleep_time)
+                response = request.get(url_to_crawl, additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
                 response_text = response.read()  # .decode('utf-8', 'ignore')
                 WebCrawler.logger.info('Crawled <%s>' % url_to_crawl)
                 if self.__sleep_time > 0:
@@ -103,6 +103,6 @@ if __name__ == '__main__':
                     allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
                                      '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页
                                      ],
-                    query_params={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
+                    additional_qs={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
                     sleep_time=1.5)
     wc.start_crawl()

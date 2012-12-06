@@ -27,10 +27,11 @@ class DoubanCrawler(WebCrawler):
 
     logger = log.get_child_logger('DoubanCrawler')
 
-    def __init__(self, start_urls, allowed_url_res=None, query_params=None, sleep_time=5):
-        super(DoubanCrawler, self).__init__(start_urls, allowed_url_res, query_params, sleep_time)
+    def __init__(self, start_urls, allowed_url_res=None, additional_qs=None, sleep_time=5):
+        super(DoubanCrawler, self).__init__(start_urls, allowed_url_res, additional_qs, sleep_time)
         self.__sleep_time = sleep_time
         self.__crawled_urls = Set()
+        self.__movie_info_re = re.compile('^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/$')
 
     def start_crawl(self):
         DoubanCrawler.logger.info('Start to crawl douban movie site')
@@ -39,18 +40,17 @@ class DoubanCrawler(WebCrawler):
         DoubanCrawler.logger.info('Total douban movies crawled: %s' % len(self.__crawled_urls))
 
     def parse(self, html_element):
-        pattern = re.compile('^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/$')
         # Extract all links in the document, and call douban api to those movie links.
         link_elements = html_element.xpath('//a[@href]')
         for link_element in link_elements:
             url = link_element.attrib['href']
             # The URL must be like 'http://movie.douban.com/subject/blabla...'
-            if pattern.match(url):
+            if self.__movie_info_re.match(url):
                 movie_id = url[len('http://movie.douban.com/subject/'):-1] if url.endswith('/') else url[len('http://movie.douban.com/subject/'):]
                 if movie_id not in self.__crawled_urls:
                     try:
                         api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
-                        response = request.get(api_url, params={'apikey': apikey}, retry_interval=self.__sleep_time)
+                        response = request.get(api_url, additional_qs={'apikey': apikey}, retry_interval=self.__sleep_time)
                         response_text = response.read()  # .decode('utf-8', 'ignore')
                         if self.__sleep_time > 0:
                             time.sleep(self.__sleep_time)
@@ -86,7 +86,7 @@ class DoubanCrawler(WebCrawler):
                             new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
                         if 'alt' in movie_obj:
                             new_movie_obj['douban']['link'] = movie_obj['alt']
-                        movies_store_collection.update({'year': movie_year, 'year': movie_title}, {'$set': new_movie_obj}, True)
+                        movies_store_collection.update({'year': movie_year, 'title': movie_title}, {'$set': new_movie_obj}, True)
 
                         self.__crawled_urls.add(movie_id)
 
@@ -111,6 +111,6 @@ if __name__ == '__main__':
                        allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
                                         '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页
                                         ],
-                       query_params={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
+                       additional_qs={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
                        sleep_time=1.5)
     dc.start_crawl()
