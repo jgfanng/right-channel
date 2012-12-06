@@ -66,8 +66,6 @@ class WebCrawler(object):
                         if url_md5 not in self.__crawled_urls:
                             self.__crawled_urls.add(url_md5)
                             self.__uncrawled_urls.append(url)
-                    else:
-                        WebCrawler.logger.warning('URL not allowed <%s>' % url)
 
                 # Customized stuff provided by derived class.
                 self.parse(html_element)
