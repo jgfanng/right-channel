@@ -102,7 +102,11 @@ class DoubanCrawler(WebCrawler):
                         DoubanCrawler.logger.error('Unknow exception: %s <%s>' % (e, api_url))
 
 if __name__ == '__main__':
-    dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'  # 豆瓣电影标签
+    dc = DoubanCrawler(start_urls=['http://movie.douban.com/nowplaying/beijing/',  # 正在上映
+                                   'http://movie.douban.com/coming',  # 即将上映
+                                   'http://movie.douban.com/chart',  # 排行榜
+                                   'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
+                                   'http://movie.douban.com/tag/'  # 豆瓣电影标签
                                    ],
                        allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
                                         '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页
