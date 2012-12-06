@@ -56,8 +56,8 @@ class DoubanCrawler(WebCrawler):
                             time.sleep(self.__sleep_time)
 
                         movie_obj = json.loads(response_text)
-                        movie_year = movie_obj['attrs']['year'][0] if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else 'Unknown'
-                        movie_title = movie_obj['title'] if 'title' in movie_obj else 'Unknown'
+                        movie_year = movie_obj['attrs']['year'][0].strip() if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] else 'Unknown'
+                        movie_title = movie_obj['title'].strip() if 'title' in movie_obj else 'Unknown'
                         new_movie_obj = {'year': movie_year, 'title': movie_title}
                         if 'alt_title' in movie_obj:
                             new_movie_obj['alt_titles'] = [x.strip() for x in movie_obj['alt_title'].split('/')]
@@ -102,11 +102,7 @@ class DoubanCrawler(WebCrawler):
                         DoubanCrawler.logger.error('Unknow exception: %s <%s>' % (e, api_url))
 
 if __name__ == '__main__':
-    dc = DoubanCrawler(start_urls=['http://movie.douban.com/nowplaying/beijing/',  # 正在上映
-                                   'http://movie.douban.com/coming',  # 即将上映
-                                   'http://movie.douban.com/chart',  # 排行榜
-                                   'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
-                                   'http://movie.douban.com/tag/'  # 豆瓣电影标签
+    dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/'  # 豆瓣电影标签
                                    ],
                        allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
                                         '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页

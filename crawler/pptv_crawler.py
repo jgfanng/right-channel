@@ -67,7 +67,7 @@ class PPTVCrawler(object):
 
                         if movie_title_elements:
                             # Extract 'year' field.
-                            movie_year = movie_title_elements[0].tail.strip()[1:-1]
+                            movie_year = movie_title_elements[0].tail.strip()[1:-1].strip()
                             #===========================================================================================================================
                             # Step 3: Enter 'details page' with URL pattern <http://www.pptv.com/page/blabla> to extract 'title' and 'definition' fields
                             #===========================================================================================================================

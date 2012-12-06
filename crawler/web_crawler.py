@@ -38,7 +38,7 @@ class WebCrawler(object):
     def start_crawl(self):
         # Push all start URLs to crawl.
         for start_url in self.__start_urls:
-            url_md5 = md5.new(start_url).digest()
+            url_md5 = md5.new(start_url.encode('utf-8')).digest()
             if url_md5 not in self.__crawled_urls:
                 self.__crawled_urls.add(url_md5)
                 self.__uncrawled_urls.append(start_url)
@@ -62,7 +62,7 @@ class WebCrawler(object):
                     url = link_element.attrib['href']
                     # Add the URL if its domain is allowed, and has not been crawled.
                     if  self.__url_is_allowed(url):
-                        url_md5 = md5.new(url).digest()
+                        url_md5 = md5.new(url.encode('utf-8')).digest()
                         if url_md5 not in self.__crawled_urls:
                             self.__crawled_urls.add(url_md5)
                             self.__uncrawled_urls.append(url)
