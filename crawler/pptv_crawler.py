@@ -34,7 +34,7 @@ class PPTVCrawler(object):
         Step 1: Crawl 'movie list page' with URL pattern <http://list.pptv.com/sort_list/1---------%s.html>
         '''
 
-        page_index = 3
+        page_index = 0
         while True:
             page_index += 1
             try:
