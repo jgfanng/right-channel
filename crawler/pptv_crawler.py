@@ -27,7 +27,10 @@ class PPTVCrawler(object):
         self.__total_movies_crawled = 0
 
     def start_crawl(self):
+        PPTVCrawler.logger.info('==========Start to crawl pptv movies==========')
         self.__crawl_movie_list_page()
+        PPTVCrawler.logger.info('==========Finish crawling pptv movies==========')
+        PPTVCrawler.logger.info('==========Totally crawled %s movies==========' % self.__total_movies_crawled)
 
     def __crawl_movie_list_page(self):
         '''
@@ -41,7 +44,7 @@ class PPTVCrawler(object):
                 url = 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
                 response = request.get(url, retry_interval=self.__sleep_time)
                 response_text = response.read()  # .decode('utf-8', 'ignore')
-                PPTVCrawler.logger.info('Crawled <%s>' % url)
+                PPTVCrawler.logger.debug('Crawled <%s>' % url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
@@ -73,7 +76,7 @@ class PPTVCrawler(object):
             if playing_page_url.startswith('http://v.pptv.com/show/'):
                 response = request.get(playing_page_url, retry_interval=self.__sleep_time)
                 response_text = response.read()  # .decode('utf-8', 'ignore')
-                PPTVCrawler.logger.info('Crawled <%s>' % playing_page_url)
+                PPTVCrawler.logger.debug('Crawled <%s>' % playing_page_url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
@@ -110,7 +113,7 @@ class PPTVCrawler(object):
             if details_page_url.startswith('http://www.pptv.com/page/'):
                 response = request.get(details_page_url, retry_interval=self.__sleep_time)
                 response_text = response.read()  # .decode('utf-8', 'ignore')
-                PPTVCrawler.logger.info('Crawled <%s>' % details_page_url)
+                PPTVCrawler.logger.debug('Crawled <%s>' % details_page_url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
