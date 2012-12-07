@@ -79,16 +79,12 @@ class IQIYICrawler(object):
                     IQIYICrawler.logger.info('Crawled movie #%s <%s %s %s>' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
 
                     #--------------------Save to Mongodb-------------------------------------------
-                    # Match movie info with douban in collection 'movies.store'.
                     result = movies_store_collection.find_and_modify(query={'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
-                                                                     update={'$set': {'iqiyi.link': playing_page_url, 'iqiyi.definition': movie_definition, 'iqiyi.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
+                                                                     update={'$set': {'iqiyi.link': playing_page_url, 'iqiyi.definition': movie_definition, 'iqiyi.last_updated': datetime.datetime.utcnow()}, '$inc': {'iqiyi.play_times': 0}},
                                                                      fields={'_id': 1})
                     if result:
                         IQIYICrawler.logger.debug('Matched with douban')
                     else:
-                        # If we cannot find the matching, it means this movie has not yet been crawled
-                        # from douban, or douban does not contain related record of this movie. Then we
-                        # store it temporarily in collection 'movie.unmatched'.
                         movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': 'iqiyi'},
                                                            {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
                                                            upsert=True)
@@ -141,7 +137,7 @@ class IQIYICrawler(object):
 
         try:
             response = request.get(intro_page_url, retry_interval=self.__sleep_time)
-            response_text = response.read()
+            response_text = response.read().decode('utf-8', 'ignore')
             IQIYICrawler.logger.debug('Crawled <%s>' % intro_page_url)
             if self.__sleep_time > 0:
                 time.sleep(self.__sleep_time)
