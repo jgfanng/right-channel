@@ -12,7 +12,7 @@ from sets import Set
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
 from utils import request
-from utils.log import log
+from utils.log import get_logger
 import datetime
 import json
 import md5
@@ -29,7 +29,7 @@ class DoubanCrawler():
     Crawler for douban move site (http://movie.douban.com/).
     '''
 
-    logger = log.get_child_logger('DoubanCrawler')
+    logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 
     def __init__(self, start_urls, allowed_url_res=None, additional_qs=None, sleep_time=5):
         # A list of URLs where the crawler will begin to crawl from.
@@ -66,7 +66,7 @@ class DoubanCrawler():
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
                 response = request.get(url_to_crawl, additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
-                response_text = response.read()  # .decode('utf-8', 'ignore')
+                response_text = response.read()
                 DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
@@ -74,7 +74,6 @@ class DoubanCrawler():
                 html_element = fromstring(response_text)
                 # Makes all links in the document absolute.
                 html_element.make_links_absolute(url_to_crawl)
-                # Extract all links in the document.
                 link_elements = html_element.xpath('//a[@href]')
                 for link_element in link_elements:
                     url_in_page = link_element.attrib['href']
@@ -96,13 +95,13 @@ class DoubanCrawler():
             except URLError, e:
                 DoubanCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (url_to_crawl, e.reason))
             except Exception, e:
-                DoubanCrawler.logger.error('Unknow exception: %s <%s>' % (e, url_to_crawl))
+                DoubanCrawler.logger.error('%s <%s>' % (e, url_to_crawl))
 
     def __get_movie_info(self, movie_id):
         try:
             api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
             response = request.get(api_url, additional_qs={'apikey': apikey}, retry_interval=self.__sleep_time)
-            response_text = response.read()  # .decode('utf-8', 'ignore')
+            response_text = response.read()
             if self.__sleep_time > 0:
                 time.sleep(self.__sleep_time)
 
@@ -147,7 +146,7 @@ class DoubanCrawler():
         except URLError, e:
             DoubanCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (api_url, e.reason))
         except PyMongoError, e:
-            DoubanCrawler.logger.error('Mongodb error: %s <%s>' % (e, api_url))
+            DoubanCrawler.logger.error('%s <%s>' % (e, api_url))
         except Exception, e:
             DoubanCrawler.logger.error('Unknow exception: %s <%s>' % (e, api_url))
 
@@ -173,5 +172,5 @@ if __name__ == '__main__':
                                         '^http://movie\.douban\.com/subject/[0-9a-zA-Z]+/{0,1}$'  # 电影主页
                                         ],
                        additional_qs={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
-                       sleep_time=1.5)
+                       sleep_time=1.3)
     dc.start_crawl()

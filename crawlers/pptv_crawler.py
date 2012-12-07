@@ -11,16 +11,16 @@ from mongodb import movies_store_collection, movies_unmatched_collection
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
 from utils import request
-from utils.log import log
+from utils.log import get_logger
 import datetime
 import time
 
 class PPTVCrawler(object):
     '''
-    Crawler for PPTV move site (http://movie.pptv.com/).
+    Crawler for pptv move (http://movie.pptv.com/).
     '''
 
-    logger = log.get_child_logger('PPTVCrawler')
+    logger = get_logger('PPTVCrawler', 'pptv_crawler.log')
 
     def __init__(self, sleep_time):
         self.__sleep_time = sleep_time
@@ -28,11 +28,11 @@ class PPTVCrawler(object):
 
     def start_crawl(self):
         PPTVCrawler.logger.info('==========Start to crawl pptv movies==========')
-        self.__crawl_movie_list_page()
+        self.__start_crawl()
         PPTVCrawler.logger.info('==========Finish crawling pptv movies==========')
         PPTVCrawler.logger.info('==========Totally crawled %s movies==========' % self.__total_movies_crawled)
 
-    def __crawl_movie_list_page(self):
+    def __start_crawl(self):
         '''
         Step 1: Crawl 'movie list page' with URL pattern <http://list.pptv.com/sort_list/1---------%s.html>
         '''
@@ -41,31 +41,30 @@ class PPTVCrawler(object):
         while True:
             page_index += 1
             try:
-                url = 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
-                response = request.get(url, retry_interval=self.__sleep_time)
-                response_text = response.read()  # .decode('utf-8', 'ignore')
-                PPTVCrawler.logger.debug('Crawled <%s>' % url)
+                movie_list_page_url = 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
+                response = request.get(movie_list_page_url, retry_interval=self.__sleep_time)
+                response_text = response.read()
+                PPTVCrawler.logger.debug('Crawled <%s>' % movie_list_page_url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
                 html_element = fromstring(response_text)
-                # Extract all links in the document.
                 movie_elements = html_element.xpath('/html/body/div/div/div/div[@class="bd"]/ul/li/p[@class="txt"]/a[@href]')
 
-                # If no links found, then finish crawling.
+                # If no links are found, finish crawling. At the meantime, write log in case xpath changes.
                 if not movie_elements:
+                    PPTVCrawler.logger.warning('Movies not found on movie list page <%s>' % movie_list_page_url)
                     break
 
                 for movie_element in movie_elements:
                     self.__crawl_playing_page(movie_element.attrib['href'])
 
             except HTTPError, e:
-                PPTVCrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (url, e.code, e.msg))
+                PPTVCrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (movie_list_page_url, e.code, e.msg))
             except URLError, e:
-                PPTVCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (url, e.reason))
+                PPTVCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (movie_list_page_url, e.reason))
             except Exception, e:
-                PPTVCrawler.logger.error('Unknow exception: %s <%s>' % (e, url))
-
+                PPTVCrawler.logger.error('Unknow exception: %s <%s>' % (e, movie_list_page_url))
 
     def __crawl_playing_page(self, playing_page_url):
         '''
@@ -75,13 +74,12 @@ class PPTVCrawler(object):
         try:
             if playing_page_url.startswith('http://v.pptv.com/show/'):
                 response = request.get(playing_page_url, retry_interval=self.__sleep_time)
-                response_text = response.read()  # .decode('utf-8', 'ignore')
+                response_text = response.read()
                 PPTVCrawler.logger.debug('Crawled <%s>' % playing_page_url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
                 html_element = fromstring(response_text)
-                # Extract movie title element.
                 movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a[@href]')
 
                 if movie_title_elements:
@@ -112,18 +110,17 @@ class PPTVCrawler(object):
         try:
             if details_page_url.startswith('http://www.pptv.com/page/'):
                 response = request.get(details_page_url, retry_interval=self.__sleep_time)
-                response_text = response.read()  # .decode('utf-8', 'ignore')
+                response_text = response.read()
                 PPTVCrawler.logger.debug('Crawled <%s>' % details_page_url)
                 if self.__sleep_time > 0:
                     time.sleep(self.__sleep_time)
 
                 html_element = fromstring(response_text)
-                # Extract actual movie title element.
                 movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
 
                 if movie_title_elements:
                     movie_title = movie_title_elements[0].text.strip()
-                    movie_definition = 'Unknown'
+                    movie_definition = '一般'
                     movie_definition_elements = html_element.xpath('/html/body/div/p[@class="tabs"]/em')
                     for element in movie_definition_elements:
                         if element.text.strip().startswith(u'清晰度：'):
@@ -159,9 +156,9 @@ class PPTVCrawler(object):
         except URLError, e:
             PPTVCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (details_page_url, e.reason))
         except PyMongoError, e:
-            PPTVCrawler.logger.error('Mongodb error: %s <%s>' % (e, details_page_url))
+            PPTVCrawler.logger.error('%s <%s>' % (e, details_page_url))
         except Exception, e:
-            PPTVCrawler.logger.error('Unknow exception: %s <%s>' % (e, details_page_url))
+            PPTVCrawler.logger.error('%s <%s>' % (e, details_page_url))
 
 if __name__ == '__main__':
     pc = PPTVCrawler(1)
