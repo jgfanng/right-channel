@@ -4,5 +4,8 @@ Created on Dec 7, 2012
 @author: Fang Jiaguo
 '''
 
-class CrawlerError(Exception):
+class MovieYearNotFoundError(Exception):
+    pass
+
+class MovieTitleNotFoundError(Exception):
     pass

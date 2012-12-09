@@ -5,14 +5,15 @@ Created on Dec 7, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.exceptions import CrawlerError
+from crawlers.exceptions import ParseHtmlError, MovieYearNotFoundError, \
+    MovieTitleNotFoundError
 from crawlers.mongodb import movies_store_collection, \
     movies_unmatched_collection
+from crawlers.utils import request
+from crawlers.utils.log import get_logger
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
-from utils import request
-from utils.log import get_logger
 import datetime
 import time
 
@@ -71,7 +72,8 @@ class IQIYICrawler(object):
                     movie_intro_elements = html_element.xpath('/html/body/div/div/div/div/div/div/ul[@class="ulList dianying"]/li[@class="j-listanim"]/div[@class="popUp"]/div[@class="pop-bottom-con"]/a[@href]')
                     if movie_intro_elements:
                         # more accurate title on introduction page
-                        title_on_intro_page = self.__get_movie_title(movie_intro_elements[0].attrib['href'])
+                        intro_page_url = movie_intro_elements[0].attrib['href']
+                        title_on_intro_page = self.__get_movie_title(intro_page_url)
                         if title_on_intro_page:
                             movie_title = title_on_intro_page
 
@@ -91,8 +93,10 @@ class IQIYICrawler(object):
                         IQIYICrawler.logger.debug('Not matched with douban')
                     #------------------------------------------------------------------------------
 
-            except CrawlerError, e:
-                IQIYICrawler.logger.error(e)
+            except MovieYearNotFoundError, e:
+                IQIYICrawler.logger.warning('Movie year not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
+            except MovieTitleNotFoundError, e:
+                IQIYICrawler.logger.warning('Movie title not found on introduction page <%s>. Please check whether the xpath has changed' % intro_page_url)
             except HTTPError, e:
                 IQIYICrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (movie_list_page_url, e.code, e.msg))
             except URLError, e:
@@ -107,56 +111,36 @@ class IQIYICrawler(object):
         Get movie year on playing page.
         '''
 
-        try:
-            response = request.get(playing_page_url, retry_interval=self.__sleep_time)
-            response_text = response.read()
-            IQIYICrawler.logger.debug('Crawled <%s>' % playing_page_url)
-            if self.__sleep_time > 0:
-                time.sleep(self.__sleep_time)
+        response = request.get(playing_page_url, retry_interval=self.__sleep_time)
+        response_text = response.read()
+        IQIYICrawler.logger.debug('Crawled <%s>' % playing_page_url)
+        if self.__sleep_time > 0:
+            time.sleep(self.__sleep_time)
 
-            html_element = fromstring(response_text)
-            movie_year_elements = html_element.xpath('/html/body/div/div/h1[@id="navbar"]/span/a')
-            if movie_year_elements:
-                return movie_year_elements[0].text.strip()
-            else:
-                # Write log in case xpath changes. !important
-                IQIYICrawler.logger.warning('Movie year not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
-                return None
-
-        except HTTPError, e:
-            raise CrawlerError('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (playing_page_url, e.code, e.msg))
-        except URLError, e:
-            raise CrawlerError('Failed to reach server <%s Reason: %s>' % (playing_page_url, e.reason))
-        except Exception, e:
-            raise CrawlerError('%s <%s>' % (e, playing_page_url))
+        html_element = fromstring(response_text)
+        movie_year_elements = html_element.xpath('/html/body/div/div/h1[@id="navbar"]/span/a')
+        if movie_year_elements:
+            return movie_year_elements[0].text.strip()
+        else:
+            raise MovieYearNotFoundError()
 
     def __get_movie_title(self, intro_page_url):
         '''
         Get movie title on introduction page.
         '''
 
-        try:
-            response = request.get(intro_page_url, retry_interval=self.__sleep_time)
-            response_text = response.read().decode('utf-8', 'ignore')
-            IQIYICrawler.logger.debug('Crawled <%s>' % intro_page_url)
-            if self.__sleep_time > 0:
-                time.sleep(self.__sleep_time)
+        response = request.get(intro_page_url, retry_interval=self.__sleep_time)
+        response_text = response.read()
+        IQIYICrawler.logger.debug('Crawled <%s>' % intro_page_url)
+        if self.__sleep_time > 0:
+            time.sleep(self.__sleep_time)
 
-            html_element = fromstring(response_text)
-            movie_title_elements = html_element.xpath('/html/body/div/div/div/div/div/div[@class="prof-title"]/h1')
-            if movie_title_elements:
-                return movie_title_elements[0].text.strip()
-            else:
-                # Write log in case xpath changes. !important
-                IQIYICrawler.logger.warning('Movie title not found on introduction page <%s>. Please check whether the xpath has changed' % intro_page_url)
-                return None
-
-        except HTTPError, e:
-            raise CrawlerError('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (intro_page_url, e.code, e.msg))
-        except URLError, e:
-            raise CrawlerError('Failed to reach server <%s Reason: %s>' % (intro_page_url, e.reason))
-        except Exception, e:
-            raise CrawlerError('%s <%s>' % (e, intro_page_url))
+        html_element = fromstring(response_text.decode('utf-8', 'ignore'))
+        movie_title_elements = html_element.xpath('/html/body/div/div/div/div/div/div[@class="prof-title"]/h1')
+        if movie_title_elements:
+            return movie_title_elements[0].text.strip()
+        else:
+            raise MovieTitleNotFoundError()
 
 if __name__ == '__main__':
     ic = IQIYICrawler(1)
