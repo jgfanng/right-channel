@@ -16,6 +16,7 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
 
 1.1.2 movies.store
 {
+    "id": 123456,
     "year": "1994",
     "title": "The Shawshank Redemption",
     "alt_titles": [
@@ -61,16 +62,20 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
         "link": "http://www.imdb.com/title/tt0111161",
         "lase_updated": 2012
     },
-    "pptv": {
-        "link": "http://movie.pptv.com/123",
-        "definition": "高清",
-        "play_times": 10,
-        "lase_updated": 2012
-    }
+    "sources": [
+        {
+            "name": "PPTV",
+            "link": "http://movie.pptv.com/123",
+            "definition": "高清",
+            "play_times": 10,
+            "lase_updated": 2012
+        }
+    ]
 }
+db.movies.store.ensureIndex({"id": 1}, {unique: true})
 db.movies.store.ensureIndex({"year": -1})
 db.movies.store.ensureIndex({"title": 1})
 db.movies.store.ensureIndex({"alt_titles": 1})
-db.movies.store.ensureIndex({"year": -1, "title": 1}, {unique: true})
-db.movies.store.ensureIndex({"year": -1, "alt_titles": 1}, {unique: true})
+db.movies.store.ensureIndex({"year": -1, "title": 1})
+db.movies.store.ensureIndex({"year": -1, "alt_titles": 1})
 db.movies.store.ensureIndex({"types": 1})

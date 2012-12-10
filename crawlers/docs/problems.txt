@@ -1,0 +1,2 @@
+编码问题:urlopen/fromstring
+python包结构:package/module

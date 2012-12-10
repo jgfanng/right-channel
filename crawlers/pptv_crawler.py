@@ -6,6 +6,7 @@ Created on Nov 25, 2012
 @author: Fang Jiaguo
 '''
 
+from crawlers.exceptions import MovieTitleNotFoundError, MovieYearNotFoundError
 from lxml.html import fromstring
 from mongodb import movies_store_collection, movies_unmatched_collection
 from pymongo.errors import PyMongoError
@@ -34,14 +35,14 @@ class PPTVCrawler(object):
 
     def __start_crawl(self):
         '''
-        Step 1: Crawl 'movie list page' with URL pattern <http://list.pptv.com/sort_list/1---------%s.html>
+        Crawl 'movie list page' with URL pattern <http://list.pptv.com/sort_list/1---------%s.html>
         '''
 
-        page_index = 0
+        page_index = 1
         while True:
-            page_index += 1
             try:
                 movie_list_page_url = 'http://list.pptv.com/sort_list/1---------%s.html' % page_index
+                page_index += 1
                 response = request.get(movie_list_page_url, retry_interval=self.__sleep_time)
                 response_text = response.read()
                 PPTVCrawler.logger.debug('Crawled <%s>' % movie_list_page_url)
@@ -51,114 +52,128 @@ class PPTVCrawler(object):
                 html_element = fromstring(response_text)
                 movie_elements = html_element.xpath('/html/body/div/div/div/div[@class="bd"]/ul/li/p[@class="txt"]/a[@href]')
 
-                # If no links are found, finish crawling. At the meantime, write log in case xpath changes.
+                # If no links are found, finish crawling.
                 if not movie_elements:
-                    PPTVCrawler.logger.warning('Movies not found on movie list page <%s>' % movie_list_page_url)
+                    PPTVCrawler.logger.warning('Movies not found on movie list page <%s>. Please check whether the xpath has changed' % movie_list_page_url)
                     break
 
                 for movie_element in movie_elements:
-                    self.__crawl_playing_page(movie_element.attrib['href'])
+                    #----------get movie year on playing page----------------
+                    try:
+                        playing_page_url = movie_element.attrib['href']
+                        movie_year, details_page_url = self.__get_movie_year(playing_page_url)
+                    except MovieYearNotFoundError, e:
+                        PPTVCrawler.logger.warning('Movie year not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
+                        continue
+                    except HTTPError, e:
+                        PPTVCrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (playing_page_url, e.code, e.msg))
+                        continue
+                    except URLError, e:
+                        PPTVCrawler.logger.error('Failed to reach server <%s %s>' % (playing_page_url, e.reason))
+                        continue
+                    except Exception, e:
+                        PPTVCrawler.logger.error('%s <%s>' % (e, playing_page_url))
+                        continue
 
-            except HTTPError, e:
-                PPTVCrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (movie_list_page_url, e.code, e.msg))
-            except URLError, e:
-                PPTVCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (movie_list_page_url, e.reason))
-            except Exception, e:
-                PPTVCrawler.logger.error('Unknow exception: %s <%s>' % (e, movie_list_page_url))
-
-    def __crawl_playing_page(self, playing_page_url):
-        '''
-        Step 2: Enter 'playing page' with URL pattern <http://v.pptv.com/show/blabla> to extract 'year' field
-        '''
-
-        try:
-            if playing_page_url.startswith('http://v.pptv.com/show/'):
-                response = request.get(playing_page_url, retry_interval=self.__sleep_time)
-                response_text = response.read()
-                PPTVCrawler.logger.debug('Crawled <%s>' % playing_page_url)
-                if self.__sleep_time > 0:
-                    time.sleep(self.__sleep_time)
-
-                html_element = fromstring(response_text)
-                movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a[@href]')
-
-                if movie_title_elements:
-                    # Extract 'year' field.
-                    movie_year = movie_title_elements[0].tail
-                    if movie_year and movie_year.strip() and movie_year.startswith('(') and movie_year.endswith(')'):
-                        movie_year = movie_year[1:-1].strip()
-                        self.__crawl_details_page(movie_title_elements[0].attrib['href'], movie_year, playing_page_url)
-                    else:
-                        PPTVCrawler.logger.debug('Ill-formed movie year on playing page <%s>' % playing_page_url)
-                else:
-                    PPTVCrawler.logger.debug('No details page link on playing page <%s>' % playing_page_url)
-            else:
-                PPTVCrawler.logger.debug('Invalid playing page URL pattern <%s>' % playing_page_url)
-
-        except HTTPError, e:
-            PPTVCrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (playing_page_url, e.code, e.msg))
-        except URLError, e:
-            PPTVCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (playing_page_url, e.reason))
-        except Exception, e:
-            PPTVCrawler.logger.error('Unknow exception: %s <%s>' % (e, playing_page_url))
-
-    def __crawl_details_page(self, details_page_url, movie_year, playing_page_url):
-        '''
-        Step 3: Enter 'details page' with URL pattern <http://www.pptv.com/page/blabla> to extract 'title' and 'definition' fields
-        '''
-
-        try:
-            if details_page_url.startswith('http://www.pptv.com/page/'):
-                response = request.get(details_page_url, retry_interval=self.__sleep_time)
-                response_text = response.read()
-                PPTVCrawler.logger.debug('Crawled <%s>' % details_page_url)
-                if self.__sleep_time > 0:
-                    time.sleep(self.__sleep_time)
-
-                html_element = fromstring(response_text)
-                movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
-
-                if movie_title_elements:
-                    movie_title = movie_title_elements[0].text.strip()
-                    movie_definition = '一般'
-                    movie_definition_elements = html_element.xpath('/html/body/div/p[@class="tabs"]/em')
-                    for element in movie_definition_elements:
-                        if element.text.strip().startswith(u'清晰度：'):
-                            movie_definition = element.text.strip()[len(u'清晰度：'):]
-                            break
+                    #----------get movie title, definition on details page----------
+                    try:
+                        movie_title, movie_definition = self.__get_movie_title_definition(details_page_url)
+                    except MovieTitleNotFoundError, e:
+                        PPTVCrawler.logger.warning('Movie title not found on details page <%s>. Please check whether the xpath has changed' % details_page_url)
+                        continue
+                    except HTTPError, e:
+                        PPTVCrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (details_page_url, e.code, e.msg))
+                        continue
+                    except URLError, e:
+                        PPTVCrawler.logger.error('Failed to reach server <%s %s>' % (details_page_url, e.reason))
+                        continue
+                    except Exception, e:
+                        PPTVCrawler.logger.error('%s <%s>' % (e, details_page_url))
+                        continue
 
                     self.__total_movies_crawled += 1
                     PPTVCrawler.logger.info('Crawled movie #%s <%s %s %s>' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
 
-                    #--------------------Save to Mongodb-------------------------------------------
-                    # Match movie info with douban in collection 'movies.store'.
-                    result = movies_store_collection.find_and_modify(query={'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
-                                                                     update={'$set': {'pptv.link': playing_page_url, 'pptv.definition': movie_definition, 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
-                                                                     fields={'_id': 1})
+                    #--------------------Save to Mongodb---------------------
+                    try:
+                        result = movies_store_collection.find_and_modify(query={'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
+                                                                         update={'$set': {'pptv.link': playing_page_url, 'pptv.definition': movie_definition, 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
+                                                                         fields={'_id': 1})
+                    except PyMongoError, e:
+                        PPTVCrawler.logger.error('%s <%s %s>' % (e, movie_year, movie_title))
+                        continue
+
                     if result:
                         PPTVCrawler.logger.debug('Matched with douban')
                     else:
-                        # If we cannot find the matching, it means this movie has not yet been crawled
-                        # from douban, or douban does not contain related record of this movie. Then we
-                        # store it temporarily in collection 'movie.unmatched'.
-                        movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': 'pptv'},
-                                                           {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
-                                                           upsert=True)
+                        try:
+                            movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': 'pptv'},
+                                                               {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
+                                                               upsert=True)
+                        except PyMongoError, e:
+                            PPTVCrawler.logger.error('%s <%s %s>' % (e, movie_year, movie_title))
+                            continue
+    
                         PPTVCrawler.logger.debug('Not matched with douban')
-                    #------------------------------------------------------------------------------
-                else:
-                    PPTVCrawler.logger.debug('Movie title not found on details page <%s>' % details_page_url)
-            else:
-                PPTVCrawler.logger.debug('Invalid details page URL pattern <%s> on playing page <%s>' % (details_page_url, playing_page_url))
+                    #--------------------------------------------------------
 
-        except HTTPError, e:
-            PPTVCrawler.logger.error('Server cannot fulfill the request <%s HTTP Error %s: %s>' % (details_page_url, e.code, e.msg))
-        except URLError, e:
-            PPTVCrawler.logger.error('Failed to reach server <%s Reason: %s>' % (details_page_url, e.reason))
-        except PyMongoError, e:
-            PPTVCrawler.logger.error('%s <%s>' % (e, details_page_url))
-        except Exception, e:
-            PPTVCrawler.logger.error('%s <%s>' % (e, details_page_url))
+            except HTTPError, e:
+                PPTVCrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (movie_list_page_url, e.code, e.msg))
+            except URLError, e:
+                PPTVCrawler.logger.error('Failed to reach server <%s %s>' % (movie_list_page_url, e.reason))
+            except Exception, e:
+                PPTVCrawler.logger.error('%s <%s>' % (e, movie_list_page_url))
+
+    def __get_movie_year(self, playing_page_url):
+        '''
+        Get movie year on playing page.
+        '''
+
+        response = request.get(playing_page_url, retry_interval=self.__sleep_time)
+        response_text = response.read()
+        PPTVCrawler.logger.debug('Crawled <%s>' % playing_page_url)
+        if self.__sleep_time > 0:
+            time.sleep(self.__sleep_time)
+
+        html_element = fromstring(response_text)
+        movie_title_elements = html_element.xpath('/html/body/div/div/div[@class="sbox showinfo"]/div[@class="bd"]/ul/li[1]/h3/a[@href]')
+        if movie_title_elements:
+            movie_year = movie_title_elements[0].tail
+            if movie_year and movie_year.strip() and movie_year.startswith('(') and movie_year.endswith(')'):
+                return movie_year[1:-1].strip(), movie_title_elements[0].attrib['href']
+            else:
+                raise MovieYearNotFoundError()
+        else:
+            raise MovieYearNotFoundError()
+
+    def __get_movie_title_definition(self, details_page_url):
+        '''
+        Get movie title and definition on details page.
+        '''
+
+        #----------get movie title-------------------------------
+        response = request.get(details_page_url, retry_interval=self.__sleep_time)
+        response_text = response.read()
+        PPTVCrawler.logger.debug('Crawled <%s>' % details_page_url)
+        if self.__sleep_time > 0:
+            time.sleep(self.__sleep_time)
+
+        html_element = fromstring(response_text)
+        movie_title_elements = html_element.xpath('/html/body/div/span[@class="crumb_current"]')
+        if movie_title_elements:
+            movie_title = movie_title_elements[0].text.strip()
+        else:
+            raise MovieTitleNotFoundError()
+
+        #----------get movie definition--------------------------
+        movie_definition = '一般'
+        movie_definition_elements = html_element.xpath('/html/body/div/p[@class="tabs"]/em')
+        for element in movie_definition_elements:
+            if element.text.strip().startswith(u'清晰度：'):
+                movie_definition = element.text.strip()[len(u'清晰度：'):]
+                break
+
+        return movie_title, movie_definition
 
 if __name__ == '__main__':
     pc = PPTVCrawler(1)
