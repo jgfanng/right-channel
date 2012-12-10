@@ -64,7 +64,7 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
     },
     "sources": [
         {
-            "name": "PPTV",
+            "name": "pptv",
             "link": "http://movie.pptv.com/123",
             "definition": "高清",
             "play_times": 10,
