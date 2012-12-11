@@ -123,10 +123,10 @@ class IQIYICrawler(object):
                                                                {'$set': {'sources.$.definition': movie_definition, 'sources.$.link': playing_page_url, 'sources.$.last_updated': datetime.datetime.utcnow()}})
                             else:
                                 movies_store_collection.update({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
-                                                               {'$push': {'name': source_name, 'definition': movie_definition, 'link': playing_page_url, 'play_times': 0, 'last_updated': datetime.datetime.utcnow()}})
+                                                               {'$push': {'sources': {'name': source_name, 'definition': movie_definition, 'link': playing_page_url, 'play_times': 0, 'last_updated': datetime.datetime.utcnow()}}})
                             IQIYICrawler.logger.debug('Matched with douban')
                         else:
-                            movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': 'iqiyi'},
+                            movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': source_name},
                                                                {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
                                                                upsert=True)
                             IQIYICrawler.logger.debug('Not matched with douban')

@@ -110,7 +110,7 @@ class DoubanCrawler():
                                 #--------------------------------------------------------
 
                                 self.__total_movies_crawled += 1
-                                DoubanCrawler.logger.info('Crawled movie #%s <%s %s>' % (self.__total_movies_crawled, movie_info['year'] if 'year' in movie_info else None, movie_info['title'] if 'title' in movie_info else None))
+                                DoubanCrawler.logger.info('Crawled movie #%s <%s %s> C(%s) U(%s)' % (self.__total_movies_crawled, movie_info['year'] if 'year' in movie_info else None, movie_info['title'] if 'title' in movie_info else None, len(self.__crawled_urls), len(self.__uncrawled_urls)))
 
             except HTTPError, e:
                 DoubanCrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (url_to_crawl, e.code, e.msg))
@@ -178,14 +178,16 @@ class DoubanCrawler():
         return False
 
 if __name__ == '__main__':
-    dc = DoubanCrawler(start_urls=['http://movie.douban.com/tag/',  # 豆瓣电影标签
+    dc = DoubanCrawler(start_urls=[
+                                   'http://movie.douban.com/tag/',  # 豆瓣电影标签
                                    'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
                                    'http://movie.douban.com/chart',  # 排行榜
                                    'http://movie.douban.com/nowplaying/',  # 正在上映
                                    'http://movie.douban.com/coming'  # 即将上映
                                    ],
-                       allowed_url_res=['^http://movie\.douban\.com/tag/',  # 豆瓣电影标签
-                                        '^http://movie\.douban\.com/subject/[0-9]+/{0,1}$'  # 电影主页
+                       allowed_url_res=[
+                                        '^http://movie\.douban\.com/tag/[%a-zA-Z0-9\+\-\.\~\_]+(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
+                                        '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
                                         ],
                        additional_qs={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
                        sleep_time=1.3)

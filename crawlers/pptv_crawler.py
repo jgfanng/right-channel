@@ -96,25 +96,28 @@ class PPTVCrawler(object):
 
                     #--------------------Save to Mongodb---------------------
                     try:
-                        result = movies_store_collection.find_and_modify(query={'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
-                                                                         update={'$set': {'pptv.link': playing_page_url, 'pptv.definition': movie_definition, 'pptv.last_updated': datetime.datetime.utcnow()}, '$inc': {'pptv.play_times': 0}},
-                                                                         fields={'_id': 1})
+                        source_name = 'pptv'
+                        result = movies_store_collection.find_one({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
+                                                                  fields={'_id': 1})
+                        if result:
+                            result = movies_store_collection.find_one({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}], 'sources.name': source_name},
+                                                                      fields={'_id': 1})
+                            if result:
+                                movies_store_collection.update({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}], 'sources.name': source_name},
+                                                               {'$set': {'sources.$.definition': movie_definition, 'sources.$.link': playing_page_url, 'sources.$.last_updated': datetime.datetime.utcnow()}})
+                            else:
+                                movies_store_collection.update({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
+                                                               {'$push': {'sources': {'name': source_name, 'definition': movie_definition, 'link': playing_page_url, 'play_times': 0, 'last_updated': datetime.datetime.utcnow()}}})
+                            PPTVCrawler.logger.debug('Matched with douban')
+                        else:
+                            movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': source_name},
+                                                               {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
+                                                               upsert=True)
+                            PPTVCrawler.logger.debug('Not matched with douban')
+
                     except PyMongoError, e:
                         PPTVCrawler.logger.error('%s <%s %s>' % (e, movie_year, movie_title))
                         continue
-
-                    if result:
-                        PPTVCrawler.logger.debug('Matched with douban')
-                    else:
-                        try:
-                            movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': 'pptv'},
-                                                               {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
-                                                               upsert=True)
-                        except PyMongoError, e:
-                            PPTVCrawler.logger.error('%s <%s %s>' % (e, movie_year, movie_title))
-                            continue
-    
-                        PPTVCrawler.logger.debug('Not matched with douban')
                     #--------------------------------------------------------
 
             except HTTPError, e:
