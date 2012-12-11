@@ -5,16 +5,17 @@ Created on Nov 25, 2012
 
 @author: Fang Jiaguo
 '''
-
-from crawlers.exceptions import MovieTitleNotFoundError, MovieYearNotFoundError
+from crawlers.exceptions import MovieYearNotFoundError, MovieTitleNotFoundError
+from crawlers.mongodb import movies_store_collection, \
+    movies_unmatched_collection
+from crawlers.utils import request
+from crawlers.utils.log import get_logger
 from lxml.html import fromstring
-from mongodb import movies_store_collection, movies_unmatched_collection
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
-from utils import request
-from utils.log import get_logger
 import datetime
 import time
+
 
 class PPTVCrawler(object):
     '''

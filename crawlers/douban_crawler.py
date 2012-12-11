@@ -5,14 +5,14 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
+from crawlers.mongodb import movies_store_collection
+from crawlers.utils import request
+from crawlers.utils.log import get_logger
 from lxml.html import fromstring
-from mongodb import movies_store_collection
 from pymongo.errors import PyMongoError
 from sets import Set
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from utils import request
-from utils.log import get_logger
 import datetime
 import json
 import md5
@@ -186,7 +186,7 @@ if __name__ == '__main__':
                                    'http://movie.douban.com/coming'  # 即将上映
                                    ],
                        allowed_url_res=[
-                                        '^http://movie\.douban\.com/tag/[%a-zA-Z0-9\+\-\.\~\_]+(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
+                                        '^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
                                         '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
                                         ],
                        additional_qs={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
