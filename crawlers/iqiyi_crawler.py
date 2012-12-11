@@ -5,11 +5,11 @@ Created on Dec 7, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.exceptions import MovieYearNotFoundError, MovieTitleNotFoundError
-from crawlers.mongodb import movies_store_collection, movies_unmatched_collection
 from crawlers.utils import request
 from crawlers.utils.log import get_logger
+from exceptions import MovieYearNotFoundError, MovieTitleNotFoundError
 from lxml.html import fromstring
+from mongodb import movies_store_collection, movies_unmatched_collection
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
 import datetime

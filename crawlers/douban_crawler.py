@@ -5,14 +5,14 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.mongodb import movies_store_collection
-from crawlers.utils import request
-from crawlers.utils.log import get_logger
 from lxml.html import fromstring
+from mongodb import movies_store_collection
 from pymongo.errors import PyMongoError
 from sets import Set
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
+from utils import request
+from utils.log import get_logger
 import datetime
 import json
 import md5
