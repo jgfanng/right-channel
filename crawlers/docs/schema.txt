@@ -34,6 +34,7 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
         "蒂姆·罗宾斯 Tim Robbins",
         "摩根·弗里曼 Morgan Freeman"
     ],
+    "episodes": 1,
     "types": [
         "犯罪",
         "剧情"

@@ -1,2 +1,4 @@
 编码问题:urlopen/fromstring
 python包结构:package/module
+正则表达式
+unicode vs utf-8 vs ASCII

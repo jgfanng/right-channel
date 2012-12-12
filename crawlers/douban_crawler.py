@@ -5,14 +5,14 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
+from crawlers.mongodb import movies_store_collection
+from crawlers.utils import request
+from crawlers.utils.log import get_logger
 from lxml.html import fromstring
-from mongodb import movies_store_collection
 from pymongo.errors import PyMongoError
 from sets import Set
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from utils import request
-from utils.log import get_logger
 import datetime
 import json
 import md5
@@ -20,9 +20,9 @@ import re
 import time
 
 # douban api key
-apikey = '05bc4743e8f8808a1134d5cbbae9819e'
+APIKEY = '05bc4743e8f8808a1134d5cbbae9819e'
 # douban movie link regular expression
-movie_link_re = re.compile('^http://movie\.douban\.com/subject/[0-9]+/{0,1}$')
+MOVIE_LINK_RE = re.compile('^http://movie\.douban\.com/subject/[0-9]+/{0,1}$')
 
 class DoubanCrawler():
     '''
@@ -85,7 +85,7 @@ class DoubanCrawler():
                             self.__crawled_urls.add(url_md5)
                             self.__uncrawled_urls.append(url_in_page)
                             # Validate movie link using predefined regex.
-                            if movie_link_re.match(url_in_page):
+                            if MOVIE_LINK_RE.match(url_in_page):
                                 movie_id = url_in_page[len('http://movie.douban.com/subject/'):-1] if url_in_page.endswith('/') else url_in_page[len('http://movie.douban.com/subject/'):]
 
                                 #----------get movie info through douban api-------------
@@ -125,7 +125,7 @@ class DoubanCrawler():
         '''
 
         api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
-        response = request.get(api_url, additional_qs={'apikey': apikey}, retry_interval=self.__sleep_time)
+        response = request.get(api_url, additional_qs={'APIKEY': APIKEY}, retry_interval=self.__sleep_time)
         response_text = response.read()
         if self.__sleep_time > 0:
             time.sleep(self.__sleep_time)
@@ -144,6 +144,8 @@ class DoubanCrawler():
             new_movie_obj['writers'] = movie_obj['attrs']['writer']
         if 'attrs' in movie_obj and 'cast' in movie_obj['attrs']:
             new_movie_obj['casts'] = movie_obj['attrs']['cast']
+        if 'attrs' in movie_obj and 'episodes' in movie_obj['attrs']:
+            new_movie_obj['episodes'] = int(movie_obj['attrs']['episodes'])
         if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs']:
             new_movie_obj['types'] = movie_obj['attrs']['movie_type']
         if 'attrs' in movie_obj and 'country' in movie_obj['attrs']:
@@ -189,6 +191,6 @@ if __name__ == '__main__':
                                         '^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
                                         '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
                                         ],
-                       additional_qs={'apikey': '05bc4743e8f8808a1134d5cbbae9819e'},
+                       additional_qs={'APIKEY': '05bc4743e8f8808a1134d5cbbae9819e'},
                        sleep_time=1.3)
     dc.start_crawl()

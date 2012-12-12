@@ -5,16 +5,16 @@ Created on Nov 25, 2012
 
 @author: Fang Jiaguo
 '''
+from crawlers.exceptions import MovieYearNotFoundError, MovieTitleNotFoundError
+from crawlers.mongodb import movies_store_collection, \
+    movies_unmatched_collection
 from crawlers.utils import request
 from crawlers.utils.log import get_logger
-from exceptions import MovieYearNotFoundError, MovieTitleNotFoundError
 from lxml.html import fromstring
-from mongodb import movies_store_collection, movies_unmatched_collection
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
 import datetime
 import time
-
 
 class PPTVCrawler(object):
     '''
@@ -91,9 +91,6 @@ class PPTVCrawler(object):
                         PPTVCrawler.logger.error('%s <%s>' % (e, details_page_url))
                         continue
 
-                    self.__total_movies_crawled += 1
-                    PPTVCrawler.logger.info('Crawled movie #%s <%s %s %s>' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
-
                     #--------------------Save to Mongodb---------------------
                     try:
                         source_name = 'pptv'
@@ -108,12 +105,14 @@ class PPTVCrawler(object):
                             else:
                                 movies_store_collection.update({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
                                                                {'$push': {'sources': {'name': source_name, 'definition': movie_definition, 'link': playing_page_url, 'play_times': 0, 'last_updated': datetime.datetime.utcnow()}}})
-                            PPTVCrawler.logger.debug('Matched with douban')
+                            self.__total_movies_crawled += 1
+                            PPTVCrawler.logger.info('Crawled movie #%s <%s %s %s> Matched' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
                         else:
                             movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': source_name},
                                                                {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
                                                                upsert=True)
-                            PPTVCrawler.logger.debug('Not matched with douban')
+                            self.__total_movies_crawled += 1
+                            PPTVCrawler.logger.info('Crawled movie #%s <%s %s %s> Unmatched' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
 
                     except PyMongoError, e:
                         PPTVCrawler.logger.error('%s <%s %s>' % (e, movie_year, movie_title))

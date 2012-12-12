@@ -1,0 +1,42 @@
+1. douban api只有英文名字, 主页上有中文名
+冈格尔的复仇(iqiyi)
+功夫熊猫2(iqiyi)
+
+2. 中英文标点不一致
+暮光之城4：破晓（上）(iqiyi) 暮光之城4：破晓(上)(douban)
+蝙蝠侠:红影迷踪(iqiyi) 蝙蝠侠：红影迷踪(douban) 这部电影iqiyi上另外一个标题是正确的
+
+3. 电影标题差了几个字
+摩尔庄园2之海妖宝藏(iqiyi) 摩尔庄园2海妖宝藏(douban) 这部电影iqiyi上另外一个标题是正确的
+动物总动员3D(iqiyi) 动物总动员(douban)
+梦游3D(iqiyi) 梦游(douban)
+“野兽家园”作者莫里斯·桑达克(iqiyi) 野兽家园(douban) 这部电影iqiyi上另外一个标题是正确的
+变形金刚3：月黑之时(iqiyi) 变形金刚3(douban) 这部电影douban上另外一个标题是正确的
+死亡密码 π(iqiyi) 死亡密码(douban) 这部电影iqiyi上另外一个标题是正确的
+
+4. 带英文标题大小写不一致
+Hold住爱(iqiyi) HOLD住爱(douban)
+
+5. 有续集的电影标题带续集号
+宿醉1(iqiyi) 宿醉(douban) 这部电影iqiyi上另外一个标题是正确的
+
+6. 年份不一致
+疯狂漂移假爸爸 2010(iqiyi) 疯狂漂移假爸爸 2012(douban)
+人狼大战 2012(iqiyi) 人狼大战 2011(douban)
+
+7. 其它
+赛德克巴莱(上)(iqiyi) 赛德克·巴莱(上)太阳旗(douban)
+五月天追梦3DNA(iqiyi) 追夢3DNA(douban)
+
+8. douban未收录此电影
+马来编年史：血战王朝(iqiyi)
+马尔梅第战役(iqiyi)
+幽宅1(iqiyi)
+幽宅2(iqiyi)
+死亡公路666(iqiyi)
+
+处理办法
+1. 如果标题含有字母, 将字母转为小写, 存到_alt_titles (适用于douban及其它)
+2. 如果标题含有标点, 将标点转为空格, 再处理空格, 使得不能有两个连续的空格, 存到_alt_titles (适用于douban及其它)
+3. 如果标题末尾含有"3D", 将其去掉, 存到_alt_titles (适用于douban及其它)
+4. 播放和详情页面的标题都要保留 (适用于iqiyi)
