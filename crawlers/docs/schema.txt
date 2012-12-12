@@ -23,6 +23,9 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
         "肖申克的救赎",
         "刺激1995(台)"
     ],
+    "simp_titles": [
+        "刺激1995 台"
+    ],
     "directors": [
         "弗兰克·德拉邦特 Frank Darabont"
     ],
@@ -77,6 +80,8 @@ db.movies.store.ensureIndex({"id": 1}, {unique: true})
 db.movies.store.ensureIndex({"year": -1})
 db.movies.store.ensureIndex({"title": 1})
 db.movies.store.ensureIndex({"alt_titles": 1})
+db.movies.store.ensureIndex({"simp_titles": 1})
 db.movies.store.ensureIndex({"year": -1, "title": 1})
 db.movies.store.ensureIndex({"year": -1, "alt_titles": 1})
+db.movies.store.ensureIndex({"year": -1, "simp_titles": 1})
 db.movies.store.ensureIndex({"types": 1})

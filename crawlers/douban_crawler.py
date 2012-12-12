@@ -5,9 +5,10 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.mongodb import movies_store_collection
 from crawlers.utils import request
 from crawlers.utils.log import get_logger
+from crawlers.utils.mongodb import movies_store_collection
+from crawlers.utils.title_simplifier import simplify
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from sets import Set
@@ -35,7 +36,7 @@ class DoubanCrawler():
         # A list of URLs where the crawler will begin to crawl from.
         self.__start_urls = start_urls
         # An optional list of strings containing URL regex that this crawler is allowed to crawl.
-        self.__allowed_url_res = [re.compile(x) for x in allowed_url_res]
+        self.__allowed_url_res = [re.compile(item) for item in allowed_url_res]
         # Query string parameters when sending a request.
         self.__additional_qs = additional_qs
         # Sleep some time after crawl a page for throttle.
@@ -103,7 +104,11 @@ class DoubanCrawler():
 
                                 #----------Save to Mongodb-------------------------------
                                 try:
-                                    movies_store_collection.update({'id': movie_id}, {'$set': movie_info}, upsert=True)
+                                    if 'simp_titles' in movie_info:
+                                        simp_titles = movie_info.pop('simp_titles')
+                                        movies_store_collection.update({'id': movie_id}, {'$set': movie_info, '$addToSet': {'simp_titles': {'$each': simp_titles}}}, upsert=True)
+                                    else:
+                                        movies_store_collection.update({'id': movie_id}, {'$set': movie_info}, upsert=True)
                                 except PyMongoError, e:
                                     DoubanCrawler.logger.error('%s <%s %s>' % (e, movie_info['year'] if 'year' in movie_info else None, movie_info['title'] if 'title' in movie_info else None))
                                     continue
@@ -132,38 +137,52 @@ class DoubanCrawler():
 
         movie_obj = json.loads(response_text)
         new_movie_obj = {'id': movie_id}
-        if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year']:
+        if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] and movie_obj['attrs']['year'][0]:
             new_movie_obj['year'] = movie_obj['attrs']['year'][0].strip()
-        if 'title' in movie_obj:
+        if 'title' in movie_obj and movie_obj['title']:
             new_movie_obj['title'] = movie_obj['title'].strip()
-        if 'alt_title' in movie_obj:
-            new_movie_obj['alt_titles'] = [x.strip() for x in movie_obj['alt_title'].split('/')]
-        if 'attrs' in movie_obj and 'director' in movie_obj['attrs']:
+            # get simplified title
+            simp_title = simplify(new_movie_obj['title'])
+            if simp_title != new_movie_obj['title']:
+                new_movie_obj['simp_titles'] = [simp_title]
+        if 'alt_title' in movie_obj and movie_obj['alt_title']:
+            alt_titles = [item.strip() for item in movie_obj['alt_title'].split(' / ')]
+            if alt_titles:
+                new_movie_obj['alt_titles'] = alt_titles
+                for item in new_movie_obj['alt_titles']:
+                    # get simplified title
+                    simp_title = simplify(item)
+                    if simp_title not in new_movie_obj['alt_titles']:
+                        if 'simp_titles' not in new_movie_obj:
+                            new_movie_obj['simp_titles'] = []
+                        if simp_title not in new_movie_obj['simp_titles']:
+                            new_movie_obj['simp_titles'].append(simp_title)
+        if 'attrs' in movie_obj and 'director' in movie_obj['attrs'] and movie_obj['attrs']['director']:
             new_movie_obj['directors'] = movie_obj['attrs']['director']
-        if 'attrs' in movie_obj and 'writer' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'writer' in movie_obj['attrs'] and movie_obj['attrs']['writer']:
             new_movie_obj['writers'] = movie_obj['attrs']['writer']
-        if 'attrs' in movie_obj and 'cast' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'cast' in movie_obj['attrs'] and movie_obj['attrs']['cast']:
             new_movie_obj['casts'] = movie_obj['attrs']['cast']
-        if 'attrs' in movie_obj and 'episodes' in movie_obj['attrs']:
-            new_movie_obj['episodes'] = int(movie_obj['attrs']['episodes'])
-        if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'episodes' in movie_obj['attrs'] and movie_obj['attrs']['episodes'] and movie_obj['attrs']['episodes'][0]:
+            new_movie_obj['episodes'] = int(movie_obj['attrs']['episodes'][0])
+        if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs'] and movie_obj['attrs']['movie_type']:
             new_movie_obj['types'] = movie_obj['attrs']['movie_type']
-        if 'attrs' in movie_obj and 'country' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'country' in movie_obj['attrs'] and movie_obj['attrs']['country']:
             new_movie_obj['countries'] = movie_obj['attrs']['country']
-        if 'attrs' in movie_obj and 'language' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'language' in movie_obj['attrs'] and movie_obj['attrs']['language']:
             new_movie_obj['languages'] = movie_obj['attrs']['language']
-        if 'attrs' in movie_obj and 'pubdate' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'pubdate' in movie_obj['attrs'] and movie_obj['attrs']['pubdate']:
             new_movie_obj['pubdates'] = movie_obj['attrs']['pubdate']
-        if 'attrs' in movie_obj and 'movie_duration' in movie_obj['attrs']:
+        if 'attrs' in movie_obj and 'movie_duration' in movie_obj['attrs'] and movie_obj['attrs']['movie_duration']:
             new_movie_obj['durations'] = movie_obj['attrs']['movie_duration']
-        if 'image' in movie_obj:
+        if 'image' in movie_obj and movie_obj['image']:
             new_movie_obj['image'] = movie_obj['image']
-        if 'summary' in movie_obj:
+        if 'summary' in movie_obj and movie_obj['summary']:
             new_movie_obj['summary'] = movie_obj['summary']
         new_movie_obj['douban'] = {'last_updated': datetime.datetime.utcnow()}
-        if 'rating' in movie_obj and 'average' in movie_obj['rating']:
+        if 'rating' in movie_obj and 'average' in movie_obj['rating'] and movie_obj['rating']['average']:
             new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
-        if 'alt' in movie_obj:
+        if 'alt' in movie_obj and movie_obj['alt']:
             new_movie_obj['douban']['link'] = movie_obj['alt']
 
         return new_movie_obj
