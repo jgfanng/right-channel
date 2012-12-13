@@ -23,8 +23,8 @@ def simplify(title):
             new_title += ' '
         else:
             new_title += char
-    new_title = ' '.join(x for x in new_title.split(' ') if x)
-    # 3. remove auxiliary keywords in the tail if have
+    new_title = ' '.join(char for char in new_title.split(' ') if char)
+    # 3. remove auxiliary words in the tail if have
     while True:
         end_by_word = False
         for word in AUXILIARY_WORDS:

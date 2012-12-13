@@ -5,7 +5,7 @@ Created on Dec 13, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.douban_crawler import DoubanCrawler
+from crawlers.douban_crawler import DoubanCrawler, APIKEY
 
 dc = DoubanCrawler(start_urls=[
                                'http://movie.douban.com/tag/',  # 豆瓣电影标签
@@ -18,6 +18,6 @@ dc = DoubanCrawler(start_urls=[
                                     '^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
                                     '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
                                     ],
-                   additional_qs={'APIKEY': '05bc4743e8f8808a1134d5cbbae9819e'},
+                   additional_qs={'apikey': APIKEY},
                    sleep_time=1.3)
 dc.start_crawl()

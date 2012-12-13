@@ -66,7 +66,7 @@ class DoubanCrawler():
             try:
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
-                response = request.get(url_to_crawl, additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
+                response = request.get(url_to_crawl.encode('utf-8'), additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
                 response_text = response.read()
                 DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
                 if self.__sleep_time > 0:
@@ -130,7 +130,7 @@ class DoubanCrawler():
         '''
 
         api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
-        response = request.get(api_url, additional_qs={'APIKEY': APIKEY}, retry_interval=self.__sleep_time)
+        response = request.get(api_url.encode('utf-8'), additional_qs={'apikey': APIKEY}, retry_interval=self.__sleep_time)
         response_text = response.read()
         if self.__sleep_time > 0:
             time.sleep(self.__sleep_time)
@@ -197,19 +197,3 @@ class DoubanCrawler():
                 return True
 
         return False
-
-if __name__ == '__main__':
-    dc = DoubanCrawler(start_urls=[
-                                   'http://movie.douban.com/tag/',  # 豆瓣电影标签
-                                   'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
-                                   'http://movie.douban.com/chart',  # 排行榜
-                                   'http://movie.douban.com/nowplaying/',  # 正在上映
-                                   'http://movie.douban.com/coming'  # 即将上映
-                                   ],
-                       allowed_url_res=[
-                                        '^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
-                                        '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
-                                        ],
-                       additional_qs={'APIKEY': '05bc4743e8f8808a1134d5cbbae9819e'},
-                       sleep_time=1.3)
-    dc.start_crawl()
