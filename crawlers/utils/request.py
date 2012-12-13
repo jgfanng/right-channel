@@ -8,7 +8,11 @@ from urlparse import urlparse, parse_qs, urlunparse
 import time
 import urllib2
 
-def get(url, additional_qs=None, retry_interval=5, retry_count=3):
+RETRY_INTERVAL = 5
+RETRY_COUNT = 3
+TIMEOUT = 30
+
+def get(url, additional_qs=None, retry_interval=RETRY_INTERVAL, retry_count=RETRY_COUNT):
     '''Send a get request'''
 
     if additional_qs:
@@ -23,7 +27,7 @@ def get(url, additional_qs=None, retry_interval=5, retry_count=3):
 
     while True:
         try:
-            return urllib2.urlopen(url, timeout=30)
+            return urllib2.urlopen(url, timeout=TIMEOUT)
         except:
             retry_count -= 1
             if retry_count < 0:

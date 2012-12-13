@@ -6,6 +6,7 @@ Created on Nov 26, 2012
 @author: Fang Jiaguo
 '''
 from crawlers.utils import request
+from crawlers.utils.limited_caller import LimitedCaller
 from crawlers.utils.log import get_logger
 from crawlers.utils.mongodb import movies_store_collection
 from crawlers.utils.title_simplifier import simplify
@@ -18,7 +19,6 @@ import datetime
 import json
 import md5
 import re
-import time
 
 # douban api key
 APIKEY = '05bc4743e8f8808a1134d5cbbae9819e'
@@ -32,21 +32,21 @@ class DoubanCrawler():
 
     logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 
-    def __init__(self, start_urls, allowed_url_res=None, additional_qs=None, sleep_time=5):
+    def __init__(self, start_urls, allowed_url_res=None, additional_qs=None):
         # A list of URLs where the crawler will begin to crawl from.
         self.__start_urls = start_urls
         # An optional list of strings containing URL regex that this crawler is allowed to crawl.
         self.__allowed_url_res = [re.compile(item) for item in allowed_url_res]
         # Query string parameters when sending a request.
         self.__additional_qs = additional_qs
-        # Sleep some time after crawl a page for throttle.
-        self.__sleep_time = sleep_time
         # A list of URLs the crawler will crawl.
         self.__uncrawled_urls = []
         # Distinct URLs (md5) the crawler has crawled.
         self.__crawled_urls = Set()
         # Total movies crawled.
         self.__total_movies_crawled = 0
+        # Throttle douban api call under 40 in 60s.
+        self.__douban_call = LimitedCaller(request.get, 60, 40)
 
     def start_crawl(self):
         DoubanCrawler.logger.info('==========Start to crawl douban movies==========')
@@ -66,11 +66,9 @@ class DoubanCrawler():
             try:
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
-                response = request.get(url_to_crawl.encode('utf-8'), additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
+                response = self.__douban_call(url_to_crawl.encode('utf-8'), additional_qs=self.__additional_qs)
                 response_text = response.read()
                 DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
-                if self.__sleep_time > 0:
-                    time.sleep(self.__sleep_time)
 
                 html_element = fromstring(response_text)
                 html_element.make_links_absolute(url_to_crawl)
@@ -130,10 +128,8 @@ class DoubanCrawler():
         '''
 
         api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
-        response = request.get(api_url.encode('utf-8'), additional_qs={'apikey': APIKEY}, retry_interval=self.__sleep_time)
+        response = self.__douban_call(api_url.encode('utf-8'), additional_qs={'apikey': APIKEY})
         response_text = response.read()
-        if self.__sleep_time > 0:
-            time.sleep(self.__sleep_time)
 
         movie_obj = json.loads(response_text)
         new_movie_obj = {'id': movie_id}

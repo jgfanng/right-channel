@@ -12,9 +12,9 @@ class LimitedCaller(object):
     '''
 
     def __init__(self, call, period, maxcall):
-        self.__call = call
-        self.__period = period
-        self.__maxcall = maxcall
+        self.__call = call  # the function to call
+        self.__period = period  # in seconds
+        self.__maxcall = maxcall  # max calls be made in the given period
         self.__times = []
 
     def __call__(self, *args, **kwargs):
@@ -24,4 +24,4 @@ class LimitedCaller(object):
             t = times[0] + self.__period - now
             time.sleep(t)
         self.__times = times + [time.time()]
-        self.__call(*args, **kwargs)
+        return self.__call(*args, **kwargs)
