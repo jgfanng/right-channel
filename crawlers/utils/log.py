@@ -14,7 +14,7 @@ def get_logger(name, log_file):
     # Set to DEBUG when the application is under debugging, otherwise INFO.
     logger.setLevel(logging.DEBUG)
     # Create file handler with INFO log level accepting higher severity level than INFO.
-    file_handler = logging.handlers.RotatingFileHandler(os.path.join(os.path.join(PROJECT_ROOT, 'logs'), log_file), maxBytes=1024 * 1024 * 20)
+    file_handler = logging.handlers.RotatingFileHandler(os.path.join(os.path.join(PROJECT_ROOT, 'logs'), log_file), maxBytes=1024 * 1024 * 20, backupCount=3)
     file_handler.setLevel(logging.INFO)
     # Create console handler with a higher DEBUG level accepting higher severity level than DEBUG.
     console_handler = logging.StreamHandler()
