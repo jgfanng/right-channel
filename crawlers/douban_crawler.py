@@ -23,7 +23,7 @@ import re
 # douban api key
 APIKEY = '05bc4743e8f8808a1134d5cbbae9819e'
 # douban movie link regular expression
-MOVIE_LINK_RE = re.compile('^http://movie\.douban\.com/subject/[0-9]+/{0,1}$')
+MOVIE_LINK_RE = re.compile('^http://movie\.douban\.com/subject/[0-9]+/?$')
 
 class DoubanCrawler():
     '''
@@ -128,7 +128,7 @@ class DoubanCrawler():
         '''
 
         api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
-        response = self.__douban_call(api_url.encode('utf-8'), additional_qs={'apikey': APIKEY})
+        response = self.__douban_call(api_url.encode('utf-8'), additional_qs=self.__additional_qs)
         response_text = response.read()
 
         movie_obj = json.loads(response_text)
