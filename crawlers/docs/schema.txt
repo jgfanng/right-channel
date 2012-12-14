@@ -18,9 +18,9 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
 {
     "id": 123456,
     "year": "1994",
-    "title": "The Shawshank Redemption",
-    "alt_titles": [
+    "titles": [
         "肖申克的救赎",
+        "The Shawshank Redemption",
         "刺激1995(台)"
     ],
     "simp_titles": [
@@ -37,7 +37,7 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
         "蒂姆·罗宾斯 Tim Robbins",
         "摩根·弗里曼 Morgan Freeman"
     ],
-    "episodes": 1,
+    "episodes": "1",
     "types": [
         "犯罪",
         "剧情"
@@ -58,12 +58,12 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
     "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
     "douban": {
         "score": 9.5,
-        "link": "http://movie.douban.com/movie/1292052",
+        "link": "http://movie.douban.com/subject/1292052",
         "lase_updated": 2012
     },
     "imdb": {
         "score": 7,
-        "link": "http://www.imdb.com/title/tt0111161",
+        "number": "tt0111161",
         "lase_updated": 2012
     },
     "sources": [
@@ -78,10 +78,8 @@ db.movies.unmatched.ensureIndex({"year": -1, "title": 1, "source": 1}, {unique: 
 }
 db.movies.store.ensureIndex({"id": 1}, {unique: true})
 db.movies.store.ensureIndex({"year": -1})
-db.movies.store.ensureIndex({"title": 1})
-db.movies.store.ensureIndex({"alt_titles": 1})
+db.movies.store.ensureIndex({"titles": 1})
 db.movies.store.ensureIndex({"simp_titles": 1})
-db.movies.store.ensureIndex({"year": -1, "title": 1})
-db.movies.store.ensureIndex({"year": -1, "alt_titles": 1})
+db.movies.store.ensureIndex({"year": -1, "titles": 1})
 db.movies.store.ensureIndex({"year": -1, "simp_titles": 1})
 db.movies.store.ensureIndex({"types": 1})

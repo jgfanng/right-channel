@@ -18,5 +18,6 @@ dc = DoubanCrawler(start_urls=[
                                     '^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
                                     '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
                                     ],
-                   additional_qs={'apikey': APIKEY})
+                   additional_qs={'apikey': APIKEY},
+                   sleep_time=0.5)
 dc.start_crawl()
