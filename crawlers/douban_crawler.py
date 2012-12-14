@@ -70,7 +70,7 @@ class DoubanCrawler():
             try:
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
-                response = request.get(url_to_crawl, additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
+                response = request.get(url_to_crawl.encode('utf-8'), additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
                 response_text = response.read()
                 DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
                 if self.__sleep_time > 0:
