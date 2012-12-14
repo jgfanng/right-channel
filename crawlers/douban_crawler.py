@@ -204,8 +204,8 @@ class DoubanCrawler():
                 for alt_title in detailed_info['alt_titles']:
                     if alt_title not in movie_info['titles']:
                         movie_info['titles'].append(alt_title)
-            if 'imdb_num' in detailed_info:
-                movie_info['imdb'] = {'number': detailed_info['imdb_num'], 'last_updated': datetime.datetime.utcnow()}
+            if 'imdb_name' in detailed_info:
+                movie_info['imdb'] = {'name': detailed_info['imdb_name'], 'last_updated': datetime.datetime.utcnow()}
 
         # simplify titles
         for title in movie_info['titles']:
@@ -298,7 +298,7 @@ class DoubanCrawler():
                     if alt_titles:
                         detailed_info['alt_titles'] = alt_titles
                 elif desc_pos[i][0] == u'IMDb链接:':
-                    detailed_info['imdb_num'] = value
+                    detailed_info['imdb_name'] = value
 
         return detailed_info
 
