@@ -23,7 +23,7 @@ import re
 # douban api key
 APIKEY = '05bc4743e8f8808a1134d5cbbae9819e'
 # douban movie link regular expression
-MOVIE_LINK_RE = re.compile('^http://movie\.douban\.com/subject/[0-9]+/?$')
+MOVIE_URL_RE = re.compile('^http://movie\.douban\.com/subject/[0-9]+/?$')
 
 class DoubanCrawler2():
     '''
@@ -32,16 +32,16 @@ class DoubanCrawler2():
 
     logger = get_logger('DoubanCrawler2', 'douban_crawler2.log')
 
-    def __init__(self, start_urls, allowed_url_res=None, additional_qs=None):
+    def __init__(self, start_urls, allowed_url_res=None, query_strings=None):
         # A list of URLs where the crawler will begin to crawl from.
-        self.__start_urls = start_urls
+        self.start_urls = start_urls
         # An optional list of strings containing URL regex that this crawler is allowed to crawl.
-        self.__allowed_url_res = [re.compile(item) for item in allowed_url_res]
+        self.allowed_url_res = [re.compile(item) for item in allowed_url_res]
         # Query string parameters when sending a request.
-        self.__additional_qs = additional_qs
-        # A list of URLs the crawler will crawl.
+        self.__query_strings = query_strings
+        # A list of URLs to crawl.
         self.__uncrawled_urls = []
-        # Distinct URLs (md5) the crawler has crawled.
+        # Md5 of URLs crawled.
         self.__crawled_urls = Set()
         # Total movies crawled.
         self.__total_movies_crawled = 0
@@ -56,17 +56,17 @@ class DoubanCrawler2():
 
     def __start_crawl(self):
         # Push start URLs as seeds.
-        for start_url in self.__start_urls:
-            url_md5 = md5.new(start_url.encode('utf-8')).digest()
+        for url in self.start_urls:
+            url_md5 = md5.new(url.encode('utf-8')).digest()
             if url_md5 not in self.__crawled_urls:
                 self.__crawled_urls.add(url_md5)
-                self.__uncrawled_urls.append(start_url)
+                self.__uncrawled_urls.append(url)
 
         while self.__uncrawled_urls:
             try:
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
-                response = self.__douban_call(url_to_crawl.encode('utf-8'), additional_qs=self.__additional_qs)
+                response = self.__douban_call(url_to_crawl.encode('utf-8'), additional_qs=self.__query_strings)
                 response_text = response.read()
                 DoubanCrawler2.logger.debug('Crawled <%s>' % url_to_crawl)
 
@@ -84,7 +84,7 @@ class DoubanCrawler2():
                             self.__crawled_urls.add(url_md5)
                             self.__uncrawled_urls.append(url_in_page)
                             # Validate movie link using predefined regex.
-                            if MOVIE_LINK_RE.match(url_in_page):
+                            if MOVIE_URL_RE.match(url_in_page):
                                 movie_id = url_in_page[len('http://movie.douban.com/subject/'):-1] if url_in_page.endswith('/') else url_in_page[len('http://movie.douban.com/subject/'):]
 
                                 #----------get movie info through douban api-------------
@@ -124,35 +124,26 @@ class DoubanCrawler2():
 
     def __get_movie_info(self, movie_id):
         '''
-        Get movie info through douban api
+        Get movie info using douban api.
         '''
 
         api_url = 'https://api.douban.com/v2/movie/%s' % movie_id
-        response = self.__douban_call(api_url.encode('utf-8'), additional_qs=self.__additional_qs)
+        response = self.__douban_call(api_url.encode('utf-8'), additional_qs=self.__query_strings)
         response_text = response.read()
 
         movie_obj = json.loads(response_text)
         new_movie_obj = {'id': movie_id}
         if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] and movie_obj['attrs']['year'][0]:
-            new_movie_obj['year'] = movie_obj['attrs']['year'][0].strip()
+            new_movie_obj['year'] = movie_obj['attrs']['year'][0].strip()  # Caution: may not be provided
         if 'title' in movie_obj and movie_obj['title']:
-            new_movie_obj['title'] = movie_obj['title'].strip()
-            # get simplified title
-            simp_title = simplify(new_movie_obj['title'])
-            if simp_title != new_movie_obj['title']:
-                new_movie_obj['simp_titles'] = [simp_title]
+            new_movie_obj['titles'] = movie_obj['title'].strip()
         if 'alt_title' in movie_obj and movie_obj['alt_title']:
-            alt_titles = [item.strip() for item in movie_obj['alt_title'].split(' / ')]
+            alt_titles = [item.strip() for item in movie_obj['alt_title'].split(' / ') if item.strip()]
             if alt_titles:
-                new_movie_obj['alt_titles'] = alt_titles
-                for item in new_movie_obj['alt_titles']:
-                    # get simplified title
-                    simp_title = simplify(item)
-                    if simp_title not in new_movie_obj['alt_titles']:
-                        if 'simp_titles' not in new_movie_obj:
-                            new_movie_obj['simp_titles'] = []
-                        if simp_title not in new_movie_obj['simp_titles']:
-                            new_movie_obj['simp_titles'].append(simp_title)
+                if 'titles' in new_movie_obj:
+                    new_movie_obj['titles'] += alt_titles
+                else:
+                    new_movie_obj['titles'] = alt_titles
         if 'attrs' in movie_obj and 'director' in movie_obj['attrs'] and movie_obj['attrs']['director']:
             new_movie_obj['directors'] = movie_obj['attrs']['director']
         if 'attrs' in movie_obj and 'writer' in movie_obj['attrs'] and movie_obj['attrs']['writer']:
@@ -160,7 +151,7 @@ class DoubanCrawler2():
         if 'attrs' in movie_obj and 'cast' in movie_obj['attrs'] and movie_obj['attrs']['cast']:
             new_movie_obj['casts'] = movie_obj['attrs']['cast']
         if 'attrs' in movie_obj and 'episodes' in movie_obj['attrs'] and movie_obj['attrs']['episodes'] and movie_obj['attrs']['episodes'][0]:
-            new_movie_obj['episodes'] = movie_obj['attrs']['episodes'][0]
+            new_movie_obj['episodes'] = movie_obj['attrs']['episodes'][0]  # Caution: may not be an integer
         if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs'] and movie_obj['attrs']['movie_type']:
             new_movie_obj['types'] = movie_obj['attrs']['movie_type']
         if 'attrs' in movie_obj and 'country' in movie_obj['attrs'] and movie_obj['attrs']['country']:
@@ -175,20 +166,31 @@ class DoubanCrawler2():
             new_movie_obj['image'] = movie_obj['image']
         if 'summary' in movie_obj and movie_obj['summary']:
             new_movie_obj['summary'] = movie_obj['summary']
-        new_movie_obj['douban'] = {'last_updated': datetime.datetime.utcnow()}
+
+        new_movie_obj['douban'] = {'link': 'http://movie.douban.com/subject/%s/' % movie_id, 'last_updated': datetime.datetime.utcnow()}
         if 'rating' in movie_obj and 'average' in movie_obj['rating'] and movie_obj['rating']['average']:
             new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
-        if 'alt' in movie_obj and movie_obj['alt']:
-            new_movie_obj['douban']['link'] = movie_obj['alt']
+
+        # simplify titles
+        for title in new_movie_obj['titles']:
+            simp_title = simplify(title)
+            if simp_title not in new_movie_obj['titles']:
+                if 'simp_titles' not in new_movie_obj:
+                    new_movie_obj['simp_titles'] = []
+                if simp_title not in new_movie_obj['simp_titles']:
+                    new_movie_obj['simp_titles'].append(simp_title)
 
         return new_movie_obj
 
     def __url_is_allowed(self, url):
-        # Return True if URL pattern is allowed, otherwise False.
-        if not self.__allowed_url_res:
+        '''
+        Return True if URL pattern is allowed, otherwise False.
+        '''
+
+        if not self.allowed_url_res:
             return True
 
-        for re in self.__allowed_url_res:
+        for re in self.allowed_url_res:
             if re.match(url):
                 return True
 

@@ -23,8 +23,7 @@ def get_logger(name, log_file):
     formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
-    # Add the handlers to logger.
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    # Add handlers to logger.
+    logger.handlers = [file_handler, console_handler]
 
     return logger

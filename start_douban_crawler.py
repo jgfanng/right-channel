@@ -5,7 +5,7 @@ Created on Dec 13, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.douban_crawler import DoubanCrawler, APIKEY
+from crawlers.douban_crawler import DoubanCrawler, MOVIE_URL_RE, TAG_URL_RE
 
 dc = DoubanCrawler(start_urls=[
                                'http://movie.douban.com/tag/',  # 豆瓣电影标签
@@ -14,10 +14,10 @@ dc = DoubanCrawler(start_urls=[
                                'http://movie.douban.com/nowplaying/',  # 正在上映
                                'http://movie.douban.com/coming'  # 即将上映
                                ],
+                   apikey='05bc4743e8f8808a1134d5cbbae9819e',
                    allowed_url_res=[
-                                    '^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$',  # 豆瓣电影标签
-                                    '^http://movie\.douban\.com/subject/[0-9]+/?$'  # 电影主页
+                                    MOVIE_URL_RE,  # 电影主页
+                                    TAG_URL_RE  # 豆瓣电影标签
                                     ],
-                   additional_qs={'apikey': APIKEY},
-                   sleep_time=0.5)
+                   sleep_time=2)
 dc.start_crawl()

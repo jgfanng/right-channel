@@ -12,15 +12,15 @@ RETRY_INTERVAL = 5
 RETRY_COUNT = 3
 TIMEOUT = 30
 
-def get(url, additional_qs=None, retry_interval=RETRY_INTERVAL, retry_count=RETRY_COUNT):
+def get(url, query_strings=None, retry_interval=RETRY_INTERVAL, retry_count=RETRY_COUNT):
     '''Send a get request'''
 
-    if additional_qs:
+    if query_strings:
         # urlparse returns tuple, then convert tuple to list
         parse_result = list(urlparse(url))
         # parse the 4th element (query string)
         qs = parse_qs(parse_result[4])
-        qs.update(additional_qs)
+        qs.update(query_strings)
         new_qs = urlencode(qs, doseq=True)
         parse_result[4] = new_qs
         url = urlunparse(parse_result)
