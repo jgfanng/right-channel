@@ -51,7 +51,7 @@ class DoubanCrawler():
         # md5 of URLs crawled
         self.__crawled_urls = Set()
         # movie id queue
-        self.__movie_id_queue = Queue(1000)
+        self.__movie_id_queue = Queue(200)
         # total movies crawled
         self.__total_movies_crawled = 0
         # Throttle douban api call to 40 apis within 60s.
@@ -132,7 +132,7 @@ class DoubanCrawler():
                 movie_id = self.__movie_id_queue.get()
                 if movie_id == EOC:
                     DoubanCrawler.logger.info('===Total movies(%s) pages(%s)===' % (self.__total_movies_crawled, len(self.__crawled_urls)))
-                    self.__init()
+                    self.__init()  # At this moment, the movie finder is waiting on the queue. This will wake it up.
                     continue
                 movie_info = self.__get_movie_info(movie_id)
                 if 'simp_titles' in movie_info:
@@ -152,20 +152,6 @@ class DoubanCrawler():
                 DoubanCrawler.logger.error('Failed to reach server <%s %s>' % (self.__get_movie_api_url(movie_id), e.reason))
             except Exception, e:
                 DoubanCrawler.logger.error('%s <%s>' % (e, self.__get_movie_api_url(movie_id)))
-
-    def __url_is_allowed(self, url):
-        '''
-        Return True if URL pattern is allowed, otherwise False.
-        '''
-
-        if not self.allowed_url_res:
-            return True
-
-        for re in self.allowed_url_res:
-            if re.match(url):
-                return True
-
-        return False
 
     def __get_movie_info(self, movie_id):
         '''
@@ -212,7 +198,7 @@ class DoubanCrawler():
         if 'summary' in movie_obj and movie_obj['summary']:
             new_movie_obj['summary'] = movie_obj['summary']
 
-        new_movie_obj['douban'] = {'link': 'http://movie.douban.com/subject/%s/' % movie_id, 'last_updated': datetime.datetime.utcnow()}
+        new_movie_obj['douban'] = {'link': self.__get_movie_page_url(movie_id), 'last_updated': datetime.datetime.utcnow()}
         if 'rating' in movie_obj and 'average' in movie_obj['rating'] and movie_obj['rating']['average']:
             new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
 
@@ -226,6 +212,27 @@ class DoubanCrawler():
                     new_movie_obj['simp_titles'].append(simp_title)
 
         return new_movie_obj
+
+    def __url_is_allowed(self, url):
+        '''
+        Return True if URL pattern is allowed, otherwise False.
+        '''
+
+        if not self.allowed_url_res:
+            return True
+
+        for re in self.allowed_url_res:
+            if re.match(url):
+                return True
+
+        return False
+
+    def __get_movie_page_url(self, movie_id):
+        '''
+        Construct URL to call movie api from movie id.
+        '''
+
+        return 'http://movie.douban.com/subject/%s/' % movie_id
 
     def __get_movie_api_url(self, movie_id):
         '''
