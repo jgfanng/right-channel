@@ -7,7 +7,7 @@ Created on Dec 13, 2012
 '''
 from crawlers.douban_crawler import DoubanCrawler, MOVIE_URL_RE, TAG_URL_RE
 
-dc = DoubanCrawler(start_urls=[
+dc = DoubanCrawler(start_urls=['http://movie.douban.com/subject/10574622/',
                                'http://movie.douban.com/tag/',  # 豆瓣电影标签
                                'http://movie.douban.com/top250?format=text',  # 豆瓣电影250
                                'http://movie.douban.com/chart',  # 排行榜

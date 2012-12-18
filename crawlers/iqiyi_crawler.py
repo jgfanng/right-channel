@@ -6,16 +6,16 @@ Created on Dec 7, 2012
 @author: Fang Jiaguo
 '''
 from crawlers.utils import request
-from crawlers.utils.exceptions import MovieYearNotFoundError, \
-    MovieTitleNotFoundError
 from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movies_store_collection, \
-    movies_unmatched_collection
+from crawlers.utils.mongodb import movie_source_collection
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
 import datetime
 import time
+
+# name of iqiyi site
+SOURCE_NAME = 'iqiyi'
 
 class IQIYICrawler(object):
     '''
@@ -25,30 +25,32 @@ class IQIYICrawler(object):
     logger = get_logger('IQIYICrawler', 'iqiyi_crawler.log')
 
     def __init__(self, sleep_time):
-        self.__sleep_time = sleep_time
+        self.sleep_time = sleep_time
         self.__total_movies_crawled = 0
 
     def start_crawl(self):
-        IQIYICrawler.logger.info('==========Start to crawl iqiyi movies==========')
-        self.__start_crawl()
-        IQIYICrawler.logger.info('==========Finish crawling iqiyi movies==========')
-        IQIYICrawler.logger.info('==========Totally crawled %s movies==========' % self.__total_movies_crawled)
+        while True:
+            IQIYICrawler.logger.info('==========Start to crawl iqiyi movies==========')
+            self.__start_crawl()
+            IQIYICrawler.logger.info('==========Finish crawling iqiyi movies=========')
+            IQIYICrawler.logger.info('==========Totally movies(%s)===================' % self.__total_movies_crawled)
 
     def __start_crawl(self):
         '''
         Crawl 'movie list page' with URL pattern <http://list.iqiyi.com/www/1/------------2-1-%s-1---.html>
         '''
 
+        self.__total_movies_crawled = 0
         page_index = 1
         while True:
             try:
                 movie_list_page_url = 'http://list.iqiyi.com/www/1/------------2-1-%s-1---.html' % page_index
                 page_index += 1
-                response = request.get(movie_list_page_url, retry_interval=self.__sleep_time)
+                response = request.get(movie_list_page_url, retry_interval=self.sleep_time)
                 response_text = response.read()
                 IQIYICrawler.logger.debug('Crawled <%s>' % movie_list_page_url)
-                if self.__sleep_time > 0:
-                    time.sleep(self.__sleep_time)
+                if self.sleep_time > 0:
+                    time.sleep(self.sleep_time)
 
                 html_element = fromstring(response_text)
                 movie_elements = html_element.xpath('/html/body/div/div/div/div/div/div/ul[@class="ulList dianying"]/li[@class="j-listanim"]')
@@ -69,10 +71,11 @@ class IQIYICrawler(object):
 
                     #----------get movie year on playing page----------------
                     try:
-                        movie_year = self.__get_movie_year(playing_page_url)
-                    except MovieYearNotFoundError, e:
-                        IQIYICrawler.logger.warning('Movie year not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
-                        continue
+                        movie_year, movie_summary = self.parse_playing_page(playing_page_url)
+                        if not movie_year:
+                            IQIYICrawler.logger.warning('Movie year not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
+                        if not movie_summary:
+                            IQIYICrawler.logger.warning('Movie summary not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
                     except HTTPError, e:
                         IQIYICrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (playing_page_url, e.code, e.msg))
                         continue
@@ -86,7 +89,6 @@ class IQIYICrawler(object):
                     #----------get introduction page URL---------------------
                     movie_intro_elements = movie_element.xpath('./div[@class="popUp"]/div[@class="pop-bottom-con"]/a[@href]')
                     if movie_intro_elements:
-                        # more accurate title on introduction page
                         intro_page_url = movie_intro_elements[0].attrib['href']
                     else:
                         IQIYICrawler.logger.warning('Introduction page URL not found on movie list page <%s>. Please check whether the xpath has changed' % movie_list_page_url)
@@ -94,10 +96,10 @@ class IQIYICrawler(object):
 
                     #----------get movie title on introduction page----------
                     try:
-                        movie_title = self.__get_movie_title(intro_page_url)
-                    except MovieTitleNotFoundError, e:
-                        IQIYICrawler.logger.warning('Movie title not found on introduction page <%s>. Please check whether the xpath has changed' % intro_page_url)
-                        continue
+                        movie_title = self.parse_intro_page(intro_page_url)
+                        if not movie_title:
+                            IQIYICrawler.logger.warning('Movie title not found on introduction page <%s>. Please check whether the xpath has changed' % intro_page_url)
+                            continue  # skip this movie
                     except HTTPError, e:
                         IQIYICrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (intro_page_url, e.code, e.msg))
                         continue
@@ -114,29 +116,24 @@ class IQIYICrawler(object):
 
                     #----------Save to Mongodb-------------------------------
                     try:
-                        source_name = 'iqiyi'
-                        result = movies_store_collection.find_one({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
-                                                                  fields={'_id': 1})
-                        if result:
-                            result = movies_store_collection.find_one({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}], 'sources.name': source_name},
-                                                                      fields={'_id': 1})
-                            if result:
-                                movies_store_collection.update({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}], 'sources.name': source_name},
-                                                               {'$set': {'sources.$.definition': movie_definition, 'sources.$.link': playing_page_url, 'sources.$.last_updated': datetime.datetime.utcnow()}})
-                            else:
-                                movies_store_collection.update({'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},
-                                                               {'$push': {'sources': {'name': source_name, 'definition': movie_definition, 'link': playing_page_url, 'play_times': 0, 'last_updated': datetime.datetime.utcnow()}}})
-                            self.__total_movies_crawled += 1
-                            IQIYICrawler.logger.info('Crawled movie #%s <%s %s %s> Matched' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
-                        else:
-                            movies_unmatched_collection.update({'year': movie_year, 'title': movie_title, 'source': source_name},
-                                                               {'$set': {'definition': movie_definition, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}},
-                                                               upsert=True)
-                            self.__total_movies_crawled += 1
-                            IQIYICrawler.logger.info('Crawled movie #%s <%s %s %s> Unmatched' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
+                        movie_obj = {'source': SOURCE_NAME, 'title': movie_title, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}
+                        query = {'source': SOURCE_NAME, 'title': movie_title}
+                        if movie_year:
+                            movie_obj['year'] = movie_year
+                            query['year'] = movie_year
+                        if movie_definition:
+                            movie_obj['definition'] = movie_definition
+                            query['definition'] = movie_definition
+                        if movie_summary:
+                            movie_obj['summary'] = movie_summary
+
+                        movie_source_collection.update(query, movie_obj, upsert=True)
+
+                        self.__total_movies_crawled += 1
+                        IQIYICrawler.logger.info('Crawled movie #%s <%s %s %s>' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
 
                     except PyMongoError, e:
-                        IQIYICrawler.logger.error('%s <%s %s>' % (e, movie_year, movie_title))
+                        IQIYICrawler.logger.error('Mongodb error <%s %s>' % (e, playing_page_url))
                         continue
                     #--------------------------------------------------------
 
@@ -147,41 +144,39 @@ class IQIYICrawler(object):
             except Exception, e:
                 IQIYICrawler.logger.error('%s <%s>' % (e, movie_list_page_url))
 
-    def __get_movie_year(self, playing_page_url):
+    def parse_playing_page(self, playing_page_url):
         '''
-        Get movie year on playing page.
+        Parse playing page.
         '''
 
-        response = request.get(playing_page_url, retry_interval=self.__sleep_time)
+        response = request.get(playing_page_url, retry_interval=self.sleep_time)
         response_text = response.read()
         IQIYICrawler.logger.debug('Crawled <%s>' % playing_page_url)
-        if self.__sleep_time > 0:
-            time.sleep(self.__sleep_time)
+        if self.sleep_time > 0:
+            time.sleep(self.sleep_time)
 
         html_element = fromstring(response_text)
         movie_year_elements = html_element.xpath('/html/body/div/div/h1[@id="navbar"]/span/a')
-        if movie_year_elements:
-            return movie_year_elements[0].text.strip()
-        else:
-            raise MovieYearNotFoundError()
+        movie_summary_elements = html_element.xpath('/html/body//div[@class="wenzi"]/p[@class="wenzi1"]')
 
-    def __get_movie_title(self, intro_page_url):
+        return (movie_year_elements[0].text.strip() if movie_year_elements and movie_year_elements[0].text else None,
+                movie_summary_elements[0].text.strip() if movie_summary_elements and movie_summary_elements[0].text else None)
+
+    def parse_intro_page(self, intro_page_url):
         '''
-        Get movie title on introduction page.
+        Parse introduction page.
         '''
 
-        response = request.get(intro_page_url, retry_interval=self.__sleep_time)
+        response = request.get(intro_page_url, retry_interval=self.sleep_time)
         response_text = response.read()
         IQIYICrawler.logger.debug('Crawled <%s>' % intro_page_url)
-        if self.__sleep_time > 0:
-            time.sleep(self.__sleep_time)
+        if self.sleep_time > 0:
+            time.sleep(self.sleep_time)
 
         html_element = fromstring(response_text.decode('utf-8', 'ignore'))
         movie_title_elements = html_element.xpath('/html/body/div/div/div/div/div/div[@class="prof-title"]/h1')
-        if movie_title_elements:
-            return movie_title_elements[0].text.strip()
-        else:
-            raise MovieTitleNotFoundError()
+
+        return movie_title_elements[0].text.strip() if movie_title_elements and movie_title_elements[0].text else None
 
 if __name__ == '__main__':
     ic = IQIYICrawler(1)

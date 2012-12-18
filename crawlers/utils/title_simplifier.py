@@ -7,7 +7,7 @@ Created on Dec 12, 2012
 '''
 import unicodedata
 
-AUXILIARY_WORDS = [u' 3d', u'3d', u' 港', u' 台']
+AUXILIARY_WORDS = [u'3d', u' 港', u' 台']
 
 def simplify(title):
     '''
@@ -29,7 +29,7 @@ def simplify(title):
         end_by_word = False
         for word in AUXILIARY_WORDS:
             if new_title.endswith(word):
-                new_title = new_title[:-len(word)]
+                new_title = new_title[:-len(word)].strip()
                 end_by_word = True
                 break
         if not end_by_word:

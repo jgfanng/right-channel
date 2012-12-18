@@ -29,7 +29,7 @@ class WebCrawler(object):
         # Query string parameters when sending a request.
         self.__additional_qs = additional_qs
         # Sleep some time after crawl a page for throttle.
-        self.__sleep_time = sleep_time
+        self.sleep_time = sleep_time
         # A list of URLs the crawler will crawl.
         self.__uncrawled_urls = []
         # Distinct URLs (md5) the crawler has crawled.
@@ -47,11 +47,11 @@ class WebCrawler(object):
             try:
                 # Pop out the first URL.
                 url_to_crawl = self.__uncrawled_urls.pop(0)
-                response = request.get(url_to_crawl, additional_qs=self.__additional_qs, retry_interval=self.__sleep_time)
+                response = request.get(url_to_crawl, additional_qs=self.__additional_qs, retry_interval=self.sleep_time)
                 response_text = response.read()  # .decode('utf-8', 'ignore')
                 WebCrawler.logger.info('Crawled <%s>' % url_to_crawl)
-                if self.__sleep_time > 0:
-                    time.sleep(self.__sleep_time)
+                if self.sleep_time > 0:
+                    time.sleep(self.sleep_time)
 
                 html_element = fromstring(response_text)
                 # Makes all links in the document absolute.

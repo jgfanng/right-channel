@@ -9,15 +9,13 @@ from Queue import Queue
 from crawlers.utils import request
 from crawlers.utils.limited_caller import LimitedCaller
 from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movies_store_collection
-from crawlers.utils.title_simplifier import simplify
+from crawlers.utils.mongodb import movie_douban_collection
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from sets import Set
 from threading import Thread
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-import datetime
 import json
 import md5
 import re
@@ -51,18 +49,21 @@ class DoubanCrawler():
         # md5 of URLs crawled
         self.__crawled_urls = Set()
         # movie id queue
-        self.__movie_id_queue = Queue(200)
+        self.__movie_id_queue = Queue(1000)
         # total movies crawled
         self.__total_movies_crawled = 0
         # Throttle douban api call to 40 apis within 60s.
         self.__movie_api = LimitedCaller(request.get, 60, 40)
 
     def start_crawl(self):
-        DoubanCrawler.logger.info('===Start to crawl douban movies===')
-        self.__init()
-        self.__start_crawl()
+        while True:
+            DoubanCrawler.logger.info('==========Start to crawl douban movies==========')
+            self.__start_crawl()
+            DoubanCrawler.logger.info('==========Finish crawling douban movies=========')
+            DoubanCrawler.logger.info('==========Total movies(%s) pages(%s)============' % (self.__total_movies_crawled, len(self.__crawled_urls)))
 
-    def __init(self):
+    def __start_crawl(self):
+        # initialize
         self.__crawled_urls.clear()
         self.__total_movies_crawled = 0
 
@@ -72,11 +73,13 @@ class DoubanCrawler():
                 self.__crawled_urls.add(url_md5)
                 self.__uncrawled_url_queue.put(start_url)
 
-    def __start_crawl(self):
+        # create two threads: one to find movie, the other to fetch movie
         movie_finder = Thread(target=self.__find_movies)
         movie_fetcher = Thread(target=self.__fetch_movies)
         movie_finder.start()
         movie_fetcher.start()
+        movie_finder.join()
+        movie_fetcher.join()
 
     def __find_movies(self):
         '''
@@ -88,7 +91,7 @@ class DoubanCrawler():
                 if self.__uncrawled_url_queue.empty():
                     # push a special marker to indicate reaching the end of crawling
                     self.__movie_id_queue.put(EOC)
-
+                    break
                 # blocks if the queue is empty
                 url_to_crawl = self.__uncrawled_url_queue.get()
                 response = request.get(url_to_crawl.encode('utf-8'), retry_interval=self.sleep_time)
@@ -128,21 +131,18 @@ class DoubanCrawler():
 
         while True:
             try:
-                # blocks if the queue is empty
-                movie_id = self.__movie_id_queue.get()
+                movie_id = self.__movie_id_queue.get()  # blocks if the queue is empty
                 if movie_id == EOC:
-                    DoubanCrawler.logger.info('===Total movies(%s) pages(%s)===' % (self.__total_movies_crawled, len(self.__crawled_urls)))
-                    self.__init()  # At this moment, the movie finder is waiting on the queue. This will wake it up.
-                    continue
-                movie_info = self.__get_movie_info(movie_id)
-                if 'simp_titles' in movie_info:
-                    simp_titles = movie_info.pop('simp_titles')
-                    movies_store_collection.update({'id': movie_id}, {'$set': movie_info, '$addToSet': {'simp_titles': {'$each': simp_titles}}}, upsert=True)
-                else:
-                    movies_store_collection.update({'id': movie_id}, {'$set': movie_info}, upsert=True)
+                    break
+                api_url = self.__get_movie_api_url(movie_id)
+                response = self.__movie_api(api_url.encode('utf-8'), query_strings={'apikey': self.apikey}, retry_interval=self.sleep_time)
+                response_text = response.read()
+                movie_info = json.loads(response_text)
+                movie_info['id'] = movie_id  # change default id to movie id
+                movie_douban_collection.update({'id': movie_id}, movie_info, upsert=True)
 
                 self.__total_movies_crawled += 1
-                DoubanCrawler.logger.info('Crawled movie #%s <%s %s> MQ(%s) TMQ(%s)' % (self.__total_movies_crawled, movie_info['year'] if 'year' in movie_info else None, movie_info['titles'][0] if 'titles' in movie_info else None, self.__movie_id_queue.qsize(), self.__uncrawled_url_queue.qsize()))
+                DoubanCrawler.logger.info('Crawled movie #%s <%s> MQ(%s) TMQ(%s)' % (self.__total_movies_crawled, movie_info['title'], self.__movie_id_queue.qsize(), self.__uncrawled_url_queue.qsize()))
 
             except PyMongoError, e:
                 DoubanCrawler.logger.error('Mongodb error <%s %s>' % (e, self.__get_movie_api_url(movie_id)))
@@ -152,66 +152,6 @@ class DoubanCrawler():
                 DoubanCrawler.logger.error('Failed to reach server <%s %s>' % (self.__get_movie_api_url(movie_id), e.reason))
             except Exception, e:
                 DoubanCrawler.logger.error('%s <%s>' % (e, self.__get_movie_api_url(movie_id)))
-
-    def __get_movie_info(self, movie_id):
-        '''
-        Get movie info using douban api.
-        '''
-
-        api_url = self.__get_movie_api_url(movie_id)
-        response = self.__movie_api(api_url.encode('utf-8'), query_strings={'apikey': self.apikey}, retry_interval=2)
-        response_text = response.read()
-
-        movie_obj = json.loads(response_text)
-        new_movie_obj = {'id': movie_id}
-        if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] and movie_obj['attrs']['year'][0]:
-            new_movie_obj['year'] = movie_obj['attrs']['year'][0].strip()  # Caution: may not be provided
-        if 'title' in movie_obj and movie_obj['title']:
-            new_movie_obj['titles'] = [movie_obj['title'].strip()]
-        if 'alt_title' in movie_obj and movie_obj['alt_title']:
-            alt_titles = [item.strip() for item in movie_obj['alt_title'].split(' / ') if item.strip()]
-            if alt_titles:
-                if 'titles' in new_movie_obj:
-                    new_movie_obj['titles'] += alt_titles
-                else:
-                    new_movie_obj['titles'] = alt_titles
-        if 'attrs' in movie_obj and 'director' in movie_obj['attrs'] and movie_obj['attrs']['director']:
-            new_movie_obj['directors'] = movie_obj['attrs']['director']
-        if 'attrs' in movie_obj and 'writer' in movie_obj['attrs'] and movie_obj['attrs']['writer']:
-            new_movie_obj['writers'] = movie_obj['attrs']['writer']
-        if 'attrs' in movie_obj and 'cast' in movie_obj['attrs'] and movie_obj['attrs']['cast']:
-            new_movie_obj['casts'] = movie_obj['attrs']['cast']
-        if 'attrs' in movie_obj and 'episodes' in movie_obj['attrs'] and movie_obj['attrs']['episodes'] and movie_obj['attrs']['episodes'][0]:
-            new_movie_obj['episodes'] = movie_obj['attrs']['episodes'][0]  # Caution: may not be an integer
-        if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs'] and movie_obj['attrs']['movie_type']:
-            new_movie_obj['types'] = movie_obj['attrs']['movie_type']
-        if 'attrs' in movie_obj and 'country' in movie_obj['attrs'] and movie_obj['attrs']['country']:
-            new_movie_obj['countries'] = movie_obj['attrs']['country']
-        if 'attrs' in movie_obj and 'language' in movie_obj['attrs'] and movie_obj['attrs']['language']:
-            new_movie_obj['languages'] = movie_obj['attrs']['language']
-        if 'attrs' in movie_obj and 'pubdate' in movie_obj['attrs'] and movie_obj['attrs']['pubdate']:
-            new_movie_obj['pubdates'] = movie_obj['attrs']['pubdate']
-        if 'attrs' in movie_obj and 'movie_duration' in movie_obj['attrs'] and movie_obj['attrs']['movie_duration']:
-            new_movie_obj['durations'] = movie_obj['attrs']['movie_duration']
-        if 'image' in movie_obj and movie_obj['image']:
-            new_movie_obj['image'] = movie_obj['image']
-        if 'summary' in movie_obj and movie_obj['summary']:
-            new_movie_obj['summary'] = movie_obj['summary']
-
-        new_movie_obj['douban'] = {'link': self.__get_movie_page_url(movie_id), 'last_updated': datetime.datetime.utcnow()}
-        if 'rating' in movie_obj and 'average' in movie_obj['rating'] and movie_obj['rating']['average']:
-            new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
-
-        # simplify titles
-        for title in new_movie_obj['titles']:
-            simp_title = simplify(title)
-            if simp_title not in new_movie_obj['titles']:
-                if 'simp_titles' not in new_movie_obj:
-                    new_movie_obj['simp_titles'] = []
-                if simp_title not in new_movie_obj['simp_titles']:
-                    new_movie_obj['simp_titles'].append(simp_title)
-
-        return new_movie_obj
 
     def __url_is_allowed(self, url):
         '''
@@ -226,13 +166,6 @@ class DoubanCrawler():
                 return True
 
         return False
-
-    def __get_movie_page_url(self, movie_id):
-        '''
-        Construct URL to call movie api from movie id.
-        '''
-
-        return 'http://movie.douban.com/subject/%s/' % movie_id
 
     def __get_movie_api_url(self, movie_id):
         '''
