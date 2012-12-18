@@ -112,7 +112,7 @@ class IQIYICrawler(object):
 
                     #----------get movie definition--------------------------
                     movie_definition_elements = movie_element.xpath('./a/span[@class="cqBg"]')
-                    movie_definition = '超清' if movie_definition_elements else '一般'
+                    movie_definition = u'超清' if movie_definition_elements else u'一般'
 
                     #----------Save to Mongodb-------------------------------
                     try:
