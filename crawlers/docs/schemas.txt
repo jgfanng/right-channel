@@ -1,0 +1,195 @@
+=========Indexes============================================================
+db.movie.douban.ensureIndex({"id": 1}, {unique: true})
+
+=========Schema=============================================================
+{
+    "collection_link": "http://api.douban.com/collection/553388214",
+    "rating": {
+        "max": 10,
+        "average": "7.0",
+        "numRaters": 86478,
+        "min": 0
+    },
+    "author": [
+        {
+            "name": "塞思·麦克法兰 Seth MacFarlane"
+        }
+    ],
+    "alt_title": "泰迪熊 / 熊麻吉(台)",
+    "image": "http://img3.douban.com/spic/s10392260.jpg",
+    "title": "Ted",
+    "mobile_link": "http://m.douban.com/movie/subject/4807924/",
+    "summary": "由马克·沃尔伯格和因《黑天鹅》走红的女星米拉·库妮丝主演、爆笑动画剧集《恶搞之家》导演塞思·麦克法兰执导。\n影片讲述马克·沃尔伯格饰演的男主人公梦想成真...",
+    "attrs": {
+        "website": [
+            "www.tedisreal.com"
+        ],
+        "language": [
+            "英语"
+        ],
+        "pubdate": [
+            "2012-06-29(美国)"
+        ],
+        "title": [
+            "Ted"
+        ],
+        "country": [
+            "美国"
+        ],
+        "writer": [
+            "塞思·麦克法兰 Seth MacFarlane",
+            "亚历克·苏雷金 Alec Sulkin",
+            "Wellesley Wild"
+        ],
+        "director": [
+            "塞思·麦克法兰 Seth MacFarlane"
+        ],
+        "cast": [
+            "塞思·麦克法兰 Seth MacFarlane",
+            "马克·沃尔伯格 Mark Wahlberg",
+            "米拉·库妮丝 Mila Kunis",
+            "吉奥瓦尼·瑞比西 Giovanni Ribisi",
+            "瑞恩·雷诺兹 Ryan Reynolds",
+            "诺拉·琼斯 Norah Jones",
+            "乔尔·麦克哈尔 Joel McHale"
+        ],
+        "movie_duration": [
+            "106分钟",
+            "113分钟(加长版)"
+        ],
+        "year": [
+            "2012"
+        ],
+        "movie_type": [
+            "喜剧"
+        ]
+    },
+    "alt": "http://movie.douban.com/movie/4807924",
+    "id": "4807924",
+    "tags": [
+        {
+            "count": 22623,
+            "name": "喜剧"
+        },
+        {
+            "count": 18413,
+            "name": "美国"
+        },
+        {
+            "count": 15422,
+            "name": "泰迪熊"
+        },
+        {
+            "count": 11478,
+            "name": "搞笑"
+        },
+        {
+            "count": 5886,
+            "name": "2012"
+        },
+        {
+            "count": 5299,
+            "name": "温情"
+        },
+        {
+            "count": 3085,
+            "name": "恶搞"
+        },
+        {
+            "count": 2853,
+            "name": "成长"
+        }
+    ]
+}
+
+=========Indexes============================================================
+db.movie.source.ensureIndex({"source": 1})
+db.movie.source.ensureIndex({"year": -1})
+db.movie.source.ensureIndex({"title": 1})
+db.movie.source.ensureIndex({"definition": 1})
+db.movie.source.ensureIndex({"source": 1}, {"year": -1}, {"title": 1}, {"definition": 1}, {unique: true})
+
+=========Schema=============================================================
+{
+    "source": "pptv",
+    "year": "2012",
+    "title": "赛德克·巴莱",
+    "definition": "高清",
+    "summary": "赛德克巴莱剧情：日据时代，赛德克族被迫失去自己的文化信仰，男人须服劳役不得狩猎...",
+    "link": "http://v.pptv.com/show/l7PBP6cNfbsenAQ.html",
+    "last_updated": 2012
+}
+
+=========Indexes============================================================
+db.movies.store.ensureIndex({"id": 1}, {unique: true})
+db.movies.store.ensureIndex({"year": -1})
+db.movies.store.ensureIndex({"univ_titles": 1})
+db.movies.store.ensureIndex({"year": -1, "univ_titles": 1})
+db.movies.store.ensureIndex({"types": 1})
+
+=========Schema=============================================================
+{
+    "id": 123456,
+    "year": "1994",
+    "titles": [
+        "肖申克的救赎",
+        "The Shawshank Redemption",
+        "刺激1995(台)"
+    ],
+    "univ_titles": [
+        "肖申克的救赎",
+        "The Shawshank Redemption",
+        "the shawshank redemption",
+        "刺激1995(台)",
+        "刺激1995"
+    ],
+    "directors": [
+        "弗兰克·德拉邦特 Frank Darabont"
+    ],
+    "writers": [
+        "弗兰克·德拉邦特 Frank Darabont",
+        "斯蒂芬·金 Stephen King"
+    ],
+    "casts": [
+        "蒂姆·罗宾斯 Tim Robbins",
+        "摩根·弗里曼 Morgan Freeman"
+    ],
+    "episodes": "1",
+    "types": [
+        "犯罪",
+        "剧情"
+    ],
+    "countries": [
+        "美国"
+    ],
+    "languages": [
+        "英语"
+    ],
+    "pubdates": [
+        "1994-09-23"
+    ],
+    "durations": [
+        "142 分钟"
+    ],
+    "image": "http://img3.douban.com/spic/s1311361.jpg",
+    "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
+    "douban": {
+        "score": 9.5,
+        "link": "http://movie.douban.com/subject/1292052",
+        "lase_updated": 2012
+    },
+    "imdb": {
+        "score": 7,
+        "number": "tt0111161",
+        "lase_updated": 2012
+    },
+    "sources": [
+        {
+            "name": "pptv",
+            "link": "http://movie.pptv.com/123",
+            "definition": "高清",
+            "play_times": 10,
+            "last_updated": 2012
+        }
+    ]
+}
