@@ -49,7 +49,7 @@ class DoubanCrawler():
         # md5 of URLs crawled
         self.__crawled_urls = Set()
         # movie id queue
-        self.__movie_id_queue = Queue(1000)
+        self.__movie_id_queue = Queue(10000)
         # total movies crawled
         self.__total_movies_crawled = 0
         # Throttle douban api call to 40 apis within 60s.
