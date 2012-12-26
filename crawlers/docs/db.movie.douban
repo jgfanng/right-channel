@@ -1,0 +1,97 @@
+=========Indexes============================================================
+db.movie.douban.ensureIndex({"id": 1}, {unique: true})
+
+=========Schema=============================================================
+{
+	"_id" : ObjectId("50d078400c468ecda4b66a5a"),
+	"rating" : {
+		"max" : 10,
+		"average" : "9.5",
+		"numRaters" : 420182,
+		"min" : 0
+	},
+	"author" : [
+		{
+			"name" : "弗兰克·德拉邦特 Frank Darabont"
+		}
+	],
+	"alt_title" : "肖申克的救赎 / 刺激1995(台)",
+	"image" : "http://img3.douban.com/spic/s1311361.jpg",
+	"title" : "The Shawshank Redemption",
+	"summary" : "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生。银行家出身的安迪很快就在监狱里很吃得开，他懂得如何帮助狱卒逃税，懂得如何帮监狱长（鲍勃·冈顿 Bob Gunton 饰）将他收到的非法收入“洗白”，很快，安迪就成为了狱长的 私人助理。 一名小偷因盗窃入狱，他知道安迪妻子和她情人的死亡真相，兴奋的安迪找到了狱长，希望狱长能帮他翻案。虚伪的狱长表面上答应了安迪，暗中却派人杀死了小偷，只因他想安迪一直留在监狱帮他做帐。\n安迪知道真相后，决定通过自己的救赎去获得自由！",
+	"attrs" : {
+		"pubdate" : [
+			"1994-09-23"
+		],
+		"language" : [
+			"英语"
+		],
+		"title" : [
+			"The Shawshank Redemption"
+		],
+		"country" : [
+			"美国"
+		],
+		"writer" : [
+			"弗兰克·德拉邦特 Frank Darabont",
+			"斯蒂芬·金 Stephen King"
+		],
+		"director" : [
+			"弗兰克·德拉邦特 Frank Darabont"
+		],
+		"cast" : [
+			"蒂姆·罗宾斯 Tim Robbins",
+			"摩根·弗里曼 Morgan Freeman",
+			"鲍勃·冈顿 Bob Gunton",
+			"威廉姆·赛德勒 William Sadler",
+			"克兰西·布朗 Clancy Brown"
+		],
+		"movie_duration" : [
+			"142 分钟"
+		],
+		"year" : [
+			"1994"
+		],
+		"movie_type" : [
+			"犯罪",
+			"剧情"
+		]
+	},
+	"id" : "1292052",
+	"mobile_link" : "http://m.douban.com/movie/subject/1292052/",
+	"alt" : "http://movie.douban.com/movie/1292052",
+	"tags" : [
+		{
+			"count" : 88325,
+			"name" : "经典"
+		},
+		{
+			"count" : 66750,
+			"name" : "励志"
+		},
+		{
+			"count" : 54389,
+			"name" : "信念"
+		},
+		{
+			"count" : 46087,
+			"name" : "自由"
+		},
+		{
+			"count" : 44697,
+			"name" : "美国"
+		},
+		{
+			"count" : 32735,
+			"name" : "人性"
+		},
+		{
+			"count" : 18626,
+			"name" : "剧情"
+		},
+		{
+			"count" : 16555,
+			"name" : "人生"
+		}
+	]
+}

@@ -14,3 +14,12 @@ how to do delta index update
 how to segment Chinese words
 
 redis + full text search
+
+分析豆瓣标签的时候发现一些诡异的事情，有些标签虽然名字不同，但是它们有些诡异的共同点： 
+1. 标签名很诡异(可能是用户自定义的)
+2. 返回的内容都一样，一个1-100页电影的页面，页面内容感觉是近期较热电影列表,这样的标签能每个能产生100个没用的链接，试验结果第一天5W，后三天2W
+比如： 
+http://movie.douban.com/tag/1美国 
+http://movie.douban.com/tag/{Fleurs'du'mal} 
+http://movie.douban.com/tag/kjkj 
+http://movie.douban.com/tag/好看. 
