@@ -58,6 +58,8 @@ db.movie.store.ensureIndex({"types": 1})
         "lase_updated": 2012
     },
     "pptv": {
+        "title": "肖申克的救赎",
+        "title_similiarity": 1,
         "link": "http://movie.pptv.com/123",
         "definition": "高清",
         "play_times": 10,
