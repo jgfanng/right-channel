@@ -5,17 +5,16 @@ Created on Dec 7, 2012
 
 @author: Fang Jiaguo
 '''
+from Queue import Queue
 from crawlers.utils import request
 from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movie_source_collection
+from crawlers.utils.mongodb import movie_store_collection
+from difflib import SequenceMatcher
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError
 import datetime
 import time
-
-# name of iqiyi site
-SOURCE_NAME = 'iqiyi'
 
 class IQIYICrawler(object):
     '''
@@ -26,6 +25,7 @@ class IQIYICrawler(object):
 
     def __init__(self, sleep_time):
         self.sleep_time = sleep_time
+        self.__unmatched_queue = Queue()
         self.__total_movies_crawled = 0
 
     def start_crawl(self):
@@ -71,11 +71,9 @@ class IQIYICrawler(object):
 
                     #----------get movie year on playing page----------------
                     try:
-                        movie_year, movie_summary = self.parse_playing_page(playing_page_url)
+                        movie_year = self.parse_playing_page(playing_page_url)
                         if not movie_year:
                             IQIYICrawler.logger.warning('Movie year not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
-                        if not movie_summary:
-                            IQIYICrawler.logger.warning('Movie summary not found on playing page <%s>. Please check whether the xpath has changed' % playing_page_url)
                     except HTTPError, e:
                         IQIYICrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (playing_page_url, e.code, e.msg))
                         continue
@@ -116,18 +114,11 @@ class IQIYICrawler(object):
 
                     #----------Save to Mongodb-------------------------------
                     try:
-                        movie_obj = {'source': SOURCE_NAME, 'title': movie_title, 'link': playing_page_url, 'last_updated': datetime.datetime.utcnow()}
-                        query = {'source': SOURCE_NAME, 'title': movie_title}
-                        if movie_year:
-                            movie_obj['year'] = movie_year
-                            query['year'] = movie_year
-                        if movie_definition:
-                            movie_obj['definition'] = movie_definition
-                            query['definition'] = movie_definition
-                        if movie_summary:
-                            movie_obj['summary'] = movie_summary
-
-                        movie_source_collection.update(query, movie_obj, upsert=True)
+                        result = movie_store_collection.find_and_modify(query={'year': movie_year, '$or': [{'title': movie_title}, {'alt_titles': movie_title}]},  # Caution: if 'movie_year' is None, mongodb will return records with no 'year' field or its value is 'null'
+                                                                        update={'$set': {'iqiyi.title': movie_title, 'iqiyi.similarity': 1.0, 'iqiyi.link': playing_page_url, 'iqiyi.definition': movie_definition, 'iqiyi.last_updated': datetime.datetime.utcnow()}, '$inc': {'iqiyi.play_times': 0}},  # Caution: if 'play_times' does not exist, mongodb will automatically set its value to 0
+                                                                        fields={'_id': 1})
+                        if not result:
+                            self.__unmatched_queue.put((movie_year, movie_title, playing_page_url, movie_definition))
 
                         self.__total_movies_crawled += 1
                         IQIYICrawler.logger.info('Crawled movie #%s <%s %s %s>' % (self.__total_movies_crawled, movie_year, movie_title, movie_definition))
@@ -157,10 +148,8 @@ class IQIYICrawler(object):
 
         html_element = fromstring(response_text)
         movie_year_elements = html_element.xpath('/html/body/div/div/h1[@id="navbar"]/span/a')
-        movie_summary_elements = html_element.xpath('/html/body//div[@class="wenzi"]/p[@class="wenzi1"]')
 
-        return (movie_year_elements[0].text.strip() if movie_year_elements and movie_year_elements[0].text else None,
-                movie_summary_elements[0].text.strip() if movie_summary_elements and movie_summary_elements[0].text else None)
+        return movie_year_elements[0].text.strip() if movie_year_elements and movie_year_elements[0].text else None
 
     def parse_intro_page(self, intro_page_url):
         '''
@@ -177,6 +166,40 @@ class IQIYICrawler(object):
         movie_title_elements = html_element.xpath('/html/body/div/div/div/div/div/div[@class="prof-title"]/h1')
 
         return movie_title_elements[0].text.strip() if movie_title_elements and movie_title_elements[0].text else None
+
+    def match_manually(self):
+        '''
+        Traverse mongodb and manually match movies.
+        '''
+
+        while True:
+            try:
+                movie_year, movie_title, playing_page_url, movie_definition = self.__unmatched_queue.get()
+                max_score = 0.0
+                similar_movie = None
+                for movie_info in movie_store_collection.find(fields={'_id': 0, 'id': 1, 'year': 1, 'title': 1, 'alt_titles': 1}, snapshot=True):
+                    titles = []
+                    if 'title' in movie_info:
+                        titles.append(movie_info['title'])
+                    if 'alt_titles' in movie_info:
+                        titles.extend(movie_info['alt_titles'])
+
+                    for title in titles:
+                        m = SequenceMatcher(None, title, movie_title, autojunk=False)
+                        score = m.ratio()
+                        if (score > max_score) or (score == max_score and movie_year == movie_info.get('year')):
+                            max_score = score
+                            similar_movie = movie_info
+
+                if max_score > 0.0:
+                    movie_store_collection.update({'id': similar_movie['id']},
+                                                  {'$set': {'iqiyi.title': movie_title, 'iqiyi.similarity': max_score, 'iqiyi.link': playing_page_url, 'iqiyi.definition': movie_definition, 'iqiyi.last_updated': datetime.datetime.utcnow()}, '$inc': {'iqiyi.play_times': 0}})
+                    IQIYICrawler.logger.debug()
+
+            except PyMongoError, e:
+                IQIYICrawler.logger.error('Mongodb error <%s> when manually matching movie <%s>' % (e, movie_title))
+            except Exception, e:
+                IQIYICrawler.logger.error('%s <%s>' % (e, movie_title))
 
 if __name__ == '__main__':
     ic = IQIYICrawler(1)
