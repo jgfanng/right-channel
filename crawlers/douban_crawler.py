@@ -60,7 +60,7 @@ class DoubanCrawler():
             DoubanCrawler.logger.info('==========Start to crawl douban movies==========')
             self.__start_crawl()
             DoubanCrawler.logger.info('==========Finish crawling douban movies=========')
-            DoubanCrawler.logger.info('==========Total movies(%s) pages(%s)============' % (self.__total_movies_crawled, len(self.__crawled_urls)))
+            DoubanCrawler.logger.info('==========Total movies: %s pages: %s============' % (self.__total_movies_crawled, len(self.__crawled_urls)))
 
     def __start_crawl(self):
         # initialize
@@ -133,9 +133,9 @@ class DoubanCrawler():
                             self.__movie_id_queue.put(movie_id)
 
             except HTTPError, e:
-                DoubanCrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (url_to_crawl, e.code, e.msg))
+                DoubanCrawler.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (url_to_crawl, e.code, e.msg))
             except URLError, e:
-                DoubanCrawler.logger.error('Failed to reach server <%s %s>' % (url_to_crawl, e.reason))
+                DoubanCrawler.logger.error('Failed to reach server <%s> <%s>' % (url_to_crawl, e.reason))
             except Exception, e:
                 DoubanCrawler.logger.error('%s <%s>' % (e, url_to_crawl))
 
@@ -157,11 +157,11 @@ class DoubanCrawler():
                 DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info['title'], self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
 
             except PyMongoError, e:
-                DoubanCrawler.logger.error('Mongodb error <%s %s>' % (e, self.__get_movie_api_url(movie_id)))
+                DoubanCrawler.logger.error('Mongodb error <%s> <%s>' % (e, self.__get_movie_api_url(movie_id)))
             except HTTPError, e:
-                DoubanCrawler.logger.error('Server cannot fulfill the request <%s %s %s>' % (self.__get_movie_api_url(movie_id), e.code, e.msg))
+                DoubanCrawler.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (self.__get_movie_api_url(movie_id), e.code, e.msg))
             except URLError, e:
-                DoubanCrawler.logger.error('Failed to reach server <%s %s>' % (self.__get_movie_api_url(movie_id), e.reason))
+                DoubanCrawler.logger.error('Failed to reach server <%s> <%s>' % (self.__get_movie_api_url(movie_id), e.reason))
             except Exception, e:
                 DoubanCrawler.logger.error('%s <%s>' % (e, self.__get_movie_api_url(movie_id)))
 
