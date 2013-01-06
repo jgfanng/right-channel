@@ -33,7 +33,7 @@ class PPTVCrawler(object):
             PPTVCrawler.logger.info('==========Start to crawl pptv movies==========')
             self.__start_crawl()
             PPTVCrawler.logger.info('==========Finish crawling pptv movies=========')
-            PPTVCrawler.logger.info('==========Totally movies(%s)==================' % self.__total_movies_crawled)
+            PPTVCrawler.logger.info('==========Total movies(%s)==================' % self.__total_movies_crawled)
 
     def __start_crawl(self):
         '''
