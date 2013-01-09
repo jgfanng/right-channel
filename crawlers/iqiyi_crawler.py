@@ -201,7 +201,8 @@ class IQIYICrawler(object):
 
                 if max_score > 0.0 and similar_movie:
                     movie_store_collection.update({'id': similar_movie['id']},
-                                                  {'$set': {'iqiyi.title': movie_title, 'iqiyi.similarity': max_score, 'iqiyi.link': playing_page_url, 'iqiyi.definition': movie_definition, 'iqiyi.last_updated': datetime.datetime.utcnow()}, '$inc': {'iqiyi.play_times': 0}})
+                                                  {'$set': {'sources.iqiyi.title': movie_title, 'sources.iqiyi.similarity': max_score, 'sources.iqiyi.link': playing_page_url,
+                                                            'sources.iqiyi.definition': movie_definition, 'sources.iqiyi.last_updated': datetime.datetime.utcnow()}})
                     IQIYICrawler.logger.info('Find a similar movie in douban <%s> <%s> <%s>' % (movie_title, similar_movie.get('title'), max_score))
                 else:
                     IQIYICrawler.logger.warning('Cannot find any similar movie with douban <%s>' % movie_title)
