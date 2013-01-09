@@ -4,30 +4,30 @@
 [最新]
 内容: 上映日期最近50部
 url: www.videobox.com/movie/new
-api: api.videobox.com/movies?start=0&limit=50&sort-by=pubdate
+api: api.videobox.com/movies?start=0&limit=50&sort-by=pubdate&can-watch=true
 备注: 过滤已经爬下来，但是未上映的影片。用户可在客户端按评分排序。
 
 [热门]
-内容: 最近一周/一月观看排行
+内容: 最近一周/一月点击排行
 url: www.videobox.com/movie/hot
-api: api.videobox.com/movies/rank-[last-week|last-month]?start=0&limit=50
+api: api.videobox.com/movies/rank-[week|month]?start=0&limit=50&can-watch=true
 
 [分类]
 内容: 类型/地区/年代
-url: www.videobox.com/movie/category?type=爱情&country=美国&year=2012&start=0&limit=50&sort-by=pubdate|score&order=desc
-api: api.videobox.com/movies/type-[爱情]/country-[美国]/year-[2012]?start=0&limit=50&sort-by=pubdate|score
+url: www.videobox.com/movie/category?type=爱情&country=美国&year=2012&start=0&limit=50&sort-by=pubdate|score
+api: api.videobox.com/movies/type-[爱情]/country-[美国]/year-[2012]?start=0&limit=50&sort-by=pubdate|score&can-watch=true
 
 [排行]
-内容: 历史观看排行/top系列/……
-url: www.videobox.com/movie/rank-historical
-api: api.videobox.com/movies/rank-[historical]?start=0&limit=50
+内容: 历史点击排行/top系列/……
+url: www.videobox.com/movie/rank-hist
+api: api.videobox.com/movies/rank-[hist]?start=0&limit=50&can-watch=true
 url: www.videobox.com/movie/rank-douban250
-api: api.videobox.com/movies?start=0&limit=50&sort-by=score
+api: api.videobox.com/movies?start=0&limit=50&sort-by=score&can-watch=true
 
 [奖项]
 内容: 奥斯卡金像奖|戛纳国际电影节|威尼斯国际电影节|柏林国际电影节|中国电影金鸡奖|香港电影金像奖|台湾电影金马奖
 url: www.videobox.com/movie/award/奥斯卡金像奖|戛纳国际电影节|威尼斯国际电影节|柏林国际电影节|中国电影金鸡奖|香港电影金像奖|台湾电影金马奖
-api: api.videobox.com/movies/award-[奥斯卡金像奖|戛纳国际电影节|威尼斯国际电影节|柏林国际电影节|中国电影金鸡奖|香港电影金像奖|台湾电影金马奖]
+api: api.videobox.com/movies/award-[奥斯卡金像奖]&sort-by=pubdate|score&can-watch=true
 
 [REST api]
 api.videobox.com/movies/movie-[id]
