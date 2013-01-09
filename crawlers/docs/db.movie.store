@@ -62,12 +62,14 @@ db.movie.store.ensureIndex({"watch_times.historical": -1})
         "number": "tt0111161",
         "lase_updated": "2012-12-29T02:39:54.270Z"
     },
-    "pptv": {
-        "title": "肖申克的救赎",
-        "similarity": 1,
-        "link": "http://movie.pptv.com/123",
-        "definition": "高清",
-        "last_updated": "2012-12-29T02:39:54.270Z"
+    "sources": {
+        "pptv": {
+            "title": "肖申克的救赎",
+            "similarity": 1,
+            "link": "http://movie.pptv.com/123",
+            "definition": "高清",
+            "last_updated": "2012-12-29T02:39:54.270Z"
+        }
     },
     "watch_times": {
         "last_week": 0,
