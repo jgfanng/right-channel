@@ -185,7 +185,7 @@ class IQIYICrawler(object):
                 movie_year, movie_title, playing_page_url, movie_definition = self.__unmatched_queue.get()
                 max_score = 0.0
                 similar_movie = None
-                for movie_info in movie_store_collection.find(fields={'_id': 0, 'id': 1, 'year': 1, 'title': 1, 'alt_titles': 1}, snapshot=True):
+                for movie_info in movie_store_collection.find(fields={'_id': 1, 'year': 1, 'title': 1, 'alt_titles': 1}, snapshot=True):
                     titles = []
                     if 'title' in movie_info:
                         titles.append(movie_info['title'])
@@ -200,7 +200,7 @@ class IQIYICrawler(object):
                             similar_movie = movie_info
 
                 if max_score > 0.0 and similar_movie:
-                    movie_store_collection.update({'id': similar_movie['id']},
+                    movie_store_collection.update({'_id': similar_movie['_id']},
                                                   {'$set': {'sources.iqiyi.title': movie_title, 'sources.iqiyi.similarity': max_score, 'sources.iqiyi.link': playing_page_url,
                                                             'sources.iqiyi.definition': movie_definition, 'sources.iqiyi.last_updated': datetime.datetime.utcnow()}})
                     IQIYICrawler.logger.info('Find a similar movie in douban <%s> <%s> <%s>' % (movie_title, similar_movie.get('title'), max_score))

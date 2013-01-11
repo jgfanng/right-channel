@@ -1,20 +1,21 @@
 =========Indexes============================================================
-db.movie.store.ensureIndex({"id": 1}, {unique: true})
-db.movie.store.ensureIndex({"year": -1})
-db.movie.store.ensureIndex({"title": 1})
-db.movie.store.ensureIndex({"alt_titles": 1})
-db.movie.store.ensureIndex({"year": -1, "title": 1})
-db.movie.store.ensureIndex({"year": -1, "alt_titles": 1})
-db.movie.store.ensureIndex({"types": 1})
-db.movie.store.ensureIndex({"pubdates": -1})
-db.movie.store.ensureIndex({"douban.score": -1})
-db.movie.store.ensureIndex({"watch_times.last_week": -1})
-db.movie.store.ensureIndex({"watch_times.last_month": -1})
-db.movie.store.ensureIndex({"watch_times.historical": -1})
+db.movies.ensureIndex({"douban_id": 1}, {unique: true})
+
+
+db.movies.store.ensureIndex({"year": -1})
+db.movies.store.ensureIndex({"title": 1})
+db.movies.store.ensureIndex({"alt_titles": 1})
+db.movies.store.ensureIndex({"year": -1, "title": 1})
+db.movies.store.ensureIndex({"year": -1, "alt_titles": 1})
+db.movies.store.ensureIndex({"types": 1})
+db.movies.store.ensureIndex({"pubdates": -1})
+db.movies.store.ensureIndex({"douban.score": -1})
+db.movies.store.ensureIndex({"watch_times.last_week": -1})
+db.movies.store.ensureIndex({"watch_times.last_month": -1})
+db.movies.store.ensureIndex({"watch_times.historical": -1})
 
 =========Schema=============================================================
 {
-    "id": "1292052",
     "year": "1994",
     "title": "The Shawshank Redemption",
     "alt_titles": [
@@ -52,18 +53,13 @@ db.movie.store.ensureIndex({"watch_times.historical": -1})
     ],
     "image": "http://img3.douban.com/spic/s1311361.jpg",
     "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
-    "douban": {
-        "score": 9.5,
-        "link": "http://movie.douban.com/subject/1292052",
-        "lase_updated": "2012-12-29T02:39:54.270Z"
-    },
-    "imdb": {
-        "score": 7,
-        "number": "tt0111161",
-        "lase_updated": "2012-12-29T02:39:54.270Z"
-    },
+    "douban_id": "1292052",
+    "douban_rating": 9.5,
+    "imdb_id": "tt0111161",
+    "imdb_rating": 7,
     "sources": {
         "pptv": {
+            "id": "123456",
             "title": "肖申克的救赎",
             "similarity": 1,
             "link": "http://movie.pptv.com/123",

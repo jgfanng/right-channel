@@ -6,6 +6,6 @@ Created on Dec 3, 2012
 from pymongo.connection import Connection
 
 connection = Connection()
-db = connection['videocabindb']
-movie_store_collection = db['movie.store']
-movie_unmatched_collection = db['movie.unmatched']
+db = connection['right-channel']
+movie_collection = db['movie']
+movie_douban_collection = db['movie.douban']

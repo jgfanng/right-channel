@@ -151,7 +151,7 @@ class DoubanCrawler():
                     break
 
                 movie_info = self.__get_movie_info(movie_id)
-                movie_store_collection.update({'id': movie_id}, {'$set': movie_info}, upsert=True)
+                movie_store_collection.update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
 
                 self.__total_movies_crawled += 1
                 DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info['title'], self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
@@ -175,7 +175,7 @@ class DoubanCrawler():
         response_text = response.read()
 
         movie_obj = json.loads(response_text)
-        new_movie_obj = {'id': movie_id}
+        new_movie_obj = {}
         if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] and movie_obj['attrs']['year'][0]:
             new_movie_obj['year'] = movie_obj['attrs']['year'][0].strip()  # Caution: may not be provided
         if 'title' in movie_obj and movie_obj['title']:
@@ -205,7 +205,7 @@ class DoubanCrawler():
         if 'summary' in movie_obj and movie_obj['summary']:
             new_movie_obj['summary'] = movie_obj['summary']
 
-        new_movie_obj['douban'] = {'link': self.__get_movie_page_url(movie_id), 'last_updated': datetime.datetime.utcnow()}
+        new_movie_obj['douban'] = {'id': movie_id, 'link': self.__get_movie_page_url(movie_id), 'last_updated': datetime.datetime.utcnow()}
         if 'rating' in movie_obj and 'average' in movie_obj['rating'] and movie_obj['rating']['average']:
             new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
 

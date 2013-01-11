@@ -1,9 +1,9 @@
 =========Indexes============================================================
-db.movie.source.ensureIndex({"source": 1})
-db.movie.source.ensureIndex({"year": -1})
-db.movie.source.ensureIndex({"title": 1})
-db.movie.source.ensureIndex({"definition": 1})
-db.movie.source.ensureIndex({"source": 1}, {"year": -1}, {"title": 1}, {"definition": 1}, {unique: true})
+db.movies.sources.ensureIndex({"source": 1})
+db.movies.sources.ensureIndex({"year": -1})
+db.movies.sources.ensureIndex({"title": 1})
+db.movies.sources.ensureIndex({"definition": 1})
+db.movies.sources.ensureIndex({"source": 1}, {"year": -1}, {"title": 1}, {"definition": 1}, {unique: true})
 
 =========Schema=============================================================
 {
