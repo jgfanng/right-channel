@@ -1,6 +1,0 @@
-#Sun Jan 13 23:50:14 CST 2013
-eclipse.preferences.version=1
-encoding//crawlers/douban_crawler.py=utf-8
-encoding//crawlers/web_crawler.py=utf-8
-encoding//utils/fuzzy_date_parser.py=utf-8
-encoding/start_douban_crawler.py=utf-8
