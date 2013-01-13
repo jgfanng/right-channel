@@ -4,20 +4,31 @@
 [最新]
 内容: 上映日期最近50部
 url: www.videobox.com/movie/new
-api: api.videobox.com/movies?start=0&limit=50&sort-by=pubdate&online-watch=true&start-date=&end-date=2013-01-01&min-rating=7.0&max-rating=10.0
+api: api.videobox.com/movies?start=0&count=50&sort-by=publish-date&filter=online&start-date=&end-date=2013-01-01&min-douban-rating=7.0&max-douban-rating=10.0
 备注: 过滤已经爬下来，但是未上映的影片。用户可在客户端按评分排序。
 mongo: db.movies.find().sort({"pubdates": -1}).limit(50)
 
 [热门]
-内容: 最近一周/一月点击排行
+内容: 最近一周/一月点击排行/历史点击排行
 url: www.videobox.com/movie/hot
-api: api.videobox.com/movies/rank-[week|month]?start=0&limit=50&online-watch=true
+api: api.videobox.com/movies/hot-[week|month|history]?start=0&count=50
 mongo: db.movies.find({"sources": {"$exists": 1}}).sort({"watch_times.last_week": -1}).skip(0).limit(50)
 
 [分类]
 内容: 类型/地区/年代
-url: www.videobox.com/movie/category?type=爱情&country=美国&year=2012&start=0&limit=50&sort-by=pubdate|rating
-api: api.videobox.com/movies/type-[爱情]/country-[美国]/year-[2012]?start=0&limit=50&sort-by=pubdate|rating&online-watch=true&start-date=2012-01-01&end-date=2013-01-01&min-rating=7.0&max-rating=10.0
+url: www.videobox.com/movie/category?type=爱情&country=美国&year=2012&start=0&count=50&sort-by=publish-date|douban-rating
+api: api.videobox.com/movies?
+type=爱情
+country=美国
+year=2012
+start=0
+limit=50
+sort-by=publish-date|douban-rating
+filter=online
+start-date=2012-01-01
+end-date=2013-01-01
+min-douban-rating=7.0
+max-douban-rating=10.0
 mongo:
 db.movies.find({"year": "2012"}).sort({"pubdates": -1}).skip(0).limit(50)
 db.movies.find({"year": "2012"}).sort({"douban_rating": -1}).skip(0).limit(50)
@@ -32,21 +43,16 @@ db.movies.ensureIndex({"year": -1, "douban_rating": -1})
 db.movies.ensureIndex({"year": -1, "types": 1, "douban_rating": -1})
 
 [排行]
-内容: 历史点击排行/top系列/……
-url: www.videobox.com/movie/rank-[hist|douban250]
-api: api.videobox.com/movies/rank-[hist|douban250]?start=0&limit=50&online-watch=true
+内容: top系列/……
+url: www.videobox.com/movie/douban250
+api: api.videobox.com/movies/douban250?start=0&count=50&filter=online
 mongo: db.movies.find({"sources": {"$exists": 1}}).sort({"watch_times.historical": -1}).skip(0).limit(50)
 
 [奖项]
 内容: 奥斯卡金像奖|戛纳国际电影节|威尼斯国际电影节|柏林国际电影节|中国电影金鸡奖|香港电影金像奖|台湾电影金马奖
 url: www.videobox.com/movie/award/奥斯卡金像奖|戛纳国际电影节|威尼斯国际电影节|柏林国际电影节|中国电影金鸡奖|香港电影金像奖|台湾电影金马奖
-api: api.videobox.com/movies/award-[奥斯卡金像奖]&sort-by=pubdate|rating&online-watch=true
+api: api.videobox.com/movies/award-[奥斯卡金像奖]&sort-by=publish-date|douban-rating&filter=online
 
 [REST api]
-api.videobox.com/movies/movie-[id]
-api.videobox.com/movies/search?query=xxx&start=0&limit=50
-
-
-db.collection.find().sort({"pubdates": -1}).limit(50)
-db.collection.find({"pubdates": {"$gte": "2000-01-01", "$lte": "2012-12-31"}}).sort({"pubdates": -1})
-db.collection.find({"pubdates": {"$gte": "2000-01-01", "$lte": "2012-12-31"}}).sort({"douban_rating": -1})
+api.videobox.com/movies/[id]
+api.videobox.com/movies/search?query=xxx&start=0&count=50

@@ -6,17 +6,17 @@ Created on Nov 26, 2012
 @author: Fang Jiaguo
 '''
 from Queue import Queue
-from crawlers.utils import request
-from crawlers.utils.limited_caller import LimitedCaller
-from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movie_store_collection
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from sets import Set
 from threading import Thread
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-import datetime
+from utils import request
+from utils.fuzzy_date_parser import parse_min_date
+from utils.limited_caller import LimitedCaller
+from utils.log import get_logger
+from utils.settings import collections
 import json
 import md5
 import re
@@ -151,10 +151,10 @@ class DoubanCrawler():
                     break
 
                 movie_info = self.__get_movie_info(movie_id)
-                movie_store_collection.update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
+                collections['movies'].update({'douban_id': movie_id}, {'$set': movie_info}, upsert=True)
 
                 self.__total_movies_crawled += 1
-                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info['title'], self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
+                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info.get('title'), self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
 
             except PyMongoError, e:
                 DoubanCrawler.logger.error('Mongodb error <%s> <%s>' % (e, self.__get_movie_api_url(movie_id)))
@@ -174,42 +174,43 @@ class DoubanCrawler():
         response = self.__movie_api(api_url.encode('utf-8'), query_strings={'apikey': self.apikey}, retry_interval=self.sleep_time)
         response_text = response.read()
 
-        movie_obj = json.loads(response_text)
-        new_movie_obj = {}
-        if 'attrs' in movie_obj and 'year' in movie_obj['attrs'] and movie_obj['attrs']['year'] and movie_obj['attrs']['year'][0]:
-            new_movie_obj['year'] = movie_obj['attrs']['year'][0].strip()  # Caution: may not be provided
-        if 'title' in movie_obj and movie_obj['title']:
-            new_movie_obj['title'] = movie_obj['title'].strip()
-        if 'alt_title' in movie_obj and movie_obj['alt_title']:
-            new_movie_obj['alt_titles'] = [item.strip() for item in movie_obj['alt_title'].split(' / ') if item.strip()]
-        if 'attrs' in movie_obj and 'director' in movie_obj['attrs'] and movie_obj['attrs']['director']:
-            new_movie_obj['directors'] = movie_obj['attrs']['director']
-        if 'attrs' in movie_obj and 'writer' in movie_obj['attrs'] and movie_obj['attrs']['writer']:
-            new_movie_obj['writers'] = movie_obj['attrs']['writer']
-        if 'attrs' in movie_obj and 'cast' in movie_obj['attrs'] and movie_obj['attrs']['cast']:
-            new_movie_obj['casts'] = movie_obj['attrs']['cast']
-        if 'attrs' in movie_obj and 'episodes' in movie_obj['attrs'] and movie_obj['attrs']['episodes'] and movie_obj['attrs']['episodes'][0]:
-            new_movie_obj['episodes'] = movie_obj['attrs']['episodes'][0]  # Caution: may not be an integer
-        if 'attrs' in movie_obj and 'movie_type' in movie_obj['attrs'] and movie_obj['attrs']['movie_type']:
-            new_movie_obj['types'] = movie_obj['attrs']['movie_type']
-        if 'attrs' in movie_obj and 'country' in movie_obj['attrs'] and movie_obj['attrs']['country']:
-            new_movie_obj['countries'] = movie_obj['attrs']['country']
-        if 'attrs' in movie_obj and 'language' in movie_obj['attrs'] and movie_obj['attrs']['language']:
-            new_movie_obj['languages'] = movie_obj['attrs']['language']
-        if 'attrs' in movie_obj and 'pubdate' in movie_obj['attrs'] and movie_obj['attrs']['pubdate']:
-            new_movie_obj['pubdates'] = movie_obj['attrs']['pubdate']
-        if 'attrs' in movie_obj and 'movie_duration' in movie_obj['attrs'] and movie_obj['attrs']['movie_duration']:
-            new_movie_obj['durations'] = movie_obj['attrs']['movie_duration']
-        if 'image' in movie_obj and movie_obj['image']:
-            new_movie_obj['image'] = movie_obj['image']
-        if 'summary' in movie_obj and movie_obj['summary']:
-            new_movie_obj['summary'] = movie_obj['summary']
+        movie_info = json.loads(response_text)
+        new_movie_info = {'douban_id': movie_id}
+        if 'attrs' in movie_info and 'year' in movie_info['attrs'] and movie_info['attrs']['year'] and movie_info['attrs']['year'][0]:
+            new_movie_info['year'] = movie_info['attrs']['year'][0].strip()  # Caution: may not be provided
+        if 'title' in movie_info and movie_info['title']:
+            new_movie_info['title'] = movie_info['title'].strip()
+        if 'alt_title' in movie_info and movie_info['alt_title']:
+            new_movie_info['alt_title'] = [item.strip() for item in movie_info['alt_title'].split(' / ') if item.strip()]
+        if 'attrs' in movie_info and 'director' in movie_info['attrs'] and movie_info['attrs']['director']:
+            new_movie_info['director'] = movie_info['attrs']['director']
+        if 'attrs' in movie_info and 'writer' in movie_info['attrs'] and movie_info['attrs']['writer']:
+            new_movie_info['writer'] = movie_info['attrs']['writer']
+        if 'attrs' in movie_info and 'cast' in movie_info['attrs'] and movie_info['attrs']['cast']:
+            new_movie_info['cast'] = movie_info['attrs']['cast']
+        if 'attrs' in movie_info and 'episodes' in movie_info['attrs'] and movie_info['attrs']['episodes'] and movie_info['attrs']['episodes'][0]:
+            new_movie_info['episodes'] = movie_info['attrs']['episodes'][0]  # Caution: may not be an integer
+        if 'attrs' in movie_info and 'movie_type' in movie_info['attrs'] and movie_info['attrs']['movie_type']:
+            new_movie_info['type'] = movie_info['attrs']['movie_type']
+        if 'attrs' in movie_info and 'country' in movie_info['attrs'] and movie_info['attrs']['country']:
+            new_movie_info['country'] = movie_info['attrs']['country']
+        if 'attrs' in movie_info and 'language' in movie_info['attrs'] and movie_info['attrs']['language']:
+            new_movie_info['language'] = movie_info['attrs']['language']
+        if 'attrs' in movie_info and 'pubdate' in movie_info['attrs'] and movie_info['attrs']['pubdate']:
+            new_movie_info['pubdate'] = movie_info['attrs']['pubdate']
+            min_pubdate = parse_min_date(new_movie_info['pubdate'])
+            if min_pubdate:
+                new_movie_info['min_pubdate'] = parse_min_date(new_movie_info['pubdate'])
+        if 'attrs' in movie_info and 'movie_duration' in movie_info['attrs'] and movie_info['attrs']['movie_duration']:
+            new_movie_info['duration'] = movie_info['attrs']['movie_duration']
+        if 'image' in movie_info and movie_info['image']:
+            new_movie_info['image'] = movie_info['image']
+        if 'summary' in movie_info and movie_info['summary']:
+            new_movie_info['summary'] = movie_info['summary']
+        if 'rating' in movie_info and 'average' in movie_info['rating'] and movie_info['rating']['average']:
+            new_movie_info['douban_rating'] = float(movie_info['rating']['average'])
 
-        new_movie_obj['douban'] = {'id': movie_id, 'link': self.__get_movie_page_url(movie_id), 'last_updated': datetime.datetime.utcnow()}
-        if 'rating' in movie_obj and 'average' in movie_obj['rating'] and movie_obj['rating']['average']:
-            new_movie_obj['douban']['score'] = float(movie_obj['rating']['average'])
-
-        return new_movie_obj
+        return new_movie_info
 
     def __get_movie_api_url(self, movie_id):
         '''

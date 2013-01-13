@@ -3,7 +3,7 @@ python包结构:package/module
 正则表达式
 unicode vs utf-8 vs ASCII
 不调用douban api，只爬页面，解析页面，会引起403 Forbidden。爬页面，抽取链接，如果链接是电影，立即调用api获取电影信息，实验结果每分钟25个movie，每天36000个。
-
+mongodb启动不了
 
 用户输入提示？
 http://antirez.com/post/autocomplate-with-redis.html

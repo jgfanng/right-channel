@@ -3,7 +3,7 @@ Created on Jan 10, 2013
 
 @author: Fang Jiaguo
 '''
-from base_handler import BaseHandler
+from handlers.base_handler import BaseHandler
 import tornado.web
 
 class DefaultHandler(BaseHandler):
