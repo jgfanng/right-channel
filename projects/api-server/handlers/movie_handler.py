@@ -20,7 +20,7 @@ class MovieHandler(BaseHandler):
 
     def write_error(self, status_code, **kwargs):
         if status_code == 404:
-            self.finish({'message': 'Movie not found'})
+            self.finish({'message': 'Movie Not Found'})
         else:
             super(MovieHandler, self).write_error(status_code, **kwargs)
 

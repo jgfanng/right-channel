@@ -11,39 +11,39 @@ import tornado.web
 
 class HotHandler(BaseHandler):
     @tornado.web.asynchronous
-    def get(self, hot_type):
-        if hot_type == 'week':
+    def get(self, period):
+        if period == 'week':
             sort_by = [('watch_times.last_week', -1)]
-        elif hot_type == 'month':
+        elif period == 'month':
             sort_by = [('watch_times.last_month', -1)]
-        elif hot_type == 'history':
+        elif period == 'history':
             sort_by = [('watch_times.history', -1)]
 
-        self.__start = self.get_argument('start', None)
-        self.__count = self.get_argument('count', None)
-        if self.__start:
+        start = self.get_argument('start', None)
+        count = self.get_argument('count', None)
+        if start:
             try:
-                self.__start = int(self.__start)
-                if self.__start < 0:
-                    self.__start = 0
+                start = int(start)
+                if start < 0:
+                    start = 0
             except:
-                self.__start = 0
+                start = 0
         else:
-            self.__start = 0
-        if self.__count:
+            start = 0
+        if count:
             try:
-                self.__count = int(self.__count)
-                if self.__count <= 0 or self.__count > self.config['movie']['response']['max_count']:
-                    self.__count = self.config['movie']['response']['max_count']
+                count = int(count)
+                if count <= 0 or count > settings['movie']['response']['max_count']:
+                    count = settings['movie']['response']['max_count']
             except:
-                self.__count = self.config['movie']['response']['max_count']
+                count = settings['movie']['response']['max_count']
         else:
-            self.__count = self.config['movie']['response']['max_count']
+            count = settings['movie']['response']['max_count']
 
         collections['movies'].find(
             fields=settings['movie']['response']['verbose'],
-            skip=self.__start,
-            limit=self.__count,
+            skip=start,
+            limit=count,
             sort=sort_by,
             callback=self._on_response)
 
@@ -51,7 +51,7 @@ class HotHandler(BaseHandler):
         if error:
             raise tornado.web.HTTPError(500)
 
-        result = {'start': self.__start, 'count': self.__count, 'movies': []}
+        result = {'movies': []}
         for movie in response:
             movie['id'] = movie.pop('_id')
             result['movies'].append(movie)

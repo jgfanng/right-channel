@@ -64,5 +64,6 @@ db.movies.ensureIndex({"douban_id": 1}, {unique: true})
                 "total": 0
             }
         ]
-    }
+    },
+    "_pubdate": "1994-09-23T00:00:00.000Z"
 }

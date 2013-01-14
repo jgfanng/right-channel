@@ -18,11 +18,11 @@ class MoviesHandler(BaseHandler):
         country = self.get_argument('country', None)
         min_douban_rating = self.get_argument('min-douban-rating', None)
         max_douban_rating = self.get_argument('max-douban-rating', None)
-        start_date = self.get_argument('start-date', None)
-        end_date = self.get_argument('end-date', None)
+        min_pubdate = self.get_argument('min-pubdate', None)
+        max_pubdate = self.get_argument('max-pubdate', None)
         filter = self.get_argument('filter', None)
-        self.__start = self.get_argument('start', None)
-        self.__count = self.get_argument('count', None)
+        start = self.get_argument('start', None)
+        count = self.get_argument('count', None)
         sort_by = self.get_argument('sort-by', None)
 
         query = {}
@@ -51,47 +51,47 @@ class MoviesHandler(BaseHandler):
                 query['douban_rating'] = {'$lte': max_douban_rating}
             except:
                 pass
-        if start_date and end_date:
+        if min_pubdate and max_pubdate:
             try:
-                start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-                end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
-                query['min_pubdate'] = {'$gte': start_date, '$lte': end_date}
+                min_pubdate = datetime.datetime.strptime(min_pubdate, '%Y-%m-%d')
+                max_pubdate = datetime.datetime.strptime(max_pubdate, '%Y-%m-%d')
+                query['_pubdate'] = {'$gte': min_pubdate, '$lte': max_pubdate}
             except:
                 pass
-        elif start_date:
+        elif min_pubdate:
             try:
-                start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-                query['min_pubdate'] = {'$gte': start_date}
+                min_pubdate = datetime.datetime.strptime(min_pubdate, '%Y-%m-%d')
+                query['_pubdate'] = {'$gte': min_pubdate}
             except:
                 pass
-        elif end_date:
+        elif max_pubdate:
             try:
-                end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
-                query['min_pubdate'] = {'$lte': end_date}
+                max_pubdate = datetime.datetime.strptime(max_pubdate, '%Y-%m-%d')
+                query['_pubdate'] = {'$lte': max_pubdate}
             except:
                 pass
         if filter == 'online':
             query['source'] = {'$exists': 1}
-        if self.__start:
+        if start:
             try:
-                self.__start = int(self.__start)
-                if self.__start < 0:
-                    self.__start = 0
+                start = int(start)
+                if start < 0:
+                    start = 0
             except:
-                self.__start = 0
+                start = 0
         else:
-            self.__start = 0
-        if self.__count:
+            start = 0
+        if count:
             try:
-                self.__count = int(self.__count)
-                if self.__count <= 0 or self.__count > settings['movie']['response']['max_count']:
-                    self.__count = settings['movie']['response']['max_count']
+                count = int(count)
+                if count <= 0 or count > settings['movie']['response']['max_count']:
+                    count = settings['movie']['response']['max_count']
             except:
-                self.__count = settings['movie']['response']['max_count']
+                count = settings['movie']['response']['max_count']
         else:
-            self.__count = settings['movie']['response']['max_count']
+            count = settings['movie']['response']['max_count']
         if sort_by == 'publish-date':
-            sort_by = [('min_pubdate', -1)]
+            sort_by = [('_pubdate', -1)]
         elif sort_by == 'douban-rating':
             sort_by = [('douban_rating', -1)]
         else:
@@ -100,8 +100,8 @@ class MoviesHandler(BaseHandler):
         collections['movies'].find(
             query,
             fields=settings['movie']['response']['verbose'],
-            skip=self.__start,
-            limit=self.__count,
+            skip=start,
+            limit=count,
             sort=sort_by,
             callback=self._on_response)
 
@@ -109,7 +109,7 @@ class MoviesHandler(BaseHandler):
         if error:
             raise tornado.web.HTTPError(500)
 
-        result = {'start': self.__start, 'count': self.__count, 'movies': []}
+        result = {'movies': []}
         for movie in response:
             movie['id'] = movie.pop('_id')
             result['movies'].append(movie)

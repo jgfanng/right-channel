@@ -200,7 +200,7 @@ class DoubanCrawler():
             new_movie_info['pubdate'] = movie_info['attrs']['pubdate']
             min_pubdate = parse_min_date(new_movie_info['pubdate'])
             if min_pubdate:
-                new_movie_info['min_pubdate'] = parse_min_date(new_movie_info['pubdate'])
+                new_movie_info['_pubdate'] = parse_min_date(new_movie_info['pubdate'])
         if 'attrs' in movie_info and 'movie_duration' in movie_info['attrs'] and movie_info['attrs']['movie_duration']:
             new_movie_info['duration'] = movie_info['attrs']['movie_duration']
         if 'image' in movie_info and movie_info['image']:

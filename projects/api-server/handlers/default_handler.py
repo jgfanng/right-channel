@@ -30,4 +30,4 @@ class DefaultHandler(BaseHandler):
 
     def write_error(self, status_code, **kwargs):
         if status_code == 404:
-            self.finish({'message': 'Page Not Found'})
+            self.finish({'message': 'Resource Not Found'})
