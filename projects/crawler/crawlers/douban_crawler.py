@@ -191,16 +191,16 @@ class DoubanCrawler():
         if 'attrs' in movie_info and 'episodes' in movie_info['attrs'] and movie_info['attrs']['episodes'] and movie_info['attrs']['episodes'][0]:
             new_movie_info['episodes'] = movie_info['attrs']['episodes'][0]  # Caution: may not be an integer
         if 'attrs' in movie_info and 'movie_type' in movie_info['attrs'] and movie_info['attrs']['movie_type']:
-            new_movie_info['type'] = movie_info['attrs']['movie_type']
+            new_movie_info['genre'] = movie_info['attrs']['movie_type']
         if 'attrs' in movie_info and 'country' in movie_info['attrs'] and movie_info['attrs']['country']:
             new_movie_info['country'] = movie_info['attrs']['country']
         if 'attrs' in movie_info and 'language' in movie_info['attrs'] and movie_info['attrs']['language']:
             new_movie_info['language'] = movie_info['attrs']['language']
         if 'attrs' in movie_info and 'pubdate' in movie_info['attrs'] and movie_info['attrs']['pubdate']:
-            new_movie_info['pubdate'] = movie_info['attrs']['pubdate']
-            min_pubdate = parse_min_date(new_movie_info['pubdate'])
-            if min_pubdate:
-                new_movie_info['_pubdate'] = parse_min_date(new_movie_info['pubdate'])
+            new_movie_info['release_date'] = movie_info['attrs']['pubdate']
+            min_release_date = parse_min_date(new_movie_info['release_date'])
+            if min_release_date:
+                new_movie_info['_release_date'] = min_release_date
         if 'attrs' in movie_info and 'movie_duration' in movie_info['attrs'] and movie_info['attrs']['movie_duration']:
             new_movie_info['duration'] = movie_info['attrs']['movie_duration']
         if 'image' in movie_info and movie_info['image']:

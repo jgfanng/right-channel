@@ -13,11 +13,11 @@ class HotHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self, period):
         if period == 'week':
-            sort_by = [('watch_times.last_week', -1)]
+            sort_by = [('view.last_week', -1)]
         elif period == 'month':
-            sort_by = [('watch_times.last_month', -1)]
+            sort_by = [('view.last_month', -1)]
         elif period == 'history':
-            sort_by = [('watch_times.history', -1)]
+            sort_by = [('view.history', -1)]
 
         start = self.get_argument('start', None)
         count = self.get_argument('count', None)

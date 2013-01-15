@@ -16,6 +16,8 @@ regexes = [
     ]
 
 def parse_date(date_string):
+    if isinstance(date_string, unicode):
+        date_string = date_string.encode('utf-8')
     for regex in regexes:
         r = regex.search(date_string)
         if r:

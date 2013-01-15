@@ -14,12 +14,12 @@ class MoviesHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self):
         year = self.get_argument('year', None)
-        type = self.get_argument('type', None)
+        genre = self.get_argument('genre', None)
         country = self.get_argument('country', None)
         min_douban_rating = self.get_argument('min-douban-rating', None)
         max_douban_rating = self.get_argument('max-douban-rating', None)
-        min_pubdate = self.get_argument('min-pubdate', None)
-        max_pubdate = self.get_argument('max-pubdate', None)
+        min_release_date = self.get_argument('min-release-date', None)
+        max_release_date = self.get_argument('max-release-date', None)
         filter = self.get_argument('filter', None)
         start = self.get_argument('start', None)
         count = self.get_argument('count', None)
@@ -28,8 +28,8 @@ class MoviesHandler(BaseHandler):
         query = {}
         if year:
             query['year'] = year
-        if type:
-            query['type'] = type
+        if genre:
+            query['genre'] = genre
         if country:
             query['country'] = country
         if min_douban_rating and max_douban_rating:
@@ -51,23 +51,23 @@ class MoviesHandler(BaseHandler):
                 query['douban_rating'] = {'$lte': max_douban_rating}
             except:
                 pass
-        if min_pubdate and max_pubdate:
+        if min_release_date and max_release_date:
             try:
-                min_pubdate = datetime.datetime.strptime(min_pubdate, '%Y-%m-%d')
-                max_pubdate = datetime.datetime.strptime(max_pubdate, '%Y-%m-%d')
-                query['_pubdate'] = {'$gte': min_pubdate, '$lte': max_pubdate}
+                min_release_date = datetime.datetime.strptime(min_release_date, '%Y-%m-%d')
+                max_release_date = datetime.datetime.strptime(max_release_date, '%Y-%m-%d')
+                query['_release_date'] = {'$gte': min_release_date, '$lte': max_release_date}
             except:
                 pass
-        elif min_pubdate:
+        elif min_release_date:
             try:
-                min_pubdate = datetime.datetime.strptime(min_pubdate, '%Y-%m-%d')
-                query['_pubdate'] = {'$gte': min_pubdate}
+                min_release_date = datetime.datetime.strptime(min_release_date, '%Y-%m-%d')
+                query['_release_date'] = {'$gte': min_release_date}
             except:
                 pass
-        elif max_pubdate:
+        elif max_release_date:
             try:
-                max_pubdate = datetime.datetime.strptime(max_pubdate, '%Y-%m-%d')
-                query['_pubdate'] = {'$lte': max_pubdate}
+                max_release_date = datetime.datetime.strptime(max_release_date, '%Y-%m-%d')
+                query['_release_date'] = {'$lte': max_release_date}
             except:
                 pass
         if filter == 'online':
@@ -90,8 +90,8 @@ class MoviesHandler(BaseHandler):
                 count = settings['movie']['response']['max_count']
         else:
             count = settings['movie']['response']['max_count']
-        if sort_by == 'publish-date':
-            sort_by = [('_pubdate', -1)]
+        if sort_by == 'release-date':
+            sort_by = [('_release_date', -1)]
         elif sort_by == 'douban-rating':
             sort_by = [('douban_rating', -1)]
         else:
