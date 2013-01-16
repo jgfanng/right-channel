@@ -5,6 +5,6 @@ Created on Jan 16, 2013
 '''
 from handlers.base_handler import BaseHandler
 
-class HomeHandler(BaseHandler):
+class MovieHandler(BaseHandler):
     def get(self):
-        self.render('index.html')
+        self.render('movie/new.html')
