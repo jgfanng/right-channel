@@ -16,8 +16,10 @@ class Application(tornado.web.Application):
             (r'/movies', MoviesHandler),
             (r'/movies/hot-(week|month|history)', HotHandler),
             (r'/(.*)', DefaultHandler)
-            ]
-        settings = dict(debug=True)
+        ]
+        settings = {
+            'debug': True,
+        }
         tornado.web.Application.__init__(self, handlers, **settings)
 
 def main():
