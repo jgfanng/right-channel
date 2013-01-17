@@ -3,15 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Right Channel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="{{ static_url('css/bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ static_url('css/bootstrap-responsive.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_url('css/style.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ static_url('css/bootstrap.min.css') }}">
 </head>
 <body>
   {% include navbar.html %}
   <div class="container">{% block content %} {% end %} {% include foot.html %}</div>
   <!-- Placed at the end of the document so the pages load faster -->
   <script type="text/javascript" src="{{ static_url('js/jquery-1.9.0.min.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/bootstrap.min.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/bootstrap.js') }}"></script>
 </body>
 </html>
-

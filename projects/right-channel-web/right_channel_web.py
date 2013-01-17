@@ -5,7 +5,8 @@ Created on Jan 16, 2013
 '''
 from handlers.default_handler import DefaultHandler
 from handlers.home_handler import HomeHandler
-from handlers.movie_handler import MovieHandler
+from handlers.hot_movie_handler import HotMovieHandler
+from handlers.new_movie_handler import NewMovieHandler
 import os
 import tornado.web
 
@@ -13,8 +14,9 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', HomeHandler),
-            (r'/movie', MovieHandler),
-            (r'/movie/new', MovieHandler),
+            (r'/movie', HotMovieHandler),
+            (r'/movie/hot', HotMovieHandler),
+            (r'/movie/new', NewMovieHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

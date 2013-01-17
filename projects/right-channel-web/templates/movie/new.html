@@ -4,4 +4,47 @@
 
 {% include navbar.html %}
 
+  <table class="table table-condensed table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>上映日期</th>
+        <th>片名</th>
+        <th>国家</th>
+        <th>豆瓣评分</th>
+        <th>资源</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set index = 1 %}
+      {% for movie in movies %}
+        <tr>
+          <td>{{ index }}</td>
+          {% if 'release_date' in movie and movie['release_date'] %}
+            <td>{{ ' / '.join(movie['release_date']) }}</td>
+          {% else %}
+            <td>未知</td>
+          {% end %}
+          {% if 'title' in movie %}
+            <td>{{ movie['title'] }}</td>
+          {% else %}
+            <td>未知</td>
+          {% end %}
+          {% if 'country' in movie and movie['country'] %}
+            <td>{{ ' / '.join(movie['country']) }}</td>
+          {% else %}
+            <td>未知</td>
+          {% end %}
+          {% if 'douban_rating' in movie %}
+            <td>{{ movie['douban_rating'] }}</td>
+          {% else %}
+            <td>未知</td>
+          {% end %}
+          <td>占位</td>
+        </tr>
+        {% set index = index + 1 %}
+      {% end %}
+    </tbody>
+  </table>
+
 {% end %}
