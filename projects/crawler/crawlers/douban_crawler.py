@@ -9,18 +9,17 @@ from Queue import Queue
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from sets import Set
+from settings import collections
 from threading import Thread
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
+from util import contains_cn_char, parse_min_date
 from utils import request
-from utils.fuzzy_date_parser import parse_min_date
 from utils.limited_caller import LimitedCaller
 from utils.log import get_logger
-from utils.settings import collections
 import json
 import md5
 import re
-import time
 
 # douban tag url regular expression
 TAG_URL_RE = re.compile('^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$')
@@ -52,8 +51,10 @@ class DoubanCrawler():
         self.__movie_id_queue = Queue()
         # total movies crawled
         self.__total_movies_crawled = 0
-        # Throttle douban api call to 40 apis within 60s.
+        # Throttle douban api call to 40 apis per 60s.
         self.__movie_api = LimitedCaller(request.get, 60, 40)
+        # Throttle douban page crawl to 40 per 60s.
+        self.__crawl_douban_page = LimitedCaller(request.get, 60, 40)
 
     def start_crawl(self):
         while True:
@@ -96,11 +97,9 @@ class DoubanCrawler():
                     # push a special marker to indicate reaching the end of crawling
                     self.__movie_id_queue.put(EOC)
                     break
-                response = request.get(url_to_crawl.encode('utf-8'), retry_interval=self.sleep_time)
+                response = self.__crawl_douban_page(url_to_crawl.encode('utf-8'), retry_interval=self.sleep_time)
                 response_text = response.read()
                 DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
-                if self.sleep_time > 0:
-                    time.sleep(self.sleep_time)
 
                 html_element = fromstring(response_text)
                 html_element.make_links_absolute(url_to_crawl)
@@ -154,7 +153,7 @@ class DoubanCrawler():
                 collections['movies'].update({'douban_id': movie_id}, {'$set': movie_info}, upsert=True)
 
                 self.__total_movies_crawled += 1
-                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info.get('title'), self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
+                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info.get('cn_title'), self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
 
             except PyMongoError, e:
                 DoubanCrawler.logger.error('Mongodb error <%s> <%s>' % (e, self.__get_movie_api_url(movie_id)))
@@ -176,37 +175,60 @@ class DoubanCrawler():
 
         movie_info = json.loads(response_text)
         new_movie_info = {'douban_id': movie_id}
+
         if 'attrs' in movie_info and 'year' in movie_info['attrs'] and movie_info['attrs']['year'] and movie_info['attrs']['year'][0]:
             new_movie_info['year'] = movie_info['attrs']['year'][0].strip()  # Caution: may not be provided
+
         if 'title' in movie_info and movie_info['title']:
-            new_movie_info['title'] = movie_info['title'].strip()
+            if contains_cn_char(movie_info['title'].strip()):
+                new_movie_info['cn_title'] = movie_info['title'].strip()
+            else:
+                new_movie_info['en_title'] = movie_info['title'].strip()
+
         if 'alt_title' in movie_info and movie_info['alt_title']:
-            new_movie_info['alt_title'] = [item.strip() for item in movie_info['alt_title'].split(' / ') if item.strip()]
+            alt_titles = [item.strip() for item in movie_info['alt_title'].split(' / ') if item.strip()]
+            if alt_titles:
+                if 'en_title' in new_movie_info and contains_cn_char(alt_titles[0]):
+                    new_movie_info['cn_title'] = alt_titles.pop(0)
+                if alt_titles:
+                    new_movie_info['alt_title'] = alt_titles
+
         if 'attrs' in movie_info and 'director' in movie_info['attrs'] and movie_info['attrs']['director']:
             new_movie_info['director'] = movie_info['attrs']['director']
+
         if 'attrs' in movie_info and 'writer' in movie_info['attrs'] and movie_info['attrs']['writer']:
             new_movie_info['writer'] = movie_info['attrs']['writer']
+
         if 'attrs' in movie_info and 'cast' in movie_info['attrs'] and movie_info['attrs']['cast']:
             new_movie_info['cast'] = movie_info['attrs']['cast']
+
         if 'attrs' in movie_info and 'episodes' in movie_info['attrs'] and movie_info['attrs']['episodes'] and movie_info['attrs']['episodes'][0]:
             new_movie_info['episodes'] = movie_info['attrs']['episodes'][0]  # Caution: may not be an integer
+
         if 'attrs' in movie_info and 'movie_type' in movie_info['attrs'] and movie_info['attrs']['movie_type']:
             new_movie_info['genre'] = movie_info['attrs']['movie_type']
+
         if 'attrs' in movie_info and 'country' in movie_info['attrs'] and movie_info['attrs']['country']:
             new_movie_info['country'] = movie_info['attrs']['country']
+
         if 'attrs' in movie_info and 'language' in movie_info['attrs'] and movie_info['attrs']['language']:
             new_movie_info['language'] = movie_info['attrs']['language']
+
         if 'attrs' in movie_info and 'pubdate' in movie_info['attrs'] and movie_info['attrs']['pubdate']:
             new_movie_info['release_date'] = movie_info['attrs']['pubdate']
             min_release_date = parse_min_date(new_movie_info['release_date'])
             if min_release_date:
                 new_movie_info['_release_date'] = min_release_date
+
         if 'attrs' in movie_info and 'movie_duration' in movie_info['attrs'] and movie_info['attrs']['movie_duration']:
             new_movie_info['duration'] = movie_info['attrs']['movie_duration']
+
         if 'image' in movie_info and movie_info['image']:
             new_movie_info['image'] = movie_info['image']
+
         if 'summary' in movie_info and movie_info['summary']:
             new_movie_info['summary'] = movie_info['summary']
+
         if 'rating' in movie_info and 'average' in movie_info['rating'] and movie_info['rating']['average']:
             new_movie_info['douban_rating'] = float(movie_info['rating']['average'])
 

@@ -1,0 +1,17 @@
+<div class="btn-toolbar pull-right">
+  <div class="btn-group">
+    {% if view_format == 'image-text' %}
+      <a class="btn disabled" title="图文模式"><i class="icon-th"></i></a>
+      <a class="btn" title="文本模式" href="?view-format=text"><i class="icon-align-justify"></i></a>
+      <a class="btn" title="图片模式" href="?view-format=image"><i class="icon-th-large"></i></a>
+    {% elif view_format == 'text' %}
+      <a class="btn" title="图文模式" href="?view-format=image-text"><i class="icon-th"></i></a>
+      <a class="btn disabled" title="文本模式"><i class="icon-align-justify"></i></a>
+      <a class="btn" title="图片模式" href="?view-format=image"><i class="icon-th-large"></i></a>
+    {% elif view_format == 'image' %}
+      <a class="btn" title="图文模式" href="?view-format=image-text"><i class="icon-th"></i></a>
+      <a class="btn" title="文本模式" href="?view-format=text"><i class="icon-align-justify"></i></a>
+      <a class="btn disabled" title="图片模式"><i class="icon-th-large"></i></a>
+    {% end %}
+  </div>
+</div>

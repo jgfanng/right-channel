@@ -9,7 +9,8 @@
         "response": {
             "verbose": {
                 "year": 1,
-                "title": 1,
+                "cn_title": 1,
+                "en_title": 1,
                 "alt_title": 1,
                 "director": 1,
                 "writer": 1,
@@ -18,13 +19,12 @@
                 "country": 1,
                 "language": 1,
                 "release_date": 1,
+                "_release_date": 1,
                 "duration": 1,
                 "image": 1,
                 "summary": 1,
                 "douban_id": 1,
                 "douban_rating": 1,
-                "imdb_id": 1,
-                "imdb_rating": 1,
                 "source": 1
             },
             "concise": {},

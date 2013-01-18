@@ -4,10 +4,9 @@ db.movies.ensureIndex({"douban_id": 1}, {unique: true})
 =========Schema=============================================================
 {
     "year": "1994",
-    "title": "The Shawshank Redemption",
+    "zh_title": "肖申克的救赎",
+    "en_title": "The Shawshank Redemption",
     "alt_title": [
-        "肖申克的救赎",
-        "The Shawshank Redemption",
         "刺激1995(台)"
     ],
     "director": [
@@ -42,8 +41,6 @@ db.movies.ensureIndex({"douban_id": 1}, {unique: true})
     "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
     "douban_id": "1292052",
     "douban_rating": 9.5,
-    "imdb_id": "tt0111161",
-    "imdb_rating": 7,
     "source": {
         "pptv": {
             "id": "123456",
