@@ -27,4 +27,3 @@ class NewMovieHandler(BaseHandler):
             raise tornado.web.HTTPError(500)
 
         self.render('movie/new.html', movies=response, view_format=self.__view_format)
-#        self.render('movie/new.html', movies=response, view_format='text')

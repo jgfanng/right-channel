@@ -2,12 +2,7 @@ body {
   padding-top: 45px;
 }
 
-@media ( max-width : 980px) { /* Remove any padding from the body */
-  body {
-    padding-top: 0;
-  }
-}
-
+/* Override table style */
 .table th,
 .table td {
   border-top: 1px dashed #ababab;
@@ -21,6 +16,41 @@ body {
 .table-hover tbody tr:hover td,
 .table-hover tbody tr:hover th {
   background-color: #dce9f9;
+}
+
+/* Override thumbnail style */
+.thumbnails > li {
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-bottom: 16px;
+}
+
+.thumbnail {
+  padding: 1px;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 0px;
+     -moz-border-radius: 0px;
+          border-radius: 0px;
+  position: relative;
+}
+
+div.thumbnail:hover {
+  border-color: #0088cc;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+     -moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+          box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+}
+
+.movie-caption {
+  bottom: 1px;
+  left: 1px;
+  position: absolute;
+  color: white;
+  width: 120px;
+  height: 20px;
+  background-color: rgba(5,5,5,.7);
+  text-align: center;
+  font-size: 13px;
 }
 
 /* th {

@@ -19,7 +19,7 @@ def ispunctuation(c):
 
     return True if unicodedata.category(c).startswith('P') else False
 
-def contains_cn_char(s):
+def possibly_chinese(s):
     '''
     Roughly detect whether a unicode string contains Chinese characters. If contains, return True.
     http://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
@@ -29,16 +29,16 @@ def contains_cn_char(s):
     # 1. ASCII characters for English (c < 128)
     # 2. Chinese characters: (0x4e00 <= c <= 0x9fff)
     # 3. Punctuation
-    contains_cn_char = False
+    possibly_chinese = False
     for c in s:
         if 0x4e00 <= ord(c) <= 0x9fff:
-            contains_cn_char = True
+            possibly_chinese = True
         elif ord(c) < 128 or ispunctuation(c):
             continue
         else:
             return False
 
-    return contains_cn_char
+    return possibly_chinese
 
 regexes = [
     re.compile('(?P<year>\d{4})[-./ ]+(?P<month>\d{1,2})[-./ ]+(?P<day>\d{1,2})'),

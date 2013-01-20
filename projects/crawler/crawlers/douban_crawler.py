@@ -13,7 +13,7 @@ from settings import collections
 from threading import Thread
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from util import contains_cn_char, parse_min_date
+from util import possibly_chinese, parse_min_date
 from utils import request
 from utils.limited_caller import LimitedCaller
 from utils.log import get_logger
@@ -180,7 +180,7 @@ class DoubanCrawler():
             new_movie_info['year'] = movie_info['attrs']['year'][0].strip()  # Caution: may not be provided
 
         if 'title' in movie_info and movie_info['title']:
-            if contains_cn_char(movie_info['title'].strip()):
+            if possibly_chinese(movie_info['title'].strip()):
                 new_movie_info['cn_title'] = movie_info['title'].strip()
             else:
                 new_movie_info['en_title'] = movie_info['title'].strip()
@@ -188,7 +188,7 @@ class DoubanCrawler():
         if 'alt_title' in movie_info and movie_info['alt_title']:
             alt_titles = [item.strip() for item in movie_info['alt_title'].split(' / ') if item.strip()]
             if alt_titles:
-                if 'en_title' in new_movie_info and contains_cn_char(alt_titles[0]):
+                if 'en_title' in new_movie_info and possibly_chinese(alt_titles[0]):
                     new_movie_info['cn_title'] = alt_titles.pop(0)
                 if alt_titles:
                     new_movie_info['alt_title'] = alt_titles
