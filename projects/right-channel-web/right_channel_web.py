@@ -6,6 +6,7 @@ Created on Jan 16, 2013
 from handlers.default_handler import DefaultHandler
 from handlers.home_handler import HomeHandler
 from handlers.hot_movie_handler import HotMovieHandler
+from handlers.movie_details_handler import MovieDetailsHandler
 from handlers.new_movie_handler import NewMovieHandler
 import os
 import tornado.web
@@ -17,6 +18,7 @@ class Application(tornado.web.Application):
             (r'/movie', HotMovieHandler),
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/new', NewMovieHandler),
+            (r'/movie/([0-9a-f]{24})', MovieDetailsHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

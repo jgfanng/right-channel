@@ -7,4 +7,4 @@ from handlers.base_handler import BaseHandler
 
 class HotMovieHandler(BaseHandler):
     def get(self):
-        self.render('movie/hot.html')
+        self.render('movie/hot_page.html')

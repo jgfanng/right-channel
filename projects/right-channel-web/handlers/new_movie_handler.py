@@ -26,4 +26,4 @@ class NewMovieHandler(BaseHandler):
         if error:
             raise tornado.web.HTTPError(500)
 
-        self.render('movie/new.html', movies=response, view_format=self.__view_format)
+        self.render('movie/new_page.html', movies=response, view_format=self.__view_format)

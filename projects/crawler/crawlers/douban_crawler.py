@@ -232,6 +232,9 @@ class DoubanCrawler():
         if 'rating' in movie_info and 'average' in movie_info['rating'] and movie_info['rating']['average']:
             new_movie_info['douban_rating'] = float(movie_info['rating']['average'])
 
+        if 'rating' in movie_info and 'numRaters' in movie_info['rating']:
+            new_movie_info['douban_num_raters'] = float(movie_info['rating']['numRaters'])
+
         return new_movie_info
 
     def __get_movie_api_url(self, movie_id):

@@ -1,19 +1,24 @@
+<div class="toolbox">
+  <div class="pull-right">
+    {% include view_format_switcher.html %}
+  </div>
+</div>
+
 <div class="row-fluid">
   <ul class="thumbnails">
     {% for movie in movies %}
       <li>
         <div class="thumbnail">
-          {% if 'cn_title' in movie %}
-            {% set title = movie['cn_title'] %}
-          {% elif 'en_title' in movie %}
-            {% set title = movie['en_title'] %}
-          {% else %}
-            {% set title = '未知' %}
-          {% end %}
-          <a href="http://www.baidu.com" title="{{ title }}">
+          {% set title =  movie.get('cn_title') or movie.get('en_title') %}
+          <a href="http://www.baidu.com" {% if title %} title="{{ title }}" {% end %}>
             <img style="width: 120px; height: 160px;" src="http://img1.static.dianying.fm/poster/m/5071c07790d7a90a3c074cfe">
           </a>
-        <div class="movie-caption">{{ title }}</div>
+          {% if title %}
+            <span class="movie-caption" title="{{ title }}">{{ title }}</span>
+          {% end %}
+          {% if 'douban_rating' in movie %}
+            <span class="movie-rating" title="豆瓣评分{{ movie['douban_rating'] }}">{{ movie['douban_rating'] }}</span>
+          {% end %}
         </div>
       </li>
     {% end %}

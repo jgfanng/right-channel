@@ -41,6 +41,7 @@ db.movies.ensureIndex({"douban_id": 1}, {unique: true})
     "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
     "douban_id": "1292052",
     "douban_rating": 9.5,
+    "douban_num_raters": 123321,
     "source": {
         "pptv": {
             "id": "123456",

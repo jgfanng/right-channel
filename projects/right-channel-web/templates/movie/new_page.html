@@ -4,11 +4,6 @@
 
   {% include navbar.html %}
 
-  <div class="row-fluid">
-    {% include ../modules/view_format_switcher.html %}
-  </div>
-  
-  
   {% if view_format == 'image_text' %}
     {% include ../modules/image_text_view.html %}
   {% elif view_format == 'text' %}

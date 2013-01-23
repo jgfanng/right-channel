@@ -1,15 +1,48 @@
+/* global style */
 body {
   padding-top: 45px;
+  color: #595959;
+  background-color: #e4e4e4;
 }
 
-/* Override table style */
-.table th,
+.navbar {
+  border-bottom: 3px solid #f89406;
+}
+
+h1, h2, h3, h4, h5, h6, strong {
+  color: #211f1f;
+}
+
+.row-fluid {
+  margin: 10px 0;
+}
+
+.divider {
+  padding: 0 2px;
+  color: #aaa;
+}
+
+.label {
+  margin-right : 5px;
+}
+
+/*  */
+.toolbox
+{
+  display: table;
+  width: 100%;
+  padding: 5px 12px;
+  border: 1px solid #ccc;
+  background-color: #d8d8d8;
+}
+
+/* override table style */
 .table td {
   border-top: 1px dashed #ababab;
 }
 
-.table-striped tbody > tr:nth-child(odd) > td,
-.table-striped tbody > tr:nth-child(odd) > th {
+.table-striped tbody>tr:nth-child(odd)>td,
+.table-striped tbody>tr:nth-child(odd)>th {
   background-color: #f1f1f1;
 }
 
@@ -18,8 +51,13 @@ body {
   background-color: #dce9f9;
 }
 
+.table .auto-size {
+  width: 1px;
+  white-space: nowrap;
+}
+
 /* Override thumbnail style */
-.thumbnails > li {
+.thumbnails>li {
   margin-left: 16px;
   margin-right: 16px;
   margin-bottom: 16px;
@@ -29,28 +67,61 @@ body {
   padding: 1px;
   border: 1px solid #ddd;
   -webkit-border-radius: 0px;
-     -moz-border-radius: 0px;
-          border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
   position: relative;
 }
 
 div.thumbnail:hover {
   border-color: #0088cc;
   -webkit-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
-     -moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
-          box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+  -moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
 }
 
 .movie-caption {
+  position: absolute;
   bottom: 1px;
   left: 1px;
-  position: absolute;
-  color: white;
   width: 120px;
   height: 20px;
-  background-color: rgba(5,5,5,.7);
-  text-align: center;
   font-size: 13px;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.movie-rating {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  padding: 2px 4px;
+  line-height: 14px;
+  max-width: 112px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #f89406;
+  overflow: hidden;
+  background-color: rgba(5, 5, 5, .7);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+/* year in h3 title */
+h3 .year {
+  color: #888;
+}
+
+/* indented paragraph */
+.p-indented {
+  text-indent: 2em;
+}
+
+/* paragraph title */
+.p-title {
+  border-bottom: 1px solid #ccc;
 }
 
 /* th {
@@ -67,3 +138,104 @@ box-shadow: 0 1px 0   rgba(255,255,255,.8) inset;
 border-top: none;
 text-shadow: 0 1px 0   rgba(255,255,255,.5);
 } */
+.logo-media {
+  background-image: url(../img/platform-logo.png);
+  background-repeat: no-repeat;
+  height: 16px;
+  line-height: 16px;
+  display: inline-block;
+  padding-left: 16px;
+  padding-right: 3px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+
+.logo-youku {
+  background-position: 0 0;
+}
+
+.logo-ku6,.logo-kuliu {
+  background-position: 0 -26px;
+}
+
+.logo-pptv {
+  background-position: 0 -52px;
+}
+
+.logo-iqiyi {
+  background-position: 0 -78px;
+}
+
+.logo-souhu,.logo-sohu {
+  background-position: 0 -104px;
+}
+
+.logo-tudou {
+  background-position: 0 -130px;
+}
+
+.logo-sina {
+  background-position: 0 -156px;
+}
+
+.logo-leshi {
+  background-position: 0 -182px;
+}
+
+.logo-wuliu {
+  background-position: 0 -206px;
+}
+
+.logo-m1905 {
+  background-position: 0 -233px;
+  width: 36px;
+}
+
+.logo-kumi {
+  background-position: 0 -259px;
+}
+
+.logo-xunlei {
+  background-position: 0 -284px;
+}
+
+.logo-tengxun {
+  background-position: 0 -310px;
+}
+
+.logo-liu {
+  background-position: 0 -335px;
+}
+
+.logo-tv189 {
+  background-position: 0 -362px;
+}
+
+.logo-cntv {
+  background-position: 0 -387px;
+}
+
+.logo-wysp {
+  background-position: 0 -411px;
+}
+
+.logo-bsy {
+  background-position: 0 -435px;
+}
+
+.logo-hstv {
+  background-position: 0 -461px;
+}
+
+.logo-pps {
+  background-position: 0 -481px;
+}
+
+.logo-taohua {
+  background-position: 0 -501px;
+}
+
+.logo-ifeng {
+  background-position: 1px -523px;
+}
