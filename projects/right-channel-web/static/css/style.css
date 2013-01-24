@@ -17,7 +17,7 @@ h1, h2, h3, h4, h5, h6, strong {
   margin: 10px 0;
 }
 
-.divider {
+.switcher-divider {
   padding: 0 2px;
   color: #aaa;
 }
@@ -32,6 +32,7 @@ h1, h2, h3, h4, h5, h6, strong {
   display: table;
   width: 100%;
   padding: 5px 12px;
+  margin: 10px 0;
   border: 1px solid #ccc;
   background-color: #d8d8d8;
 }

@@ -1,22 +1,22 @@
-<div class="pull-right">
+<div>
   <span class="label label-success">浏览方式<i class="icon-hand-right icon-white"></i></span>
   {% if view_format == 'image-text' %}
     <span title="图文浏览">图文</span>
-    <span class="divider">/</span>
+    <span class="switcher-divider">/</span>
     <a title="文本浏览" href="?view-format=text">文本</a>
-    <span class="divider">/</span>
+    <span class="switcher-divider">/</span>
     <a title="图片浏览" href="?view-format=image">图片</a>
   {% elif view_format == 'text' %}
     <a title="图文浏览" href="?view-format=image-text">图文</a>
-    <span class="divider">/</span>
+    <span class="switcher-divider">/</span>
     <span title="文本浏览">文本</span>
-    <span class="divider">/</span>
+    <span class="switcher-divider">/</span>
     <a title="图片浏览" href="?view-format=image">图片</a>
   {% elif view_format == 'image' %}
     <a title="图文浏览" href="?view-format=image-text">图文</a>
-    <span class="divider">/</span>
+    <span class="switcher-divider">/</span>
     <a title="文本浏览" href="?view-format=text">文本</a>
-    <span class="divider">/</span>
+    <span class="switcher-divider">/</span>
     <span title="图片浏览">图片</span>
   {% end %}
 </div>
