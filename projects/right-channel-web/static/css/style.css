@@ -1,20 +1,37 @@
-/* global style */
+/* overwrite */
 body {
   padding-top: 45px;
   color: #595959;
-  background-color: #e4e4e4;
+  background-color: #eee;
+}
+
+.navbar .brand {
+  font-size: 25px;
 }
 
 .navbar {
+  font-size: 20px;
   border-bottom: 3px solid #f89406;
+}
+
+.row-fluid {
+  margin: 10px 0;
 }
 
 h1, h2, h3, h4, h5, h6, strong {
   color: #211f1f;
 }
 
-.row-fluid {
+.label {
+  margin-right : 5px;
+}
+
+/* custom */
+.content-block {
+  padding: 0 20px;
   margin: 10px 0;
+  background-color: white;
+  border: 1px solid #ccc;
 }
 
 .switcher-divider {
@@ -22,9 +39,50 @@ h1, h2, h3, h4, h5, h6, strong {
   color: #aaa;
 }
 
-.label {
-  margin-right : 5px;
+.nav-secondary {
+  font-size: 15px;
+  margin: 0;
+  list-style-type: none;
 }
+
+.nav-secondary > li {
+  float: left;
+}
+
+.nav-secondary > li > a {
+  color: gray;
+  display: block;
+  text-decoration: none;
+  padding: 10px 40px 10px 0;
+}
+
+.nav-secondary > li > a:hover {
+  color: black;
+}
+
+.nav-secondary > li.active > a {
+  color: black;
+  font-weight: bold;
+}
+
+/* .nav-secondary > .active > a,
+.nav-secondary > .active > a:hover {
+  background: inherit;
+  border-bottom: 1px solid #333;
+  color: #333;
+  font-weight: 700;
+  padding: 0 6px 18px;
+}
+
+.nav-secondary > li > a,
+.nav-secondary > li > a:hover {
+  background: inherit;
+  color: #333;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  padding: 0 6px 18px;
+} */
 
 /*  */
 .toolbox
@@ -33,8 +91,11 @@ h1, h2, h3, h4, h5, h6, strong {
   width: 100%;
   padding: 5px 12px;
   margin: 10px 0;
-  border: 1px solid #ccc;
   background-color: #d8d8d8;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 
 /* override table style */

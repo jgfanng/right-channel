@@ -1,58 +1,62 @@
-<div class="toolbox">
-  <div class="pull-right">
-    {% include view_format_switcher.html %}
+<div class="content-block">
+<!--   <div class="toolbox">
+    <div class="pull-right">
+      {% include view_format_switcher.html %}
+    </div>
+  </div> -->
+  
+  <div class="row-fluid">
+    <table class="table table-condensed table-striped table-hover">
+      <thead>
+          <th class="auto-size">#</th>
+          <th class="auto-size">上映日期</th>
+          <th class="auto-size">电影名称</th>
+          <th class="auto-size">国家/地区</th>
+          <th class="auto-size">豆瓣评分</th>
+          <th class="auto-size">资源</th>
+      </thead>
+      <tbody>
+        {% set index = 1 %}
+        {% for movie in movies %}
+          <tr>
+            <td class="auto-size">{{ index }}</td>
+            <td class="auto-size">
+              {% if '_release_date' in movie %}
+                {{ movie['_release_date'].strftime('%Y-%m-%d') }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td>
+              {% if 'cn_title' in movie and 'en_title' in movie %}
+                {{ movie['cn_title'] + ' / ' + movie['en_title'] }}
+              {% elif 'cn_title' in movie %}
+                {{ movie['cn_title'] }}
+              {% elif 'en_title' in movie %}
+                {{ movie['en_title'] }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td class="auto-size">
+              {% if 'country' in movie and movie['country'] %}
+                {{ ' / '.join(movie['country']) }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td class="auto-size">
+              {% if 'douban_rating' in movie %}
+                {{ movie['douban_rating'] }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td class="auto-size">占位</td>
+          </tr>
+          {% set index = index + 1 %}
+        {% end %}
+      </tbody>
+    </table>
   </div>
 </div>
-
-<table class="table table-condensed table-striped table-hover">
-  <thead>
-      <th class="auto-size">#</th>
-      <th class="auto-size">上映日期</th>
-      <th class="auto-size">电影名称</th>
-      <th class="auto-size">国家/地区</th>
-      <th class="auto-size">豆瓣评分</th>
-      <th class="auto-size">资源</th>
-  </thead>
-  <tbody>
-    {% set index = 1 %}
-    {% for movie in movies %}
-      <tr>
-        <td class="auto-size">{{ index }}</td>
-        <td class="auto-size">
-          {% if '_release_date' in movie %}
-            {{ movie['_release_date'].strftime('%Y-%m-%d') }}
-          {% else %}
-            未知
-          {% end %}
-        </td>
-        <td>
-          {% if 'cn_title' in movie and 'en_title' in movie %}
-            {{ movie['cn_title'] + ' / ' + movie['en_title'] }}
-          {% elif 'cn_title' in movie %}
-            {{ movie['cn_title'] }}
-          {% elif 'en_title' in movie %}
-            {{ movie['en_title'] }}
-          {% else %}
-            未知
-          {% end %}
-        </td>
-        <td class="auto-size">
-          {% if 'country' in movie and movie['country'] %}
-            {{ ' / '.join(movie['country']) }}
-          {% else %}
-            未知
-          {% end %}
-        </td>
-        <td class="auto-size">
-          {% if 'douban_rating' in movie %}
-            {{ movie['douban_rating'] }}
-          {% else %}
-            未知
-          {% end %}
-        </td>
-        <td class="auto-size">占位</td>
-      </tr>
-      {% set index = index + 1 %}
-    {% end %}
-  </tbody>
-</table>
