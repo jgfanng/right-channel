@@ -8,7 +8,7 @@ from utils.settings import collections, settings
 import datetime
 import tornado.web
 
-class NewMovieHandler(BaseHandler):
+class OnshowMovieHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self):
         self.__view_format = self.get_argument('view-format', None)
@@ -26,4 +26,4 @@ class NewMovieHandler(BaseHandler):
         if error:
             raise tornado.web.HTTPError(500)
 
-        self.render('movie/new_page.html', movies=response, view_format=self.__view_format)
+        self.render('movie/onshow_page.html', movies=response, view_format=self.__view_format)

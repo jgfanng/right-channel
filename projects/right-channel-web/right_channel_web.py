@@ -7,7 +7,7 @@ from handlers.default_handler import DefaultHandler
 from handlers.home_handler import HomeHandler
 from handlers.hot_movie_handler import HotMovieHandler
 from handlers.movie_details_handler import MovieDetailsHandler
-from handlers.new_movie_handler import NewMovieHandler
+from handlers.onshow_movie_handler import OnshowMovieHandler
 import os
 import tornado.web
 
@@ -17,7 +17,7 @@ class Application(tornado.web.Application):
             (r'/', HomeHandler),
             (r'/movie', HotMovieHandler),
             (r'/movie/hot', HotMovieHandler),
-            (r'/movie/new', NewMovieHandler),
+            (r'/movie/onshow', OnshowMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieDetailsHandler),
             (r'/(.*)', DefaultHandler)
         ]

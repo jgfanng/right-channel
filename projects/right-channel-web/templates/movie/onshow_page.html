@@ -3,8 +3,19 @@
 {% block content %}
 
   {% include navbar.html %}
+  
+  <div class="content-block">
+    <div class="row-fluid">
+	  <div class="pull-left">
+        {% include ../modules/hotness_switcher.html %}
+      </div>
+      <div class="pull-right">
+        {% include ../modules/view_format_switcher.html %}
+      </div>
+    </div>
+  </div>
 
-  {% if view_format == 'image_text' %}
+  {% if view_format == 'image-text' %}
     {% include ../modules/image_text_view.html %}
   {% elif view_format == 'text' %}
     {% include ../modules/text_view.html %}
