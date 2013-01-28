@@ -22,15 +22,17 @@
               {% end %}
             </td>
             <td>
-              {% if 'cn_title' in movie and 'en_title' in movie %}
-                {{ movie['cn_title'] + ' / ' + movie['en_title'] }}
-              {% elif 'cn_title' in movie %}
-                {{ movie['cn_title'] }}
-              {% elif 'en_title' in movie %}
-                {{ movie['en_title'] }}
-              {% else %}
-                未知
-              {% end %}
+              <a href="/movie/{{ str(movie['_id']) }}" target="_blank">
+                {% if 'cn_title' in movie and 'en_title' in movie %}
+                  {{ movie['cn_title'] + ' / ' + movie['en_title'] }}
+                {% elif 'cn_title' in movie %}
+                  {{ movie['cn_title'] }}
+                {% elif 'en_title' in movie %}
+                  {{ movie['en_title'] }}
+                {% else %}
+                  未知
+                {% end %}
+              </a>
             </td>
             <td class="auto-size">
               {% if 'country' in movie and movie['country'] %}

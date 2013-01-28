@@ -9,11 +9,14 @@ import datetime
 import tornado.web
 
 class OnshowMovieHandler(BaseHandler):
+    def initialize(self):
+        self.context = {'site_nav': 'movie', 'movie_nav': 'onshow', 'view_format': IMAGE_TEXT_FORMAT}
+
     @tornado.web.asynchronous
     def get(self):
-        self.__view_format = self.get_argument('view-format', None)
-        if self.__view_format not in VIEW_FORMATS:
-            self.__view_format = IMAGE_TEXT_FORMAT
+        self.context['view_format'] = self.get_argument('view-format', None)
+        if self.context['view_format'] not in VIEW_FORMATS:
+            self.context['view_format'] = IMAGE_TEXT_FORMAT
 
         collections['movies'].find(
             {'_release_date': {'$lte': datetime.datetime.utcnow()}},
@@ -26,4 +29,4 @@ class OnshowMovieHandler(BaseHandler):
         if error:
             raise tornado.web.HTTPError(500)
 
-        self.render('movie/onshow_page.html', movies=response, view_format=self.__view_format)
+        self.render('movie/onshow_page.html', movies=response, context=self.context)

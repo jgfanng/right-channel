@@ -6,20 +6,20 @@
   
   <div class="content-block">
     <div class="row-fluid">
-	  <div class="pull-left">
+<!-- 	  <div class="pull-left">
         {% include ../modules/hotness_switcher.html %}
-      </div>
+      </div> -->
       <div class="pull-right">
         {% include ../modules/view_format_switcher.html %}
       </div>
     </div>
   </div>
 
-  {% if view_format == 'image-text' %}
+  {% if context.get('view_format') == 'image-text' %}
     {% include ../modules/image_text_view.html %}
-  {% elif view_format == 'text' %}
+  {% elif context.get('view_format') == 'text' %}
     {% include ../modules/text_view.html %}
-  {% elif view_format == 'image' %}
+  {% elif context.get('view_format') == 'image' %}
     {% include ../modules/image_view.html %}
   {% end %}
 

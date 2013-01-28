@@ -1,7 +1,15 @@
 <div class="row-fluid">
   <ul class="galery">
+    {% set element_in_row = 2 %}
+    {% set index = 0 %}
     {% for movie in movies %}
-      <li>
+      {% if index % element_in_row == 0 %}
+        <li class="first">
+      {% elif index % element_in_row == element_in_row - 1 %}
+        <li class="last">
+      {% else %}
+        <li class="middle">
+      {% end %}
         <div class="galery-element">
           <div class="galery-element-menu">
             <ul>
@@ -19,8 +27,38 @@
                   class="iconbig-note-open"></i></a></li>
             </ul>
           </div>
-      </div>
+          <div class="galery-element-detail">
+            <div class="galery-element-img pull-left">
+              <a>
+                <img src="http://img3.douban.com/mpic/s24524580.jpg">
+              </a>
+            </div>
+            <div class="galery-element-desc pull-left">
+              <p>
+                <a href="/movie/{{ str(movie['_id']) }}" target="_blank">
+                  {{ movie.get('cn_title') or movie.get('en_title') }} ({{ movie.get('year') }})
+                </a>
+              </p>
+              {% if 'director' in movie %}
+                <p><strong>导演:</strong> {{ ' / '.join([director.strip().split()[0] for director in movie['director'] if director and director.strip()]) }}</p>
+              {% end %}
+              {% if 'cast' in movie %}
+                <p><strong>主演:</strong> {{ ' / '.join([cast.strip().split()[0] for cast in movie['cast'] if cast and cast.strip()]) }}</p>
+              {% end %}
+              {% if 'genre' in movie %}
+                <p><strong>类型:</strong> {{ ' / '.join(movie['genre']) }}</p>
+              {% end %}
+              {% if 'country' in movie %}
+                <p><strong>地区:</strong> {{ ' / '.join(movie['country']) }}</p>
+              {% end %}
+              {% if 'language' in movie %}
+                <p><strong>语言:</strong> {{ ' / '.join(movie['language']) }}</p>
+              {% end %}
+            </div>
+          </div>
+        </div>
       </li>
+      {% set index += 1 %}
     {% end %}
   </ul>
 </div>
