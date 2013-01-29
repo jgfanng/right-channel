@@ -36,8 +36,9 @@
             <div class="galery-element-desc pull-left">
               <p>
                 <a href="/movie/{{ str(movie['_id']) }}" target="_blank">
-                  {{ movie.get('cn_title') or movie.get('en_title') }} ({{ movie.get('year') }})
+                  {{ movie.get('cn_title') or movie.get('en_title') }}
                 </a>
+                ({{ movie.get('year') }})
               </p>
               {% if 'director' in movie %}
                 <p><strong>导演:</strong> {{ ' / '.join([director.strip().split()[0] for director in movie['director'] if director and director.strip()]) }}</p>

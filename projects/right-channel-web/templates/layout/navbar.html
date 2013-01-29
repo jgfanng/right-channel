@@ -1,20 +1,17 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-
       <a class="brand" href="/">Right Channel</a>
-
       <div class="pull-right">
         <ul class="nav">
           <li {% if context.get('site_nav') == '/' %} class="active" {% end %}><a href="/">首页</a></li>
           <li {% if context.get('site_nav') == 'movie' %} class="active" {% end %}><a href="/movie">电影</a></li>
-          <li><a>电视剧</a></li>
-          <li><a>动漫</a></li>
-          <li><a>综艺</a></li>
-          <li><a>体育</a></li>
+          <li {% if context.get('site_nav') == 'tv' %} class="active" {% end %}><a>电视剧</a></li>
+          <li {% if context.get('site_nav') == 'animation' %} class="active" {% end %}><a>动漫</a></li>
+          <li {% if context.get('site_nav') == 'variety' %} class="active" {% end %}><a>综艺</a></li>
+          <li {% if context.get('site_nav') == 'sports' %} class="active" {% end %}><a>体育</a></li>
         </ul>
       </div>
-
     </div>
   </div>
 </div>

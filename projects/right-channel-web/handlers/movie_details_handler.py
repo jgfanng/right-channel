@@ -5,7 +5,7 @@ Created on Jan 21, 2013
 '''
 from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler
-from utils.settings import collections, settings
+from settings import collections, settings
 import tornado.web
 
 class MovieDetailsHandler(BaseHandler):

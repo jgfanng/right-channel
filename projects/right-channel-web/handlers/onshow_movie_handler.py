@@ -4,7 +4,7 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, VIEW_FORMATS, IMAGE_TEXT_FORMAT
-from utils.settings import collections, settings
+from settings import collections, settings
 import datetime
 import tornado.web
 
