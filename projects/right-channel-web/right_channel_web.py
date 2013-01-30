@@ -6,8 +6,10 @@ Created on Jan 16, 2013
 from handlers.default_handler import DefaultHandler
 from handlers.home_handler import HomeHandler
 from handlers.hot_movie_handler import HotMovieHandler
+from handlers.login import LoginHandler
 from handlers.movie_details_handler import MovieDetailsHandler
 from handlers.onshow_movie_handler import OnshowMovieHandler
+from handlers.signup import SignupHandler
 import os
 import tornado.web
 
@@ -19,6 +21,8 @@ class Application(tornado.web.Application):
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/onshow', OnshowMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieDetailsHandler),
+            (r'/login', LoginHandler),
+            (r'/signup', SignupHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

@@ -124,12 +124,12 @@
     </div>
   
     {% if 'summary' in movie %}
-      <h3 class="p-title">剧情简介</h3>
+      <legend>剧情简介</legend>
       {% for paragraph in movie['summary'].split('\n') %}
         <p class="p-indented">{{ paragraph }}</p>
       {% end %}
     {% end %}
     
-    <h3 class="p-title">获奖情况</h3>
+    <legend>获奖情况</legend>
   </div>
 {% end %}

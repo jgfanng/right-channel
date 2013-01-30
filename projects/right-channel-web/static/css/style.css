@@ -6,12 +6,7 @@ body {
 }
 
 .navbar {
-  font-size: 20px;
   border-bottom: 3px solid #f89406;
-}
-
-.navbar .brand {
-  font-size: 25px;
 }
 
 .row-fluid {
@@ -55,7 +50,6 @@ table .auto-size {
 }
 
 .nav-secondary {
-  font-size: 15px;
   margin: 0;
   list-style: none;
 }

@@ -1,0 +1,41 @@
+{% extends ../layout/layout.html %}
+
+{% block content %}
+
+  <div class="content-block">
+    <legend>使用Right Channel帐号登录</legend>
+    <form class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label" for="inputEmail">邮箱</label>
+        <div class="controls">
+          <div class="input-prepend">
+            <span class="add-on"><i class="icon-envelope"></i></span> <input type="text" id="inputEmail">
+          </div>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="inputPassword">密码</label>
+        <div class="controls">
+          <div class="input-prepend">
+            <span class="add-on"><i class="icon-lock"></i></span> <input type="password"
+              id="inputPassword">
+          </div>
+          <a href="/reset-password">忘记密码</a>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <div>
+            <label class="checkbox"> <input type="checkbox"> 下次自动登录
+            </label>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary btn-large">登录</button>
+            <button class="btn btn-success btn-large">注册</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <legend>使用其它帐号登录</legend>
+  </div>
+{% end %}
