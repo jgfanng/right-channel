@@ -11,6 +11,5 @@ IMAGE_FORMAT = 'image'
 VIEW_FORMATS = [TEXT_FORMAT, IMAGE_TEXT_FORMAT, IMAGE_FORMAT]
 
 class BaseHandler(tornado.web.RequestHandler):
-    # disable tornado's default etag computation
-    def compute_etag(self):
-        return None
+    def get_current_user(self):
+        return self.get_secure_cookie('user')
