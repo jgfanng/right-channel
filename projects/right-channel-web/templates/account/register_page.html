@@ -4,37 +4,52 @@
 
   <div class="content-block">
     <legend>欢迎加入Right Channel</legend>
-    <form class="form-horizontal">
+    {% if op_result %}
+      {% if op_result['type'] == 'success' %}
+        <div class="alert alert-success">
+          {{ op_result['message'] }}
+        </div>
+      {% elif op_result['type'] == 'error' %}
+        <div class="alert alert-error">
+          {{ op_result['message'] }}
+        </div>
+      {% end %}
+    {% end %}
+    <form class="form-horizontal" action="/register" method="post">
+      {% module xsrf_form_html() %}
       <div class="control-group">
-        <label class="control-label" for="inputEmail">邮箱</label>
+        <label class="control-label" for="input-email">邮箱</label>
         <div class="controls">
           <div class="input-prepend">
             <span class="add-on"><i class="icon-envelope"></i></span>
-            <input type="text" id="inputEmail">
+            <input type="text" id="input-email" name="email" autocomplete="off">
           </div>
+          <span class="help-block hint">请输入你的常用邮箱，用来登录Right Channel</span>
         </div>
       </div>
       <div class="control-group">
-        <label class="control-label" for="inputPassword">密码</label>
+        <label class="control-label" for="input-password">密码</label>
         <div class="controls">
           <div class="input-prepend">
             <span class="add-on"><i class="icon-lock"></i></span>
-            <input type="password" id="inputPassword">
+            <input type="password" id="input-password" name="password" autocomplete="off">
           </div>
+          <span class="help-block hint">6-16个字符，建议使用字母、数字或符号的组合</span>
         </div>
       </div>
       <div class="control-group">
-        <label class="control-label" for="inputNickname">昵称</label>
+        <label class="control-label" for="input-nick-name">昵称</label>
         <div class="controls">
           <div class="input-prepend">
             <span class="add-on"><i class="icon-user"></i></span>
-          <input type="password" id="inputNickname">
+            <input type="text" id="input-nick-name" name="nick-name" autocomplete="off">
           </div>
+          <span class="help-block hint">请输入你在网上的常用昵称，不多于12个字符</span>
         </div>
       </div>
       <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn btn-primary btn-large btn-success">注册</button>
+          <button type="submit" class="btn btn-primary btn-large btn-success" style="width: 150px;">注册</button>
         </div>
       </div>
     </form>

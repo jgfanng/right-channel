@@ -1,0 +1,27 @@
+=========Indexes============================================================
+db.accounts.ensureIndex({"email": 1}, {unique: true})
+
+=========Schema=============================================================
+{
+    "email": "example@abc.com",
+    "password": "4dd679ee885c1b97840f062c301fb391173a8e09504a2a3dfef0df2ed6959757",
+    "nick_name": "yapianyu",
+    "avatar": "***.jpg",
+    "movie": {
+        "to_watch": {
+            "id": ObjectId("50fba4b3b6b09317c08f47ac"),
+            "title": "病房内绝望的女人",
+            "year": "2005"
+        },
+        "watched": {
+        },
+        "download": {
+        },
+        "ignore": {
+        },
+        "like": {
+        }
+        "dislike": {
+        }
+    }
+}

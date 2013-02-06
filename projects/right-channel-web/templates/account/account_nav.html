@@ -1,0 +1,10 @@
+<ul class="nav nav-list">
+  <li class="nav-header">我的账户</li>
+  <li {% if context and context.get('account_nav') == 'message' %} class="active" {% end %}><a href="/account/message"><i class="icon-envelope"></i> 站内信息</a></li>
+  <li {% if context and context.get('account_nav') == 'towatch' %} class="active" {% end %}><a href="/account/towatch"><i class="icon-eye-open"></i> 待看列表</a></li>
+  <li {% if context and context.get('account_nav') == 'watched' %} class="active" {% end %}><a href="/account/watched"><i class="icon-check"></i> 我看过的</a></li>
+  <li class="nav-header">我的设置</li>
+  <li {% if context and context.get('account_nav') == 'editprofile' %} class="active" {% end %}><a href="/account/editprofile"><i class="icon-file"></i> 个人资料</a></li>
+  <li {% if context and context.get('account_nav') == 'editavatar' %} class="active" {% end %}><a href="/account/editavatar"><i class="icon-picture"></i> 更新头像</a></li>
+  <li {% if context and context.get('account_nav') == 'editpassword' %} class="active" {% end %}><a href="/account/editpassword"><i class="icon-lock"></i> 修改密码</a></li>
+</ul>

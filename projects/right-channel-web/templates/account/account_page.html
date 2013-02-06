@@ -1,0 +1,16 @@
+{% extends ../layout/layout.html %}
+
+{% block content %}
+
+  <div class="content-block">
+    <div class="row-fluid">
+      <div class="span3">
+        {% include account_nav.html %}
+      </div>
+      <div class="span9">
+        {% block account_content %} {% end %}
+      </div>
+    </div>
+  </div>
+
+{% end %}

@@ -12,4 +12,7 @@ mongodb = asyncmongo.Client(
     host=settings['mongo']['host'],
     port=settings['mongo']['port'],
     dbname=settings['mongo']['db'])
-collections = {'movies': mongodb.connection('movies')}
+collections = {
+    'movies': mongodb.connection('movies'),
+    'accounts': mongodb.connection('accounts')
+    }

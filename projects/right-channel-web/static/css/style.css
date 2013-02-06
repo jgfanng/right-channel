@@ -9,6 +9,11 @@ body {
   border-bottom: 3px solid #f89406;
 }
 
+.navbar-inverse .divider-vertical {
+  border-right-color: #444444;
+  border-left-color: #222222;
+}
+
 .row-fluid {
   margin: 5px 0;
 }
@@ -22,10 +27,6 @@ a:visited,
 a:hover,
 a:active {
   text-decoration: none;
-}
-
-.table td {
-  border-top: 1px dashed #ababab;
 }
 
 .table-striped tbody>tr:nth-child(odd)>td {
@@ -89,6 +90,13 @@ table .auto-size {
 .switcher .divider {
   padding: 0 2px;
   color: #aaa;
+}
+
+.table-dash-border th {
+  border: None
+}
+.table-dash-border td {
+  border-top: 1px dashed #ababab;
 }
 
 .galery {
@@ -217,9 +225,10 @@ h3 .year {
   text-indent: 2em;
 }
 
-/* paragraph title */
-.p-title {
-  border-bottom: 1px solid #ccc;
+/* form */
+form .hint {
+  color: #999;
+  font-size: 12px;
 }
 
 /* th {
