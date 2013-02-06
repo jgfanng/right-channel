@@ -19,6 +19,16 @@ class OnshowMovieHandler(BaseHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
+        email = self.get_secure_cookie('email')
+        if email:
+            response, error = yield tornado.gen.Task(collections['accounts'].find_one, {'email': email})
+
+            if 'error' in error and error['error']:
+                self.render('movie/onshow_page.html', movies=[], op_result={'type': 'error', 'message': '尊敬的用户，当前操作无法完成，请联系管理员'})
+                return
+
+            self.user = response[0]
+
         self.context['view_format'] = self.get_argument('view-format', None)
         if self.context['view_format'] not in VIEW_FORMATS:
             self.context['view_format'] = IMAGE_TEXT_FORMAT
@@ -30,7 +40,7 @@ class OnshowMovieHandler(BaseHandler):
                                                  sort=[('_release_date', -1)])
 
         if 'error' in error and error['error']:
-            self.render('movie/onshow_page.html', op_result={'type': 'error', 'message': '尊敬的用户，当前操作无法完成，请联系管理员'})
+            self.render('movie/onshow_page.html', movies=[], op_result={'type': 'error', 'message': '尊敬的用户，当前操作无法完成，请联系管理员'})
             return
 
-        self.render('movie/onshow_page.html', movies=response)
+        self.render('movie/onshow_page.html', movies=response[0])

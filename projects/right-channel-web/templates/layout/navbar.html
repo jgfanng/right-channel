@@ -12,7 +12,7 @@
           <li {% if context and context.get('site_nav') == 'sports' %} class="active" {% end %}><a>体育</a></li>
           <li class="divider-vertical"></li>
           {% if user %}
-            <li {% if context and context.get('site_nav') == 'account' %} class="active" {% end %}><a href="/account"><i class="icon-user icon-white"></i> {{ user }}</a></li>
+            <li {% if context and context.get('site_nav') == 'account' %} class="active" {% end %}><a href="/account"><i class="icon-user icon-white"></i> {{ user['nick-name'] }}</a></li>
             <li><a href="/logout"><i class="icon-off icon-white"></i> 退出</a></li>
           {% else %}
             <li {% if context and context.get('site_nav') == 'login' %} class="active" {% end %}><a href="/login"><i class="icon-user icon-white"></i> 登录</a></li>

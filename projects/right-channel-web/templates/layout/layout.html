@@ -9,7 +9,11 @@
 </head>
 <body>
   {% include navbar.html %}
-  <div class="container">{% block content %} {% end %} {% include foot.html %}</div>
+  <div class="container">
+    {% include ../modules/operation_alert.html %}
+    {% block content %} {% end %}
+    {% include foot.html %}
+  </div>
   <!-- Placed at the end of the document so the pages load faster -->
   <script type="text/javascript" src="{{ static_url('js/jquery-1.9.0.min.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/bootstrap.js') }}"></script>

@@ -13,8 +13,9 @@ VIEW_FORMATS = [TEXT_FORMAT, IMAGE_TEXT_FORMAT, IMAGE_FORMAT]
 class BaseHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.context = {}
+        self.user = None
 
     def render(self, template_name, **kwargs):
         kwargs['context'] = self.context
-        kwargs['email'] = self.get_secure_cookie('email')
+        kwargs['user'] = self.user
         super(BaseHandler, self).render(template_name, **kwargs)

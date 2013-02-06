@@ -4,17 +4,6 @@
 
   <div class="content-block">
     <legend>欢迎加入Right Channel</legend>
-    {% if op_result %}
-      {% if op_result['type'] == 'success' %}
-        <div class="alert alert-success">
-          {{ op_result['message'] }}
-        </div>
-      {% elif op_result['type'] == 'error' %}
-        <div class="alert alert-error">
-          {{ op_result['message'] }}
-        </div>
-      {% end %}
-    {% end %}
     <form class="form-horizontal" action="/register" method="post">
       {% module xsrf_form_html() %}
       <div class="control-group">

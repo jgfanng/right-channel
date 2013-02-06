@@ -1,0 +1,11 @@
+{% if op_result %}
+  {% if op_result['type'] == 'success' %}
+    <div class="alert alert-success operation-alert">
+      {{ op_result['message'] }}
+    </div>
+  {% elif op_result['type'] == 'error' %}
+    <div class="alert alert-error operation-alert">
+      {{ op_result['message'] }}
+    </div>
+  {% end %}
+{% end %}
