@@ -14,7 +14,6 @@ class EditPasswordHandler(BaseHandler):
         self.params['site_nav'] = 'account'
         self.params['account_nav'] = 'editpassword'
 
-    @tornado.web.authenticated
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
@@ -25,10 +24,14 @@ class EditPasswordHandler(BaseHandler):
                                                      fields={'email': 1, 'nick_name': 1})
 
             if 'error' in error and error['error'] and not response[0]:
-                self.clear_cookie('email')
+                self.clear_all_cookies()
                 self.redirect('/')
                 return
 
             self.params['user'] = response[0]
-
-        self.render('account/edit_password_page.html')
+            self.render('account/edit_password_page.html')
+        else:
+            # if not logged in, set a session cookie named 'next' and redirect to login page
+            self.set_secure_cookie('next', '/account/editpassword', expires_days=None)
+            self.redirect('/login')
+            return
