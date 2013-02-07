@@ -15,11 +15,11 @@
     </div>
   </div>
 
-  {% if context.get('view_format') == 'image-text' %}
+  {% if params.get('view_format') == 'image-text' %}
     {% include ../modules/image_text_view.html %}
-  {% elif context.get('view_format') == 'text' %}
+  {% elif params.get('view_format') == 'text' %}
     {% include ../modules/text_view.html %}
-  {% elif context.get('view_format') == 'image' %}
+  {% elif params.get('view_format') == 'image' %}
     {% include ../modules/image_view.html %}
   {% end %}
 

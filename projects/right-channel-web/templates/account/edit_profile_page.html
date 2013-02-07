@@ -1,4 +1,4 @@
-{% extends account_page.html %}
+{% extends account_layout.html %}
 
 {% block account_content %}
 
@@ -8,13 +8,13 @@
     <div class="control-group">
       <label class="control-label" for="input-email">邮箱</label>
       <div class="controls">
-        <input type="text" id="input-email" name="old-password" value={{ user }} disabled>
+        <input type="text" id="input-email" name="email" value={{ params.get('user').get('email') }} disabled>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="input-nick-name">昵称</label>
       <div class="controls">
-        <input type="text" id="input-nick-name" name="nick-name" value="test">
+        <input type="text" id="input-nick-name" name="nick-name" value={{ params.get('user').get('nick_name') }}>
       </div>
     </div>
     <div class="control-group">

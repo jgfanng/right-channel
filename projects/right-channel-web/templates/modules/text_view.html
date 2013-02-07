@@ -10,47 +10,49 @@
           <th class="auto-size">资源</th>
       </thead>
       <tbody>
-        {% set index = 1 %}
-        {% for movie in movies %}
-          <tr>
-            <td class="auto-size">{{ index }}</td>
-            <td class="auto-size">
-              {% if '_release_date' in movie %}
-                {{ movie['_release_date'].strftime('%Y-%m-%d') }}
-              {% else %}
-                未知
-              {% end %}
-            </td>
-            <td>
-              <a href="/movie/{{ str(movie['_id']) }}" target="_blank">
-                {% if 'cn_title' in movie and 'en_title' in movie %}
-                  {{ movie['cn_title'] + ' / ' + movie['en_title'] }}
-                {% elif 'cn_title' in movie %}
-                  {{ movie['cn_title'] }}
-                {% elif 'en_title' in movie %}
-                  {{ movie['en_title'] }}
+        {% if 'movies' in params %}
+          {% set index = 1 %}
+          {% for movie in params.get('movies') %}
+            <tr>
+              <td class="auto-size">{{ index }}</td>
+              <td class="auto-size">
+                {% if '_release_date' in movie %}
+                  {{ movie.get('_release_date').strftime('%Y-%m-%d') }}
                 {% else %}
                   未知
                 {% end %}
-              </a>
-            </td>
-            <td class="auto-size">
-              {% if 'country' in movie and movie['country'] %}
-                {{ ' / '.join(movie['country']) }}
-              {% else %}
-                未知
-              {% end %}
-            </td>
-            <td class="auto-size">
-              {% if 'douban_rating' in movie %}
-                {{ movie['douban_rating'] }}
-              {% else %}
-                未知
-              {% end %}
-            </td>
-            <td class="auto-size">占位</td>
-          </tr>
-          {% set index = index + 1 %}
+              </td>
+              <td>
+                <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
+                  {% if 'cn_title' in movie and 'en_title' in movie %}
+                    {{ movie.get('cn_title') + ' / ' + movie.get('en_title') }}
+                  {% elif 'cn_title' in movie %}
+                    {{ movie.get('cn_title') }}
+                  {% elif 'en_title' in movie %}
+                    {{ movie.get('en_title') }}
+                  {% else %}
+                    未知
+                  {% end %}
+                </a>
+              </td>
+              <td class="auto-size">
+                {% if 'country' in movie and movie.get('country') %}
+                  {{ ' / '.join(movie.get('country')) }}
+                {% else %}
+                  未知
+                {% end %}
+              </td>
+              <td class="auto-size">
+                {% if 'douban_rating' in movie %}
+                  {{ movie.get('douban_rating') }}
+                {% else %}
+                  未知
+                {% end %}
+              </td>
+              <td class="auto-size">占位</td>
+            </tr>
+            {% set index = index + 1 %}
+          {% end %}
         {% end %}
       </tbody>
     </table>

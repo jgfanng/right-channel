@@ -7,5 +7,5 @@ from handlers.base_handler import BaseHandler
 
 class LogoutHandler(BaseHandler):
     def get(self):
-        self.clear_cookie('user')
-        self.redirect(u'/movie/onshow')
+        self.clear_cookie('email')
+        self.redirect('/movie/onshow')

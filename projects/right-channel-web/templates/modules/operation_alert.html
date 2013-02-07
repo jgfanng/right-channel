@@ -1,11 +1,13 @@
-{% if op_result %}
-  {% if op_result['type'] == 'success' %}
+{% if 'op_result' in params %}
+  {% if params.get('op_result').get('type') == 'success' %}
     <div class="alert alert-success operation-alert">
-      {{ op_result['message'] }}
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {{ params.get('op_result').get('message') }}
     </div>
-  {% elif op_result['type'] == 'error' %}
+  {% elif params.get('op_result').get('type') == 'error' %}
     <div class="alert alert-error operation-alert">
-      {{ op_result['message'] }}
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {{ params.get('op_result').get('message') }}
     </div>
   {% end %}
 {% end %}
