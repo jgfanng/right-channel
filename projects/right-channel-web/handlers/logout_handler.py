@@ -8,4 +8,4 @@ from handlers.base_handler import BaseHandler
 class LogoutHandler(BaseHandler):
     def get(self):
         self.clear_cookie('email')
-        self.redirect('/movie/onshow')
+        self.redirect('/login')

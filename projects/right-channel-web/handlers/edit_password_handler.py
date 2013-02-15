@@ -19,19 +19,25 @@ class EditPasswordHandler(BaseHandler):
     def get(self):
         email = self.get_secure_cookie('email')
         if email:
-            response, error = yield tornado.gen.Task(collections['accounts'].find_one,
-                                                     {'email': email},
-                                                     fields={'email': 1, 'nick_name': 1})
+            try:
+                response, error = yield tornado.gen.Task(collections['accounts'].find_one,
+                                                         {'email': email},
+                                                         fields={'email': 1, 'nick_name': 1})
+            except:
+                raise tornado.web.HTTPError(500)
 
-            if 'error' in error and error['error'] and not response[0]:
-                self.clear_all_cookies()
-                self.redirect('/')
-                return
+            if 'error' in error and error['error']:
+                raise tornado.web.HTTPError(500)
 
-            self.params['user'] = response[0]
-            self.render('account/edit_password_page.html')
+            user = response[0]
+            if user:
+                self.params['user'] = user
+                self.render('account/edit_password_page.html')
+            else:
+                self.clear_cookie('email')
+                self.set_secure_cookie('next', '/account/editpassword', expires_days=None)
+                self.redirect('/login')
         else:
             # if not logged in, set a session cookie named 'next' and redirect to login page
             self.set_secure_cookie('next', '/account/editpassword', expires_days=None)
             self.redirect('/login')
-            return

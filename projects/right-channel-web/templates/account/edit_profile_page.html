@@ -2,13 +2,13 @@
 
 {% block account_content %}
 
-  <legend>个人设置</legend>
+  <legend>个人资料</legend>
   <form class="form-horizontal" action="/account/editprofile" method="post">
     {% module xsrf_form_html() %}
     <div class="control-group">
-      <label class="control-label" for="input-email">邮箱</label>
+      <label class="control-label">邮箱</label>
       <div class="controls">
-        <input type="text" id="input-email" name="email" value={{ params.get('user').get('email') }} disabled>
+        <span class="uneditable-input">{{ params.get('user').get('email') }}</span>
       </div>
     </div>
     <div class="control-group">
