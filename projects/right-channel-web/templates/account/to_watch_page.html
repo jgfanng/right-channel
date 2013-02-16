@@ -3,7 +3,7 @@
 {% block account_content %}
 
   {% if params.get('user') and params.get('user').get('to_watch') and params.get('user').get('to_watch').get('movie') %}
-    <legend>我待看的({{ len(params.get('user').get('to_watch').get('movie')) }})</legend>
+    <legend>我想看的({{ len(params.get('user').get('to_watch').get('movie')) }})</legend>
     <table class="table table-condensed table-hover table-dash-border">
       <thead>
           <th class="auto-size">#</th>
@@ -41,6 +41,6 @@
       </tbody>
     </table>
   {% else %}
-    <legend>我待看的(0)</legend>
+    <legend>我想看的(0)</legend>
   {% end %}
 {% end %}
