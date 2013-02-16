@@ -8,11 +8,11 @@ from settings import collections
 import tornado.gen
 import tornado.web
 
-class EditPasswordHandler(BaseHandler):
+class ToWatchHandler(BaseHandler):
     def initialize(self):
-        super(EditPasswordHandler, self).initialize()
+        super(ToWatchHandler, self).initialize()
         self.params['site_nav'] = 'account'
-        self.params['account_nav'] = 'editpassword'
+        self.params['account_nav'] = 'towatch'
 
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -22,7 +22,7 @@ class EditPasswordHandler(BaseHandler):
             try:
                 response, error = yield tornado.gen.Task(collections['accounts'].find_one,
                                                          {'email': email},
-                                                         fields={'email': 1, 'nick_name': 1})
+                                                         fields={'email': 1, 'nick_name': 1, 'to_watch': 1})
             except:
                 raise tornado.web.HTTPError(500)
 
@@ -32,11 +32,11 @@ class EditPasswordHandler(BaseHandler):
             user = response[0]
             if user:
                 self.params['user'] = user
-                self.render('account/edit_password_page.html')
+                self.render('account/to_watch_page.html')
             else:
                 self.clear_cookie('email')
-                self.set_secure_cookie('next', '/account/editpassword', expires_days=None)  # Session cookie
+                self.set_secure_cookie('next', '/account/towatch', expires_days=None)  # Session cookie
                 self.redirect('/login')
         else:
-            self.set_secure_cookie('next', '/account/editpassword', expires_days=None)  # Session cookie
+            self.set_secure_cookie('next', '/account/towatch', expires_days=None)  # Session cookie
             self.redirect('/login')

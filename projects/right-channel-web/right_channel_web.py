@@ -13,6 +13,8 @@ from handlers.logout_handler import LogoutHandler
 from handlers.movie_details_handler import MovieDetailsHandler
 from handlers.onshow_movie_handler import OnshowMovieHandler
 from handlers.register_handler import RegisterHandler
+from handlers.to_watch_handler import ToWatchHandler
+from handlers.watched_handler import WatchedHandler
 import os
 import tornado.web
 
@@ -20,11 +22,13 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', HomeHandler),
-            (r'/movie', HotMovieHandler),
+            (r'/movie', OnshowMovieHandler),
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/onshow', OnshowMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieDetailsHandler),
             (r'/account', EditPasswordHandler),
+            (r'/account/towatch', ToWatchHandler),
+            (r'/account/watched', WatchedHandler),
             (r'/account/editprofile', EditProfileHandler),
             (r'/account/editpassword', EditPasswordHandler),
             (r'/login', LoginHandler),

@@ -1,0 +1,46 @@
+{% extends account_layout.html %}
+
+{% block account_content %}
+
+  {% if params.get('user') and params.get('user').get('to_watch') and params.get('user').get('to_watch').get('movie') %}
+    <legend>我看过的({{ len(params.get('user').get('to_watch').get('movie')) }})</legend>
+    <table class="table table-condensed table-hover table-dash-border">
+      <thead>
+          <th class="auto-size">#</th>
+          <th class="auto-size">电影名称</th>
+          <th class="auto-size">上映日期</th>
+      </thead>
+      <tbody>
+        {% set index = 1 %}
+        {% for movie in params.get('user').get('to_watch').get('movie') %}
+          <tr>
+            <td class="auto-size">{{ index }}</td>
+            <td>
+              <a href="/movie/{{ str(movie.get('id')) }}" target="_blank">
+                {% if 'cn_title' in movie and 'en_title' in movie %}
+                  {{ movie.get('cn_title') + ' / ' + movie.get('en_title') }}
+                {% elif 'cn_title' in movie %}
+                  {{ movie.get('cn_title') }}
+                {% elif 'en_title' in movie %}
+                  {{ movie.get('en_title') }}
+                {% else %}
+                  未知
+                {% end %}
+              </a>
+            </td>
+            <td class="auto-size">
+              {% if '_release_date' in movie %}
+                {{ movie.get('_release_date').strftime('%Y-%m-%d') }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+          </tr>
+          {% set index = index + 1 %}
+        {% end %}
+      </tbody>
+    </table>
+  {% else %}
+    <legend>我看过的(0)</legend>
+  {% end %}
+{% end %}

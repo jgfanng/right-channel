@@ -21,29 +21,37 @@ class OnshowMovieHandler(BaseHandler):
     def get(self):
         email = self.get_secure_cookie('email')
         if email:
-            response, error = yield tornado.gen.Task(collections['accounts'].find_one, {'email': email})
+            try:
+                response, error = yield tornado.gen.Task(collections['accounts'].find_one,
+                                                         {'email': email},
+                                                         fields={'email': 1, 'nick_name': 1})
+            except:
+                raise tornado.web.HTTPError(500)
 
             if 'error' in error and error['error']:
-                self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，当前操作无法完成，请联系管理员'}
-                self.render('movie/onshow_page.html')
-                return
+                raise tornado.web.HTTPError(500)
 
-            self.params['user'] = response[0]
+            user = response[0]
+            if user:
+                self.params['user'] = user
+            else:
+                self.clear_cookie('email')
 
         self.params['view_format'] = self.get_argument('view-format', None)
         if self.params['view_format'] not in VIEW_FORMATS:
             self.params['view_format'] = IMAGE_TEXT_FORMAT
 
-        response, error = yield tornado.gen.Task(collections['movies'].find,
-                                                 {'_release_date': {'$lte': datetime.datetime.utcnow()}},
-                                                 fields=settings['movie']['response']['verbose'],
-                                                 limit=50,
-                                                 sort=[('_release_date', -1)])
+        try:
+            response, error = yield tornado.gen.Task(collections['movies'].find,
+                                                     {'_release_date': {'$lte': datetime.datetime.utcnow()}},
+                                                     fields=settings['movie']['response']['verbose'],
+                                                     limit=50,
+                                                     sort=[('_release_date', -1)])
+        except:
+            raise tornado.web.HTTPError(500)
 
         if 'error' in error and error['error']:
-            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，当前操作无法完成，请联系管理员'}
-            self.render('movie/onshow_page.html')
-            return
+            raise tornado.web.HTTPError(500)
 
         self.params['movies'] = response[0]
         self.render('movie/onshow_page.html')

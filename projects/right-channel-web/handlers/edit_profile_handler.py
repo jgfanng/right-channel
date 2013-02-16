@@ -35,9 +35,8 @@ class EditProfileHandler(BaseHandler):
                 self.render('account/edit_profile_page.html')
             else:
                 self.clear_cookie('email')
-                self.set_secure_cookie('next', '/account/editprofile', expires_days=None)
+                self.set_secure_cookie('next', '/account/editprofile', expires_days=None)  # Session cookie
                 self.redirect('/login')
         else:
-            # if not logged in, set a session cookie named 'next' and redirect to login page
-            self.set_secure_cookie('next', '/account/editprofile', expires_days=None)
+            self.set_secure_cookie('next', '/account/editprofile', expires_days=None)  # Session cookie
             self.redirect('/login')
