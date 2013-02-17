@@ -43,9 +43,9 @@ class LoginHandler(BaseHandler):
     def post(self):
         email = self.get_argument('email', None)
         password = self.get_argument('password', None)
-        persistent_login = self.get_argument('persistent_login', 'false')
+        persistent_login = self.get_argument('persistent-login', 'false')
         if not email or not password:
-            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的邮箱或密码不正确，请重新输入'}
+            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱或密码不正确，请重新输入'}
             self.render('account/login_page.html')
             return
 
@@ -73,8 +73,8 @@ class LoginHandler(BaseHandler):
                 else:
                     self.redirect('/')
             else:
-                self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的密码不正确，请重新输入'}
+                self.params['op_result'] = {'type': 'error', 'message': '您输入的密码不正确，请重新输入'}
                 self.render('account/login_page.html')
         else:
-            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的邮箱不存在，请重新输入'}
+            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱不存在，请重新输入'}
             self.render('account/login_page.html')

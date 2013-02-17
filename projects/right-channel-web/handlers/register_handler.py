@@ -44,7 +44,7 @@ class RegisterHandler(BaseHandler):
         password = self.get_argument('password', None)
         nick_name = self.get_argument('nick-name', None)
         if not email or not password or not nick_name:
-            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的邮箱、密码或昵称不正确，请重新输入'}
+            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱、密码或昵称不正确，请重新输入'}
             self.render('account/register_page.html')
             return
 
@@ -60,7 +60,7 @@ class RegisterHandler(BaseHandler):
 
         user = response[0]
         if user:
-            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的邮箱已被注册，请重新输入'}
+            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱已被注册，请重新输入'}
             self.render('account/register_page.html')
         else:
             try:
