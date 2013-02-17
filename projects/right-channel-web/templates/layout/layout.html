@@ -5,7 +5,7 @@
 <title>Right Channel</title>
 <link rel="stylesheet" type="text/css" href="{{ static_url('css/bootstrap.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_url('css/icon-style.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ static_url('css/style.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ static_url('css/main.css') }}">
 </head>
 <body>
   {% include navbar.html %}
@@ -17,5 +17,7 @@
   <!-- Placed at the end of the document so the pages load faster -->
   <script type="text/javascript" src="{{ static_url('js/jquery-1.9.0.min.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/bootstrap.js') }}"></script>
+  {% block extra_scripts %}
+  {% end %}
 </body>
 </html>

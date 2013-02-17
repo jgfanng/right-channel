@@ -4,43 +4,48 @@
 
   <div class="content-block">
     <legend>欢迎加入Right Channel</legend>
-    <form class="form-horizontal" action="/register" method="post">
+    <form id="register" class="form-horizontal" action="/register" method="post">
       {% module xsrf_form_html() %}
       <div class="control-group">
-        <label class="control-label" for="input-email">邮箱</label>
+        <label class="control-label" for="email">邮箱</label>
         <div class="controls">
           <div class="input-prepend">
             <span class="add-on"><i class="icon-envelope"></i></span>
-            <input type="text" id="input-email" name="email" autocomplete="off">
+            <input type="text" id="email" name="email" autocomplete="off" maxlength=64>
           </div>
-          <span class="help-block hint">请输入你的常用邮箱，用来登录Right Channel</span>
+          <span id="emailHelp" class="help-inline help-info">请输入您的常用邮箱，用来登录Right Channel</span>
         </div>
       </div>
       <div class="control-group">
-        <label class="control-label" for="input-password">密码</label>
+        <label class="control-label" for="password">密码</label>
         <div class="controls">
           <div class="input-prepend">
             <span class="add-on"><i class="icon-lock"></i></span>
-            <input type="password" id="input-password" name="password" autocomplete="off">
+            <input type="password" id="password" name="password" autocomplete="off" maxlength=16>
           </div>
-          <span class="help-block hint">6-16个字符，建议使用字母、数字或符号的组合</span>
+          <span id="passwordHelp" class="help-inline help-info">6-16个字符，建议使用字母、数字或符号的组合</span>
         </div>
       </div>
       <div class="control-group">
-        <label class="control-label" for="input-nick-name">昵称</label>
+        <label class="control-label" for="nickName">昵称</label>
         <div class="controls">
           <div class="input-prepend">
             <span class="add-on"><i class="icon-user"></i></span>
-            <input type="text" id="input-nick-name" name="nick-name" autocomplete="off">
+            <input type="text" id="nickName" name="nick-name" autocomplete="off" maxlength=12>
           </div>
-          <span class="help-block hint">请输入你在网上的常用昵称，不多于12个字符</span>
+          <span id="nickNameHelp" class="help-inline help-info">请输入您在网上的常用昵称，不多于12个字符</span>
         </div>
       </div>
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary btn-large btn-success" style="width: 150px;">注册</button>
+          <span id="submitHelp" class="help-inline help-info" style="display: none;"></span>
         </div>
       </div>
     </form>
   </div>
+{% end %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/register.js') }}"></script>
 {% end %}

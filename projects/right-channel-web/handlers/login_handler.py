@@ -45,7 +45,7 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password', None)
         persistent_login = self.get_argument('persistent_login', 'false')
         if not email or not password:
-            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的邮箱或密码不合理，请重新输入'}
+            self.params['op_result'] = {'type': 'error', 'message': '尊敬的用户，您输入的邮箱或密码不正确，请重新输入'}
             self.render('account/login_page.html')
             return
 

@@ -230,8 +230,13 @@ h3 .year {
 }
 
 /* form */
-form .hint {
+form .help-info {
   color: #999;
+  font-size: 12px;
+}
+
+form .help-error {
+  color: red;
   font-size: 12px;
 }
 
