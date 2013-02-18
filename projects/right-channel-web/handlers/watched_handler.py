@@ -4,7 +4,7 @@ Created on Jan 30, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler
-from settings import collections
+from settings import collections, settings
 import tornado.gen
 import tornado.web
 
@@ -22,7 +22,7 @@ class WatchedHandler(BaseHandler):
             try:
                 response, error = yield tornado.gen.Task(collections['accounts'].find_one,
                                                          {'email': email},
-                                                         fields={'email': 1, 'nick_name': 1, 'to_watch': 1})
+                                                         fields={'email': 1, 'nick_name': 1, 'watched': 1})
             except:
                 raise tornado.web.HTTPError(500)
 
@@ -31,6 +31,19 @@ class WatchedHandler(BaseHandler):
 
             user = response[0]
             if user:
+                if user.get('watched') and user.get('watched').get('movie'):
+                    try:
+                        response, error = yield tornado.gen.Task(collections['movies'].find,
+                                                                 {'_id': {'$in': user.get('watched').get('movie')}},
+                                                                 fields=settings['movie']['response']['verbose'])
+                    except:
+                        raise tornado.web.HTTPError(500)
+
+                    if 'error' in error and error['error']:
+                        raise tornado.web.HTTPError(500)
+
+                    user['watched']['movie'] = response[0]
+
                 self.params['user'] = user
                 self.render('account/watched_page.html')
             else:

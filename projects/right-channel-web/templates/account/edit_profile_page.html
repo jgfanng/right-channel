@@ -3,24 +3,32 @@
 {% block account_content %}
 
   <legend>个人资料</legend>
-  <form class="form-horizontal" action="/account/editprofile" method="post">
-    {% module xsrf_form_html() %}
-    <div class="control-group">
-      <label class="control-label">邮箱</label>
-      <div class="controls">
-        <span class="uneditable-input">{{ params.get('user').get('email') }}</span>
+  {% if params.get('user') %}
+    <form id="editProfile" class="form-horizontal" action="/account/editprofile" method="post">
+      {% module xsrf_form_html() %}
+      <div class="control-group">
+        <label class="control-label">邮箱</label>
+        <div class="controls">
+          <span class="uneditable-input">{{ params.get('user').get('email') }}</span>
+        </div>
       </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="input-nick-name">昵称</label>
-      <div class="controls">
-        <input type="text" id="input-nick-name" name="nick-name" value={{ params.get('user').get('nick_name') }}>
+      <div class="control-group">
+        <label class="control-label" for="nickName">昵称</label>
+        <div class="controls">
+          <input type="text" id="nickName" name="nick-name" value={{ params.get('user').get('nick_name') }} maxlength=12>
+          <span id="nickNameHelp" class="help-inline help-info">请输入您在网上的常用昵称，不多于12个字符</span>
+        </div>
       </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <button type="submit" class="btn btn-primary">确认修改</button>
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">确认修改</button>
+          <span id="submitHelp" class="help-inline help-info" style="display: none;"></span>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  {% end %}
+{% end %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/edit-profile-validation.js') }}"></script>
 {% end %}

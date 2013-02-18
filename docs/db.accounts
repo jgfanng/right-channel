@@ -9,16 +9,15 @@ db.accounts.ensureIndex({"email": 1}, {unique: true})
     "avatar": "***.jpg",
     "to_watch": {
         "movie": [
-            {
-                "id": ObjectId("50fba4b3b6b09317c08f47ac"),
-                "zh_title": "病房内绝望的女人",
-                "en_title": "The Shawshank Redemption",
-                "_release_date": "1994-09-23T00:00:00.000Z"
-            }
+            ObjectId("50fb1a7fb6b09317c08f39d2"),
+            ObjectId("50f9d61eb6b09317c08ebe49")
         ]
     },
     "watched": {
-        
+        "movie": [
+            ObjectId("50f94018b6b09317c08e5a9c"),
+            ObjectId("50fa2c1eb6b09317c08ef760")
+        ]
     },
     "download": {
         

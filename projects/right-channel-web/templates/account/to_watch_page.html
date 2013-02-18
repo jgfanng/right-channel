@@ -8,7 +8,8 @@
       <thead>
           <th class="auto-size">#</th>
           <th class="auto-size">电影名称</th>
-          <th class="auto-size">上映日期</th>
+          <th class="auto-size">豆瓣评分</th>
+          <th class="auto-size">年份</th>
       </thead>
       <tbody>
         {% set index = 1 %}
@@ -29,8 +30,15 @@
               </a>
             </td>
             <td class="auto-size">
-              {% if '_release_date' in movie %}
-                {{ movie.get('_release_date').strftime('%Y-%m-%d') }}
+              {% if 'douban_rating' in movie %}
+                {{ movie.get('douban_rating') }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td class="auto-size">
+              {% if 'year' in movie %}
+                {{ movie.get('year') }}
               {% else %}
                 未知
               {% end %}

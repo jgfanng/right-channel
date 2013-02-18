@@ -4,7 +4,7 @@ Created on Jan 30, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler
-from settings import collections
+from settings import collections, settings
 import tornado.gen
 import tornado.web
 
@@ -31,6 +31,19 @@ class ToWatchHandler(BaseHandler):
 
             user = response[0]
             if user:
+                if user.get('to_watch') and user.get('to_watch').get('movie'):
+                    try:
+                        response, error = yield tornado.gen.Task(collections['movies'].find,
+                                                                 {'_id': {'$in': user.get('to_watch').get('movie')}},
+                                                                 fields=settings['movie']['response']['verbose'])
+                    except:
+                        raise tornado.web.HTTPError(500)
+
+                    if 'error' in error and error['error']:
+                        raise tornado.web.HTTPError(500)
+
+                    user['to_watch']['movie'] = response[0]
+
                 self.params['user'] = user
                 self.render('account/to_watch_page.html')
             else:
