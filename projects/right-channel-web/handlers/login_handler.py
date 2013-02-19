@@ -24,27 +24,25 @@ class LoginHandler(BaseHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
-        email = self.get_argument('email', None)
-        password = self.get_argument('password', None)
+        email = self.get_argument('email', '').strip()
+        password = self.get_argument('password', '')
         persistent_login = self.get_argument('persistent-login', 'false')
-        if not email or not password:
-            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱或密码不正确，请重新输入'}
-            self.render('account/login_page.html')
-            return
 
-        try:
-            response, error = yield tornado.gen.Task(collections['accounts'].find_one,
-                                                     {'email': email},
-                                                     fields={'email': 1, 'nick_name': 1, 'password': 1})
-        except:
-            raise tornado.web.HTTPError(500)
+        # here we only validate the upper bound and do not use
+        # regex to validate email in case regex itself changes
+        if (len(email) <= 254 and len(password) <= 16):
+            try:
+                response, error = yield tornado.gen.Task(collections['accounts'].find_one,
+                                                         {'email': email, 'password': encrypt(password)},
+                                                         fields={'email': 1})
+            except:
+                raise tornado.web.HTTPError(500)
 
-        if 'error' in error and error['error']:
-            raise tornado.web.HTTPError(500)
+            if 'error' in error and error['error']:
+                raise tornado.web.HTTPError(500)
 
-        user = response[0]
-        if user:
-            if user.get('password') == encrypt(password):
+            user = response[0]
+            if user:
                 if persistent_login == 'true':
                     self.set_secure_cookie('email', user['email'])  # Persistent cookie
                 else:
@@ -56,8 +54,7 @@ class LoginHandler(BaseHandler):
                 else:
                     self.redirect('/')
             else:
-                self.params['op_result'] = {'type': 'error', 'message': '您输入的密码不正确，请重新输入'}
+                self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱或密码不正确，请重新输入'}
                 self.render('account/login_page.html')
         else:
-            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱不存在，请重新输入'}
-            self.render('account/login_page.html')
+            raise tornado.web.HTTPError(403)

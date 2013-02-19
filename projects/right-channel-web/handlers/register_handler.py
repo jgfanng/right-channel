@@ -5,7 +5,7 @@ Created on Jan 30, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import collections
+from settings import collections, email_regex
 from util import encrypt
 import tornado
 
@@ -23,37 +23,37 @@ class RegisterHandler(BaseHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
-        email = self.get_argument('email', None)
-        password = self.get_argument('password', None)
-        nick_name = self.get_argument('nick-name', None)
-        if not email or not password or not nick_name:
-            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱、密码或昵称不正确，请重新输入'}
-            self.render('account/register_page.html')
-            return
+        email = self.get_argument('email', '').strip()
+        password = self.get_argument('password', '')
+        nick_name = self.get_argument('nick-name', '').strip()
 
-        try:
-            response, error = yield tornado.gen.Task(collections['accounts'].find_one,
-                                                     {'email': email},
-                                                     fields={'email': 1})
-        except:
-            raise tornado.web.HTTPError(500)
-
-        if 'error' in error and error['error']:
-            raise tornado.web.HTTPError(500)
-
-        user = response[0]
-        if user:
-            self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱已被注册，请重新输入'}
-            self.render('account/register_page.html')
-        else:
+        if (0 < len(email) <= 254 and email_regex.match(email) and
+            6 <= len(password) <= 16 and 0 < len(nick_name) <= 12):
             try:
-                response, error = yield tornado.gen.Task(collections['accounts'].insert,
-                                                         {'email': email, 'password': encrypt(password), 'nick_name': nick_name})
+                response, error = yield tornado.gen.Task(collections['accounts'].find_one,
+                                                         {'email': email},
+                                                         fields={'email': 1})
             except:
                 raise tornado.web.HTTPError(500)
 
             if 'error' in error and error['error']:
                 raise tornado.web.HTTPError(500)
 
-            self.set_secure_cookie('email', email)
-            self.redirect('/')
+            user = response[0]
+            if user:
+                self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱已被注册，请重新输入'}
+                self.render('account/register_page.html')
+            else:
+                try:
+                    response, error = yield tornado.gen.Task(collections['accounts'].insert,
+                                                             {'email': email, 'password': encrypt(password), 'nick_name': nick_name})
+                except:
+                    raise tornado.web.HTTPError(500)
+
+                if 'error' in error and error['error']:
+                    raise tornado.web.HTTPError(500)
+
+                self.set_secure_cookie('email', email)
+                self.redirect('/')
+        else:
+            raise tornado.web.HTTPError(403)

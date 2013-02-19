@@ -1,5 +1,5 @@
 $(function() {
-	var emailRE = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,4}$/;
+	var emailRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,4}$/;
 
 	// email validation
 	$('#email').focus(function(event) {
@@ -20,7 +20,7 @@ $(function() {
 			$('#emailHelp').text('邮箱不多于254个字符');
 			$('#emailHelp').attr('class', 'help-inline help-error');
 			$('#emailHelp').show();
-		} else if (!emailRE.test(value)) {
+		} else if (!emailRegex.test(value)) {
 			$('#emailHelp').text('邮箱格式不正确');
 			$('#emailHelp').attr('class', 'help-inline help-error');
 			$('#emailHelp').show();
@@ -70,7 +70,7 @@ $(function() {
 
 	$('#nickName').blur(function(event) {
 		var $target = $(event.target);
-		var value = $target.val();
+		var value = $.trim($target.val());
 
 		if (value.length == 0) {
 			$('#nickNameHelp').text('昵称不能为空');
@@ -91,14 +91,14 @@ $(function() {
 	$('#register').submit( function() {
 		var emailValue = $.trim($('#email').val());
 		var passwordValue = $('#password').val();
-		var nickNameValue = $('#nickName').val();
+		var nickNameValue = $.trim($('#nickName').val());
 
-		if (emailValue.length > 0 && emailValue.length <= 254 && emailRE.test(emailValue) &&
+		if (emailValue.length > 0 && emailValue.length <= 254 && emailRegex.test(emailValue) &&
 			passwordValue.length >= 6 && passwordValue.length <= 16 &&
 			nickNameValue.length > 0 && nickNameValue.length <= 12)
 			return true;
 		else {
-			$('#submitHelp').text('您输入的内容不正确，请重新输入')
+			$('#submitHelp').text('您输入的邮箱、密码或昵称不正确，请重新输入')
 			$('#submitHelp').attr('class', 'help-inline help-error');
 			$('#submitHelp').show().fadeOut(3000);
 			return false;

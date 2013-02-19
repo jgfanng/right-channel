@@ -8,7 +8,7 @@ $(function() {
 
 	$('#nickName').blur(function(event) {
 		var $target = $(event.target);
-		var value = $target.val();
+		var value = $.trim($target.val());
 
 		if (value.length == 0) {
 			$('#nickNameHelp').text('昵称不能为空');
@@ -27,12 +27,12 @@ $(function() {
 
 	// form submission validation
 	$('#editProfile').submit(function() {
-		var nickNameValue = $('#nickName').val();
+		var nickNameValue = $.trim($('#nickName').val());
 
 		if (nickNameValue.length > 0 && nickNameValue.length <= 12)
 			return true;
 		else {
-			$('#submitHelp').text('您输入的内容不正确，请重新输入')
+			$('#submitHelp').text('您输入的昵称不正确，请重新输入')
 			$('#submitHelp').attr('class', 'help-inline help-error');
 			$('#submitHelp').show().fadeOut(3000);
 			return false;

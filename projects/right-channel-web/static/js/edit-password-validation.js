@@ -68,7 +68,7 @@ $(function() {
 			newPasswordValue.length >= 6 && newPasswordValue.length <= 16)
 			return true;
 		else {
-			$('#submitHelp').text('您输入的密码不正确，请重新输入')
+			$('#submitHelp').text('您输入的旧密码或新密码不正确，请重新输入')
 			$('#submitHelp').attr('class', 'help-inline help-error');
 			$('#submitHelp').show().fadeOut(3000);
 			return false;

@@ -5,6 +5,7 @@ Created on Jan 13, 2013
 '''
 import asyncmongo
 import json
+import re
 
 settings = json.load(open('settings.json', 'r'))
 mongodb = asyncmongo.Client(
@@ -16,3 +17,4 @@ collections = {
     'movies': mongodb.connection('movies'),
     'accounts': mongodb.connection('accounts')
     }
+email_regex = re.compile(settings['email_regex'])

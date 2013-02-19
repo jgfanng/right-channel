@@ -35,11 +35,11 @@ class EditPasswordHandler(BaseHandler):
             # throw an HTTP 400 exception if missing
             old_password = self.get_argument('old-password')
             new_password = self.get_argument('new-password')
-            # the password from user input must be the same with the one in DB
-            if password_in_db == encrypt(old_password):
-                if 6 <= len(new_password) <= 16:
+            if 6 <= len(old_password) <= 16 and 6 <= len(new_password) <= 16:
+                # the password from user input must be the same with the one in DB
+                if password_in_db == encrypt(old_password):
                     try:
-                        response, error = yield tornado.gen.Task(collections['accounts'].update,
+                        _, error = yield tornado.gen.Task(collections['accounts'].update,
                                                                  {'email': self.params.get('user').get('email')},
                                                                  {'$set': {'password': encrypt(new_password)}})
                     except:
@@ -51,9 +51,9 @@ class EditPasswordHandler(BaseHandler):
                     self.params['op_result'] = {'type': 'success', 'message': '密码更新成功'}
                     self.render('account/edit_password_page.html')
                 else:
-                    raise tornado.web.HTTPError(403)
+                    self.params['op_result'] = {'type': 'error', 'message': '您输入的旧密码不正确，请重新输入'}
+                    self.render('account/edit_password_page.html')
             else:
-                self.params['op_result'] = {'type': 'error', 'message': '您输入的旧密码不正确，请重新输入'}
-                self.render('account/edit_password_page.html')
+                raise tornado.web.HTTPError(403)
         else:
             raise tornado.web.HTTPError(403)
