@@ -3,7 +3,7 @@ Created on Jan 30, 2013
 
 @author: Fang Jiaguo
 '''
-from handlers.base_handler import BaseHandler, get_current_user_info
+from handlers.base_handler import BaseHandler, authenticated_async
 import tornado.gen
 import tornado.web
 
@@ -13,7 +13,7 @@ class EditProfileHandler(BaseHandler):
         self.params['site_nav'] = 'account'
         self.params['account_nav'] = 'editprofile'
 
-    @get_current_user_info()
+    @authenticated_async()
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

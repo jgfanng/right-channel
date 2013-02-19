@@ -4,7 +4,7 @@ Created on Jan 21, 2013
 @author: Fang Jiaguo
 '''
 from bson.objectid import ObjectId
-from handlers.base_handler import BaseHandler, get_current_user_info
+from handlers.base_handler import BaseHandler, authenticated_async
 from settings import collections, settings
 import tornado.web
 
@@ -13,7 +13,7 @@ class MovieDetailsHandler(BaseHandler):
         super(MovieDetailsHandler, self).initialize()
         self.params['site_nav'] = 'movie'
 
-    @get_current_user_info()
+    @authenticated_async()
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self, movie_id):

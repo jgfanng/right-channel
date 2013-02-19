@@ -5,7 +5,7 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, VIEW_FORMATS, IMAGE_TEXT_FORMAT, \
-    get_current_user_info
+    authenticated_async
 from settings import collections, settings
 import datetime
 import tornado
@@ -17,7 +17,7 @@ class OnshowMovieHandler(BaseHandler):
         self.params['movie_nav'] = 'onshow'
         self.params['view_format'] = IMAGE_TEXT_FORMAT
 
-    @get_current_user_info()
+    @authenticated_async()
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

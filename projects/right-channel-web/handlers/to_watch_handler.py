@@ -3,7 +3,7 @@ Created on Jan 30, 2013
 
 @author: Fang Jiaguo
 '''
-from handlers.base_handler import BaseHandler, get_current_user_info
+from handlers.base_handler import BaseHandler, authenticated_async
 from settings import collections, settings
 import tornado.gen
 import tornado.web
@@ -14,7 +14,7 @@ class ToWatchHandler(BaseHandler):
         self.params['site_nav'] = 'account'
         self.params['account_nav'] = 'towatch'
 
-    @get_current_user_info(extra_fields=['to_watch.movie'])
+    @authenticated_async(extra_fields=['to_watch.movie'])
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

@@ -4,7 +4,7 @@ Created on Jan 30, 2013
 
 @author: Fang Jiaguo
 '''
-from handlers.base_handler import BaseHandler, get_current_user_info
+from handlers.base_handler import BaseHandler, authenticated_async
 from settings import collections
 from util import encrypt
 import tornado
@@ -14,7 +14,7 @@ class RegisterHandler(BaseHandler):
         super(RegisterHandler, self).initialize()
         self.params['site_nav'] = 'register'
 
-    @get_current_user_info()
+    @authenticated_async()
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

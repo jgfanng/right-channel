@@ -23,7 +23,7 @@ class BaseHandler(tornado.web.RequestHandler):
         kwargs['params'] = self.params
         super(BaseHandler, self).render(template_name, **kwargs)
 
-def get_current_user_info(extra_fields=[]):
+def authenticated_async(extra_fields=[]):
     def decorator(method):
         @functools.wraps(method)
         @tornado.web.asynchronous
