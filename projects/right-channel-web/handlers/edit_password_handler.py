@@ -45,7 +45,7 @@ class EditPasswordHandler(BaseHandler):
                     except:
                         raise tornado.web.HTTPError(500)
 
-                    if 'error' in error and error['error']:
+                    if error.get('error'):
                         raise tornado.web.HTTPError(500)
 
                     self.params['op_result'] = {'type': 'success', 'message': '密码更新成功'}

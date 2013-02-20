@@ -40,7 +40,7 @@ class EditProfileHandler(BaseHandler):
                 except:
                     raise tornado.web.HTTPError(500)
 
-                if 'error' in error and error['error']:
+                if error.get('error'):
                     raise tornado.web.HTTPError(500)
 
                 self.params['user']['nick_name'] = nick_name  # display new nick name on page

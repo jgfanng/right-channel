@@ -30,29 +30,20 @@ class RegisterHandler(BaseHandler):
         if (0 < len(email) <= 254 and email_regex.match(email) and
             6 <= len(password) <= 16 and 0 < len(nick_name) <= 12):
             try:
-                response, error = yield tornado.gen.Task(collections['accounts'].find_one,
-                                                         {'email': email},
-                                                         fields={'email': 1})
+                # here we use insert to ensure concurrency
+                _, error = yield tornado.gen.Task(collections['accounts'].insert,
+                                                  {'email': email, 'password': encrypt(password), 'nick_name': nick_name})
             except:
                 raise tornado.web.HTTPError(500)
 
-            if 'error' in error and error['error']:
-                raise tornado.web.HTTPError(500)
-
-            user = response[0]
-            if user:
-                self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱已被注册，请重新输入'}
-                self.render('account/register_page.html')
+            # Code 11000: duplicate key error
+            if error.get('error'):
+                if error.get('error').code == 11000:
+                    self.params['op_result'] = {'type': 'error', 'message': '您输入的邮箱已被注册，请重新输入'}
+                    self.render('account/register_page.html')
+                else:
+                    raise tornado.web.HTTPError(500)
             else:
-                try:
-                    response, error = yield tornado.gen.Task(collections['accounts'].insert,
-                                                             {'email': email, 'password': encrypt(password), 'nick_name': nick_name})
-                except:
-                    raise tornado.web.HTTPError(500)
-
-                if 'error' in error and error['error']:
-                    raise tornado.web.HTTPError(500)
-
                 self.set_secure_cookie('email', email)
                 self.redirect('/')
         else:
