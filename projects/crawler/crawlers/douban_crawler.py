@@ -13,7 +13,6 @@ from settings import collections
 from threading import Thread
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from util import possibly_chinese, parse_min_date
 from utils import request
 from utils.limited_caller import LimitedCaller
 from utils.log import get_logger
@@ -35,13 +34,11 @@ class DoubanCrawler():
 
     logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 
-    def __init__(self, start_urls, apikey, sleep_time=5):
+    def __init__(self, start_urls, apikey):
         # A list of URLs where the crawler will begin to crawl from.
         self.start_urls = start_urls
         # apikey carried to call douban api, allowing 40apis/1m.
         self.apikey = apikey
-        # sleep time between two crawls for throttle
-        self.sleep_time = sleep_time
         # a queue of URLs to crawl
         self.__uncrawled_tag_queue = Queue()
         self.__uncrawled_movie_queue = Queue()
@@ -52,9 +49,9 @@ class DoubanCrawler():
         # total movies crawled
         self.__total_movies_crawled = 0
         # Throttle douban api call to 40 apis per 60s.
-        self.__movie_api = LimitedCaller(request.get, 60, 40)
+        self.__request_movie_api = LimitedCaller(request.get, 60, 40)
         # Throttle douban page crawl to 40 per 60s.
-        self.__crawl_douban_page = LimitedCaller(request.get, 60, 40)
+        self.__request_douban_page = LimitedCaller(request.get, 60, 40)
 
     def start_crawl(self):
         while True:
@@ -97,23 +94,23 @@ class DoubanCrawler():
                     # push a special marker to indicate reaching the end of crawling
                     self.__movie_id_queue.put(EOC)
                     break
-                response = self.__crawl_douban_page(url_to_crawl.encode('utf-8'), retry_interval=self.sleep_time)
+                response = self.__request_douban_page(url_to_crawl.encode('utf-8'))
                 response_text = response.read()
                 DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
 
                 html_element = fromstring(response_text)
                 html_element.make_links_absolute(url_to_crawl)
                 link_elements = html_element.xpath('//a[@href]')
-                # PATCH 1: remove polluted URLs
-                urls = Set()
-                for link_element in link_elements:
-                    urls.add(urldefrag(link_element.attrib['href'])[0])
-                if (url_to_crawl + '?start=20&type=T' in urls and url_to_crawl + '?start=40&type=T' in urls and
-                    url_to_crawl + '?start=60&type=T' in urls and url_to_crawl + '?start=80&type=T' in urls and
-                    url_to_crawl + '?start=100&type=T' in urls and url_to_crawl + '?start=120&type=T' in urls and
-                    url_to_crawl + '?start=140&type=T' in urls and url_to_crawl + '?start=160&type=T' in urls and
-                    url_to_crawl + '?start=1960&type=T' in urls and url_to_crawl + '?start=1980&type=T' in urls):
-                    continue
+#                # PATCH 1: remove polluted URLs
+#                urls = Set()
+#                for link_element in link_elements:
+#                    urls.add(urldefrag(link_element.attrib['href'])[0])
+#                if (url_to_crawl + '?start=20&type=T' in urls and url_to_crawl + '?start=40&type=T' in urls and
+#                    url_to_crawl + '?start=60&type=T' in urls and url_to_crawl + '?start=80&type=T' in urls and
+#                    url_to_crawl + '?start=100&type=T' in urls and url_to_crawl + '?start=120&type=T' in urls and
+#                    url_to_crawl + '?start=140&type=T' in urls and url_to_crawl + '?start=160&type=T' in urls and
+#                    url_to_crawl + '?start=1960&type=T' in urls and url_to_crawl + '?start=1980&type=T' in urls):
+#                    continue
                 for link_element in link_elements:
                     # remove fragment identifier
                     url_in_page = urldefrag(link_element.attrib['href'])[0]
@@ -149,104 +146,81 @@ class DoubanCrawler():
                 if movie_id == EOC:
                     break
 
-                movie_info = self.__get_movie_info(movie_id)
-                collections['movies'].update({'douban_id': movie_id}, {'$set': movie_info}, upsert=True)
+                movie_info = self.get_movie_info(movie_id)
+                collections['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
 
                 self.__total_movies_crawled += 1
-                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info.get('cn_title'), self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
+                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info.get('title'), self.__movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
 
             except PyMongoError, e:
-                DoubanCrawler.logger.error('Mongodb error <%s> <%s>' % (e, self.__get_movie_api_url(movie_id)))
+                DoubanCrawler.logger.error('Mongodb error <%s> <%s>' % (e, self.make_movie_api_url(movie_id)))
             except HTTPError, e:
-                DoubanCrawler.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (self.__get_movie_api_url(movie_id), e.code, e.msg))
+                DoubanCrawler.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (self.make_movie_api_url(movie_id), e.code, e.msg))
             except URLError, e:
-                DoubanCrawler.logger.error('Failed to reach server <%s> <%s>' % (self.__get_movie_api_url(movie_id), e.reason))
+                DoubanCrawler.logger.error('Failed to reach server <%s> <%s>' % (self.make_movie_api_url(movie_id), e.reason))
             except Exception, e:
-                DoubanCrawler.logger.error('%s <%s>' % (e, self.__get_movie_api_url(movie_id)))
+                DoubanCrawler.logger.error('%s <%s>' % (e, self.make_movie_api_url(movie_id)))
 
-    def __get_movie_info(self, movie_id):
+    def get_movie_info(self, movie_id):
         '''
         Get movie info using douban api.
         '''
 
-        api_url = self.__get_movie_api_url(movie_id)
-        response = self.__movie_api(api_url.encode('utf-8'), query_strings={'apikey': self.apikey}, retry_interval=self.sleep_time)
+        api_url = self.make_movie_api_url(movie_id)
+        response = self.__request_movie_api(api_url.encode('utf-8'), query_strings={'apikey': self.apikey})
         response_text = response.read()
 
         movie_info = json.loads(response_text)
-        new_movie_info = {'douban_id': movie_id}
+        new_movie_info = {
+            'douban': {
+                'id': movie_id
+            }
+        }
 
-        if 'attrs' in movie_info and 'year' in movie_info['attrs'] and movie_info['attrs']['year'] and movie_info['attrs']['year'][0]:
-            new_movie_info['year'] = movie_info['attrs']['year'][0].strip()  # Caution: may not be provided
+        if movie_info.get('year') and movie_info.get('year').strip():
+            new_movie_info['year'] = movie_info.get('year').strip()
 
-        if 'title' in movie_info and movie_info['title']:
-            if possibly_chinese(movie_info['title'].strip()):
-                new_movie_info['cn_title'] = movie_info['title'].strip()
-            else:
-                new_movie_info['en_title'] = movie_info['title'].strip()
+        if movie_info.get('title') and movie_info.get('title').strip():
+            new_movie_info['title'] = movie_info.get('title').strip()
 
-        if 'alt_title' in movie_info and movie_info['alt_title']:
-            alt_titles = [item.strip() for item in movie_info['alt_title'].split(' / ') if item.strip()]
-            if alt_titles:
-                if 'en_title' in new_movie_info and possibly_chinese(alt_titles[0]):
-                    new_movie_info['cn_title'] = alt_titles.pop(0)
-                if alt_titles:
-                    new_movie_info['alt_title'] = alt_titles
+        if movie_info.get('original_title') and movie_info.get('original_title').strip():
+            new_movie_info['original_title'] = movie_info.get('original_title').strip()
 
-        if 'attrs' in movie_info and 'director' in movie_info['attrs'] and movie_info['attrs']['director']:
-            new_movie_info['director'] = movie_info['attrs']['director']
+        if movie_info.get('aka'):
+            new_movie_info['aka'] = movie_info.get('aka')
 
-        if 'attrs' in movie_info and 'writer' in movie_info['attrs'] and movie_info['attrs']['writer']:
-            new_movie_info['writer'] = movie_info['attrs']['writer']
+        if movie_info.get('directors'):
+            new_movie_info['directors'] = [director.get('name').strip() for director in movie_info.get('directors') if director and director.get('name').strip()]
 
-        if 'attrs' in movie_info and 'cast' in movie_info['attrs'] and movie_info['attrs']['cast']:
-            new_movie_info['cast'] = movie_info['attrs']['cast']
+        if movie_info.get('casts'):
+            new_movie_info['casts'] = [cast.get('name').strip() for cast in movie_info.get('casts') if cast and cast.get('name').strip()]
 
-        if 'attrs' in movie_info and 'episodes' in movie_info['attrs'] and movie_info['attrs']['episodes'] and movie_info['attrs']['episodes'][0]:
-            new_movie_info['episodes'] = movie_info['attrs']['episodes'][0]  # Caution: may not be an integer
+        if movie_info.get('genres'):
+            new_movie_info['genres'] = movie_info.get('genres')
 
-        if 'attrs' in movie_info and 'movie_type' in movie_info['attrs'] and movie_info['attrs']['movie_type']:
-            new_movie_info['genre'] = movie_info['attrs']['movie_type']
+        if movie_info.get('countries'):
+            new_movie_info['countries'] = movie_info.get('countries')
 
-        if 'attrs' in movie_info and 'country' in movie_info['attrs'] and movie_info['attrs']['country']:
-            new_movie_info['country'] = movie_info['attrs']['country']
+        if movie_info.get('images'):
+            new_movie_info['images'] = movie_info.get('images')
 
-        if 'attrs' in movie_info and 'language' in movie_info['attrs'] and movie_info['attrs']['language']:
-            new_movie_info['language'] = movie_info['attrs']['language']
+        if movie_info.get('summary') and movie_info.get('summary').strip():
+            new_movie_info['summary'] = movie_info.get('summary').strip()
 
-        if 'attrs' in movie_info and 'pubdate' in movie_info['attrs'] and movie_info['attrs']['pubdate']:
-            new_movie_info['release_date'] = movie_info['attrs']['pubdate']
-            min_release_date = parse_min_date(new_movie_info['release_date'])
-            if min_release_date:
-                new_movie_info['_release_date'] = min_release_date
+        if movie_info.get('rating') and 'average' in movie_info.get('rating'):  # average may be 0 !important
+            new_movie_info['douban']['rating'] = movie_info.get('rating').get('average')
 
-        if 'attrs' in movie_info and 'movie_duration' in movie_info['attrs'] and movie_info['attrs']['movie_duration']:
-            new_movie_info['duration'] = movie_info['attrs']['movie_duration']
+        if 'ratings_count' in movie_info:  # ratings_count may be 0 !important
+            new_movie_info['douban']['raters'] = movie_info.get('ratings_count')
 
-        if 'image' in movie_info and movie_info['image']:
-            new_movie_info['image'] = movie_info['image']
-
-        if 'summary' in movie_info and movie_info['summary']:
-            new_movie_info['summary'] = movie_info['summary']
-
-        if 'rating' in movie_info and 'average' in movie_info['rating'] and movie_info['rating']['average']:
-            new_movie_info['douban_rating'] = float(movie_info['rating']['average'])
-
-        if 'rating' in movie_info and 'numRaters' in movie_info['rating']:
-            new_movie_info['douban_num_raters'] = float(movie_info['rating']['numRaters'])
+        if movie_info.get('alt') and movie_info.get('alt').strip():
+            new_movie_info['douban']['link'] = movie_info.get('alt').strip()
 
         return new_movie_info
 
-    def __get_movie_api_url(self, movie_id):
+    def make_movie_api_url(self, movie_id):
         '''
         Construct URL to call movie api from movie id.
         '''
 
-        return 'https://api.douban.com/v2/movie/%s' % movie_id
-
-    def __get_movie_page_url(self, movie_id):
-        '''
-        Construct movie page URL.
-        '''
-
-        return 'http://movie.douban.com/subject/%s/' % movie_id
+        return 'https://api.douban.com/v2/movie/subject/%s' % movie_id

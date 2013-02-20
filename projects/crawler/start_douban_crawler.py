@@ -14,6 +14,5 @@ dc = DoubanCrawler(start_urls=[
                                'http://movie.douban.com/nowplaying/',  # 正在上映
                                'http://movie.douban.com/coming'  # 即将上映
                                ],
-                   apikey='05bc4743e8f8808a1134d5cbbae9819e',
-                   sleep_time=2)
+                   apikey='05bc4743e8f8808a1134d5cbbae9819e')
 dc.start_crawl()

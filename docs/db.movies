@@ -1,51 +1,48 @@
 =========Indexes============================================================
-db.movies.ensureIndex({"douban_id": 1}, {unique: true})
+db.movies.ensureIndex({"douban.id": 1}, {unique: true})
 
 =========Schema=============================================================
 {
-    "year": "1994",
-    "zh_title": "肖申克的救赎",
-    "en_title": "The Shawshank Redemption",
-    "alt_title": [
-        "刺激1995(台)"
+    "year": "2012",
+    "title": "泰迪熊",
+    "original_title": "Ted",
+    "aka": [
+        "熊麻吉(台)",
+        "贱熊30(港)",
+        "泰德",
+        "熊吉"
     ],
-    "director": [
-        "弗兰克·德拉邦特 Frank Darabont"
+    "directors": [
+        "塞思·麦克法兰"
     ],
-    "writer": [
-        "弗兰克·德拉邦特 Frank Darabont",
-        "斯蒂芬·金 Stephen King"
+    "casts": [
+        "塞思·麦克法兰",
+        "马克·沃尔伯格",
+        "米拉·库妮丝",
+        "吉奥瓦尼·瑞比西"
     ],
-    "cast": [
-        "蒂姆·罗宾斯 Tim Robbins",
-        "摩根·弗里曼 Morgan Freeman"
+    "genres": [
+        "喜剧"
     ],
-    "episodes": "1",
-    "genre": [
-        "犯罪",
-        "剧情"
-    ],
-    "country": [
+    "countries": [
         "美国"
     ],
-    "language": [
-        "英语"
-    ],
-    "release_date": [
-        "1994-09-23"
-    ],
-    "duration": [
-        "142 分钟"
-    ],
-    "image": "http://img3.douban.com/spic/s1311361.jpg",
-    "summary": "1946年，年青的银行家安迪（蒂姆•罗宾斯 Tim Robbins 饰）被冤枉杀了他的妻子和其情人，这意味着他要在肖申克的监狱渡过余生...",
-    "douban_id": "1292052",
-    "douban_rating": 9.5,
-    "douban_num_raters": 123321,
+    "images": {
+        "small": "http://img3.douban.com/spic/s10392260.jpg",
+        "large": "http://img3.douban.com/lpic/s10392260.jpg",
+        "medium": "http://img3.douban.com/mpic/s10392260.jpg"
+    },
+    "summary": "由马克·沃尔伯格和因《黑天鹅》走红的女星米拉·库妮丝主演、爆笑动画剧集《恶搞之家》导演塞思·麦克法兰执导。\n影片讲述马克·沃尔伯格饰演的男主人公梦想成真，与他心爱的泰迪熊玩具一起成长，面对从青年到成人的痛苦蜕变。岂料，这只由动画捕捉技术控制的毛绒泰迪熊渐渐变成一个抽烟酗 酒喷粗口的小混混...面对残酷的成人世界、刚刚萌芽的爱情，这个男孩将如何处理他和泰迪熊之间的关系？\n该片也是导演塞思·麦克法兰首次进军大银幕，自编自导的作品。他还将为片中的泰迪熊配音。据悉，影片将于6月29日北美公映。",
+    "douban": {
+        "id": "4807924",
+        "rating": 7,
+        "raters": 108587,
+        "link": "http://movie.douban.com/subject/4807924/"
+    },
     "source": {
         "pptv": {
             "id": "123456",
-            "title": "肖申克的救赎",
+            "title": "泰迪熊",
             "similarity": 1,
             "link": "http://movie.pptv.com/123",
             "definition": "高清",
@@ -62,6 +59,5 @@ db.movies.ensureIndex({"douban_id": 1}, {unique: true})
                 "total": 0
             }
         ]
-    },
-    "_release_date": "1994-09-23T00:00:00.000Z"
+    }
 }
