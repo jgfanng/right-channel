@@ -1,7 +1,20 @@
 {
-    "mongo": {
+    "mongodb": {
         "host": "127.0.0.1",
         "port": 27017,
         "db": "right-channel"
+    },
+    "douban_crawler": {
+        "in_theater": "03:00",
+        "coming_soon": "03:00",
+        "douban250": "03:00",
+        "req_per_min": 40,
+        "api_key": "05bc4743e8f8808a1134d5cbbae9819e",
+        "tag_regex": "^http://movie\\.douban\\.com/tag/[^?]*(\\?start=[0-9]+&type=T)?$",
+        "movie_regex": "^http://movie\\.douban\\.com/subject/[0-9]+/?$"
+    },
+    "iqiyi_crawler": {
+        "movie": {},
+        "tv": {}
     }
 }
