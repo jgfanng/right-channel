@@ -52,11 +52,13 @@ class DoubanCrawler():
         self.request_douban_page = LimitedCaller(request.get, 60, settings['douban_crawler']['req_per_min'])
 
     def start(self):
-        while True:
-            DoubanCrawler.logger.info('==========Start to crawl douban movies==========')
-            self.__start_crawl()
-            DoubanCrawler.logger.info('==========Finish crawling douban movies=========')
-            DoubanCrawler.logger.info('==========Total movies: %s pages: %s============' % (self.__total_movies_crawled, len(self.crawled_urls)))
+#        while True:
+#            DoubanCrawler.logger.info('==========Start to crawl douban movies==========')
+#            self.__start_crawl()
+#            DoubanCrawler.logger.info('==========Finish crawling douban movies=========')
+#            DoubanCrawler.logger.info('==========Total movies: %s pages: %s============' % (self.__total_movies_crawled, len(self.crawled_urls)))
+        initial_crawler = Thread(target=self.crawl_from_scratch)
+
 
     def __start_crawl(self):
         # initialize
@@ -77,7 +79,7 @@ class DoubanCrawler():
         movie_finder.join()
         movie_fetcher.join()
 
-    def __find_movies(self):
+    def crawl_from_scratch(self):
         '''
         Crawl douban pages to extract movie URLs.
         '''
