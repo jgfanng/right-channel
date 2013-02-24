@@ -18,7 +18,7 @@ def get_logger(name, log_file):
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
     # Create formatter and add it to the handlers
-    formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
+    formatter = logging.Formatter("[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s")
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
     # Add handlers to logger.

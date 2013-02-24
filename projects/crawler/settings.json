@@ -5,9 +5,9 @@
         "db": "right-channel"
     },
     "douban_crawler": {
-        "in_theater": "03:00",
-        "coming_soon": "03:00",
-        "douban250": "03:00",
+        "in_theater_crawler": "01:00",
+        "coming_soon_crawler": "01:00",
+        "douban250_crawler": "01:00",
         "req_per_min": 40,
         "api_key": "05bc4743e8f8808a1134d5cbbae9819e",
         "tag_regex": "^http://movie\\.douban\\.com/tag/[^?]*(\\?start=[0-9]+&type=T)?$",

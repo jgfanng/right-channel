@@ -29,7 +29,7 @@ class IQIYICrawler(object):
         self.__unmatched_queue = Queue()
         self.__total_movies_crawled = 0
 
-    def start_crawl(self):
+    def start(self):
         # this thread is used to manually match movies which are not indexed by mongodb
         matcher = Thread(target=self.__match_manually)
         matcher.start()
@@ -214,4 +214,4 @@ class IQIYICrawler(object):
 
 if __name__ == '__main__':
     ic = IQIYICrawler(1)
-    ic.start_crawl()
+    ic.start()

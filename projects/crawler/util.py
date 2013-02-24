@@ -7,6 +7,7 @@ Created on Jan 18, 2013
 import calendar
 import datetime
 import re
+import time
 import unicodedata
 
 def ispunctuation(c):
@@ -79,3 +80,24 @@ def parse_min_date(date_strings):
             if not min_date or date < min_date:
                 min_date = date
     return min_date
+
+class LimitedCaller(object):
+    '''
+    Limit function call under a threshold in a given period.
+    Note this functionality is not thread safe.
+    '''
+
+    def __init__(self, call, period, maxcall):
+        self.__call = call  # the function to call
+        self.__period = period  # in seconds
+        self.__maxcall = maxcall  # max calls be made in the given period
+        self.__times = []
+
+    def __call__(self, *args, **kwargs):
+        now = time.time()
+        times = [t for t in self.__times if now - t <= self.__period]
+        if len(times) >= self.__maxcall:
+            t = times[0] + self.__period - now
+            time.sleep(t)
+        self.__times = times + [time.time()]
+        return self.__call(*args, **kwargs)
