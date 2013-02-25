@@ -9,23 +9,16 @@ from Queue import Queue
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from sets import Set
-from settings import collections, settings
+from settings import collections, settings, tag_regex, movie_regex
 from threading import Thread
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
 from util import LimitedCaller
 from utils import request
 from utils.log import get_logger
+import datetime
 import json
-import md5
-import re
-
-# # douban tag url regular expression
-# TAG_URL_RE = re.compile('^http://movie\.douban\.com/tag/[^?]*(\?start=[0-9]+&type=T)?$')
-# # douban movie url regular expression
-# MOVIE_URL_RE = re.compile('^http://movie\.douban\.com/subject/[0-9]+/?$')
-# a special marker to indicate reaching the end of crawling
-EOC = 'EndOfCrawl'
+import logging
 
 class DoubanCrawler():
     '''
@@ -34,132 +27,96 @@ class DoubanCrawler():
 
     logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 
-    def __init__(self, start_urls):
-        # A list of URLs where the crawler will begin to crawl from.
-        self.start_urls = start_urls
-#        # a queue of URLs to crawl
-#        self.__uncrawled_tag_queue = Queue()
-#        self.__uncrawled_movie_queue = Queue()
-#        # URLs crawled
-#        self.crawled_urls = Set()
-#        # movie id queue
-#        self.movie_id_queue = Queue()
-#        # total movies crawled
-#        self.__total_movies_crawled = 0
-        # Throttle douban api call to 40/60s.
+    def __init__(self):
+        # movie id queue
+        self.movie_ids = Queue()
+        # Throttle douban api call to #/60s.
         self.request_movie_api = LimitedCaller(request.get, 60, settings['douban_crawler']['req_per_min'])
-        # Throttle douban page crawl to 40/60s.
+        # Throttle douban page crawl to #/60s.
         self.request_douban_page = LimitedCaller(request.get, 60, settings['douban_crawler']['req_per_min'])
 
     def start(self):
-#        while True:
-#            DoubanCrawler.logger.info('==========Start to crawl douban movies==========')
-#            self.__start_crawl()
-#            DoubanCrawler.logger.info('==========Finish crawling douban movies=========')
-#            DoubanCrawler.logger.info('==========Total movies: %s pages: %s============' % (self.__total_movies_crawled, len(self.crawled_urls)))
-        initial_crawler = Thread(target=self.crawl_from_scratch)
-
-
-    def __start_crawl(self):
-        # initialize
-        self.crawled_urls.clear()
-        self.__total_movies_crawled = 0
-
-        for start_url in self.start_urls:
-            url_md5 = md5.new(start_url.encode('utf-8')).digest()
-            if url_md5 not in self.crawled_urls:
-                self.crawled_urls.add(url_md5)
-                self.__uncrawled_tag_queue.put(start_url)
-
-        # create two threads: one to find movie, the other to fetch movie
-        movie_finder = Thread(target=self.__find_movies)
-        movie_fetcher = Thread(target=self.__fetch_movies)
-        movie_finder.start()
+        seeds_crawler = Thread(target=self.crawl_from_seeds)
+        in_theater_crawler = Thread(target=self.crawl_in_theater)
+        movie_fetcher = Thread(target=self.fetch_movies)
+        seeds_crawler.start()
+        in_theater_crawler.start()
         movie_fetcher.start()
-        movie_finder.join()
-        movie_fetcher.join()
 
-    def crawl_from_scratch(self):
+    def crawl_from_seeds(self):
         '''
-        Crawl douban pages to extract movie URLs.
+        Crawl douban pages and extract movie URLs from given seeds.
         '''
 
+        logger = logging.getLogger('DoubanCrawler.SeedsCrawler')
+        tag_urls = Queue()
+        movie_urls = Queue()
+        crawled_urls = Set()
+        while True:
+            logger.info('==========SeedsCrawler Started==========')
+            for seed in settings['douban_crawler']['seeds_crawler']['seeds']:
+                tag_urls.put(seed)
+                crawled_urls.add(seed)
+
+            while True:
+                try:
+                    if not tag_urls.empty():
+                        url_to_crawl = tag_urls.get()
+                    elif not movie_urls.empty():
+                        url_to_crawl = movie_urls.get()
+                    else:
+                        break
+
+                    response = self.request_douban_page(url_to_crawl.encode('utf-8'))
+                    response_text = response.read()
+                    logger.debug('Crawled <%s>' % url_to_crawl)
+
+                    html_element = fromstring(response_text)
+                    html_element.make_links_absolute(url_to_crawl)
+                    link_elements = html_element.xpath('//a[@href]')
+                    for link_element in link_elements:
+                        url_in_page = urldefrag(link_element.attrib['href'])[0]  # remove fragment identifier
+                        if url_in_page not in crawled_urls:
+                            if tag_regex.match(url_in_page):
+                                tag_urls.put(url_in_page)
+                                crawled_urls.add(url_in_page)
+                            elif movie_regex.match(url_in_page):
+                                movie_urls.put(url_in_page)
+                                crawled_urls.add(url_in_page)
+                                movie_id = url_in_page[len('http://movie.douban.com/subject/'):].replace('/', '')
+                                self.movie_ids.put(movie_id)
+
+                except HTTPError, e:
+                    logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (url_to_crawl, e.code, e.msg))
+                except URLError, e:
+                    logger.error('Failed to reach server <%s> <%s>' % (url_to_crawl, e.reason))
+                except Exception, e:
+                    logger.error('%s <%s>' % (e, url_to_crawl))
+
+            crawled_urls.clear()  # prepare to start next round
+            logger.info('==========SeedsCrawler Finished=========')
+
+    def fetch_movies(self):
+        '''
+        Fetch movie info by douban api and store into Mongodb.
+        '''
+
+        logger = logging.getLogger('DoubanCrawler.MovieFetcher')
         while True:
             try:
-                if not self.__uncrawled_tag_queue.empty():
-                    url_to_crawl = self.__uncrawled_tag_queue.get()
-                elif not self.__uncrawled_movie_queue.empty():
-                    url_to_crawl = self.__uncrawled_movie_queue.get()
-                else:
-                    # push a special marker to indicate reaching the end of crawling
-                    self.movie_id_queue.put(EOC)
-                    break
-                response = self.request_douban_page(url_to_crawl.encode('utf-8'))
-                response_text = response.read()
-                DoubanCrawler.logger.debug('Crawled <%s>' % url_to_crawl)
-
-                html_element = fromstring(response_text)
-                html_element.make_links_absolute(url_to_crawl)
-                link_elements = html_element.xpath('//a[@href]')
-#                # PATCH 1: remove polluted URLs
-#                urls = Set()
-#                for link_element in link_elements:
-#                    urls.add(urldefrag(link_element.attrib['href'])[0])
-#                if (url_to_crawl + '?start=20&type=T' in urls and url_to_crawl + '?start=40&type=T' in urls and
-#                    url_to_crawl + '?start=60&type=T' in urls and url_to_crawl + '?start=80&type=T' in urls and
-#                    url_to_crawl + '?start=100&type=T' in urls and url_to_crawl + '?start=120&type=T' in urls and
-#                    url_to_crawl + '?start=140&type=T' in urls and url_to_crawl + '?start=160&type=T' in urls and
-#                    url_to_crawl + '?start=1960&type=T' in urls and url_to_crawl + '?start=1980&type=T' in urls):
-#                    continue
-                for link_element in link_elements:
-                    # remove fragment identifier
-                    url_in_page = urldefrag(link_element.attrib['href'])[0]
-                    # Add URL if its domain is allowed, and has not been crawled.
-                    if TAG_URL_RE.match(url_in_page):
-                        url_md5 = md5.new(url_in_page.encode('utf-8')).digest()
-                        if url_md5 not in self.crawled_urls:
-                            self.crawled_urls.add(url_md5)
-                            self.__uncrawled_tag_queue.put(url_in_page)
-                    elif MOVIE_URL_RE.match(url_in_page):
-                        url_md5 = md5.new(url_in_page.encode('utf-8')).digest()
-                        if url_md5 not in self.crawled_urls:
-                            self.crawled_urls.add(url_md5)
-                            self.__uncrawled_movie_queue.put(url_in_page)
-                            movie_id = url_in_page[len('http://movie.douban.com/subject/'):].replace('/', '')
-                            self.movie_id_queue.put(movie_id)
-
-            except HTTPError, e:
-                DoubanCrawler.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (url_to_crawl, e.code, e.msg))
-            except URLError, e:
-                DoubanCrawler.logger.error('Failed to reach server <%s> <%s>' % (url_to_crawl, e.reason))
-            except Exception, e:
-                DoubanCrawler.logger.error('%s <%s>' % (e, url_to_crawl))
-
-    def __fetch_movies(self):
-        '''
-        Get movie info using douban api and store it in Mongodb.
-        '''
-
-        while True:
-            try:
-                movie_id = self.movie_id_queue.get()  # blocks if the queue is empty
-                if movie_id == EOC:
-                    break
-
+                movie_id = self.movie_ids.get()  # blocks if the queue is empty
                 movie_info = self.get_movie_info(movie_id)
                 collections['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-
-                self.__total_movies_crawled += 1
-                DoubanCrawler.logger.info('Crawled movie #%s <%s> QMID(%s) QTAG(%s) QM(%s)' % (self.__total_movies_crawled, movie_info.get('title'), self.movie_id_queue.qsize(), self.__uncrawled_tag_queue.qsize(), self.__uncrawled_movie_queue.qsize()))
+                logger.info('Crawled movie <%s>' % movie_info.get('title'))
 
             except PyMongoError, e:
-                DoubanCrawler.logger.error('Mongodb error <%s> <%s>' % (e, self.make_movie_api_url(movie_id)))
+                logger.error('Mongodb error <%s> <%s>' % (e, self.make_movie_api_url(movie_id)))
             except HTTPError, e:
-                DoubanCrawler.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (self.make_movie_api_url(movie_id), e.code, e.msg))
+                logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (self.make_movie_api_url(movie_id), e.code, e.msg))
             except URLError, e:
-                DoubanCrawler.logger.error('Failed to reach server <%s> <%s>' % (self.make_movie_api_url(movie_id), e.reason))
+                logger.error('Failed to reach server <%s> <%s>' % (self.make_movie_api_url(movie_id), e.reason))
             except Exception, e:
-                DoubanCrawler.logger.error('%s <%s>' % (e, self.make_movie_api_url(movie_id)))
+                logger.error('%s <%s>' % (e, self.make_movie_api_url(movie_id)))
 
     def get_movie_info(self, movie_id):
         '''
@@ -167,13 +124,14 @@ class DoubanCrawler():
         '''
 
         api_url = self.make_movie_api_url(movie_id)
-        response = self.__request_movie_api(api_url.encode('utf-8'), query_strings={'apikey': self.apikey})
+        response = self.request_movie_api(api_url.encode('utf-8'), query_strings={'apikey': settings['douban_crawler']['api_key']})
         response_text = response.read()
 
         movie_info = json.loads(response_text)
         new_movie_info = {
             'douban': {
-                'id': movie_id
+                'id': movie_id,
+                'last_updated': datetime.datetime.utcnow()
             }
         }
 

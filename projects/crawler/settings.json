@@ -5,9 +5,22 @@
         "db": "right-channel"
     },
     "douban_crawler": {
-        "in_theater_crawler": "01:00",
-        "coming_soon_crawler": "01:00",
-        "douban250_crawler": "01:00",
+        "seeds_crawler": {
+            "seeds": [
+                "http://movie.douban.com/tag/"
+            ]
+        },
+        "in_theater_crawler": {
+        	"page": "http://movie.douban.com/nowplaying/"
+            "sched": "01:00"
+        },
+        "coming_soon_crawler": {
+        	"page": "http://movie.douban.com/later/"
+            "sched": "01:00"
+        },
+        "douban250_crawler": {
+            "sched": "01:00"
+        },
         "req_per_min": 40,
         "api_key": "05bc4743e8f8808a1134d5cbbae9819e",
         "tag_regex": "^http://movie\\.douban\\.com/tag/[^?]*(\\?start=[0-9]+&type=T)?$",
