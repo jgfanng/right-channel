@@ -11,11 +11,11 @@
             ]
         },
         "in_theater_crawler": {
-        	"page": "http://movie.douban.com/nowplaying/"
+        	"page": "http://movie.douban.com/nowplaying/",
             "sched": "01:00"
         },
         "coming_soon_crawler": {
-        	"page": "http://movie.douban.com/later/"
+        	"page": "http://movie.douban.com/later/",
             "sched": "01:00"
         },
         "douban250_crawler": {

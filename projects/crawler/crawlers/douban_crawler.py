@@ -9,8 +9,7 @@ from Queue import Queue
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from sets import Set
-from settings import collections, settings
-from threading import Thread
+from settings import settings, mongodb
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
 from util import LimitedCaller
@@ -21,12 +20,13 @@ import json
 import logging
 import re
 import threading
+import time
 
 douban_logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 tag_regex = re.compile(settings['douban_crawler']['tag_regex'])
 movie_regex = re.compile(settings['douban_crawler']['movie_regex'])
-request_movie_api = LimitedCaller(request.get, 60, settings['douban_crawler']['req_per_min'])
-request_douban_page = LimitedCaller(request.get, 60, settings['douban_crawler']['req_per_min'])
+request_movie_api = LimitedCaller(request.get, 60, settings['douban_crawler']['reqs_per_min'])
+request_douban_page = LimitedCaller(request.get, 60, settings['douban_crawler']['reqs_per_min'])
 common_movie_ids = Queue()
 in_theater_movie_ids = Queue()
 
@@ -36,12 +36,14 @@ class DoubanCrawler():
     '''
 
     def start(self):
-        seeds_crawler = Thread(target=self.crawl_from_seeds)
-        in_theater_crawler = Thread(target=self.crawl_in_theater)
-        movie_fetcher = Thread(target=self.fetch_movies)
-        seeds_crawler.start()
-        in_theater_crawler.start()
-        movie_fetcher.start()
+        threads = [
+            SeedsCrawler(),
+            CommonMovieFetcher(),
+            InTheaterCrawler(),
+            InTheaterMovieFetcher()
+        ]
+        for thread in threads:
+            thread.start()
 
 class SeedsCrawler(threading.Thread):
     def run(self):
@@ -93,6 +95,25 @@ class SeedsCrawler(threading.Thread):
 
             logger.info('==========SeedsCrawler Finished=========')
 
+class CommonMovieFetcher(threading.Thread):
+    def run(self):
+        logger = logging.getLogger('DoubanCrawler.CommonMovieFetcher')
+        while True:
+            try:
+                movie_id = common_movie_ids.get()  # blocks if the queue is empty
+                movie_info = get_movie_info(movie_id)
+                mongodb['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
+                logger.info('Crawled movie <%s>' % movie_info.get('title'))
+
+            except PyMongoError, e:
+                logger.error('Mongodb error <%s>' % e)
+            except HTTPError, e:
+                logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (make_movie_api_url(movie_id), e.code, e.msg))
+            except URLError, e:
+                logger.error('Failed to reach server <%s> <%s>' % (make_movie_api_url(movie_id), e.reason))
+            except Exception, e:
+                logger.error('%s <%s>' % (e, make_movie_api_url(movie_id)))
+
 class InTheaterCrawler(threading.Thread):
     def run(self):
         logger = logging.getLogger('DoubanCrawler.InTheaterCrawler')
@@ -105,8 +126,7 @@ class InTheaterCrawler(threading.Thread):
                 response_text = response.read()
                 logger.debug('Crawled <%s>' % page)
 
-                # remove previous records
-                collections['movies.in_theater'].remove()
+                mongodb['movies.in_theater'].remove()  # !important remove previous records
 
                 html_element = fromstring(response_text)
                 html_element.make_links_absolute(page)
@@ -116,6 +136,8 @@ class InTheaterCrawler(threading.Thread):
                     if movie_regex.match(url_in_page):
                         movie_id = url_in_page[len('http://movie.douban.com/subject/'):].replace('/', '')
                         in_theater_movie_ids.put(movie_id)
+
+                time.sleep(100000)  # !important sleep until next schedule
 
             except PyMongoError, e:
                 logger.error('Mongodb error <%s>' % e)
@@ -128,25 +150,6 @@ class InTheaterCrawler(threading.Thread):
 
             logger.info('==========InTheaterCrawler Finished=========')
 
-class CommonMovieFetcher(threading.Thread):
-    def run(self):
-        logger = logging.getLogger('DoubanCrawler.CommonMovieFetcher')
-        while True:
-            try:
-                movie_id = common_movie_ids.get()  # blocks if the queue is empty
-                movie_info = get_movie_info(movie_id)
-                collections['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-                logger.info('Crawled movie <%s>' % movie_info.get('title'))
-
-            except PyMongoError, e:
-                logger.error('Mongodb error <%s>' % e)
-            except HTTPError, e:
-                logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (make_movie_api_url(movie_id), e.code, e.msg))
-            except URLError, e:
-                logger.error('Failed to reach server <%s> <%s>' % (make_movie_api_url(movie_id), e.reason))
-            except Exception, e:
-                logger.error('%s <%s>' % (e, make_movie_api_url(movie_id)))
-
 class InTheaterMovieFetcher(threading.Thread):
     def run(self):
         logger = logging.getLogger('DoubanCrawler.InTheaterMovieFetcher')
@@ -154,8 +157,8 @@ class InTheaterMovieFetcher(threading.Thread):
             try:
                 movie_id = in_theater_movie_ids.get()  # blocks if the queue is empty
                 movie_info = get_movie_info(movie_id)
-                collections['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-                collections['movies.in_theater'].insert
+                mongodb['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
+                mongodb['movies.in_theater'].insert({'douban_id': movie_id})
                 logger.info('Crawled movie <%s>' % movie_info.get('title'))
 
             except PyMongoError, e:
