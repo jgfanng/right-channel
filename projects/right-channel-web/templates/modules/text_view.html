@@ -3,7 +3,7 @@
     <table class="table table-condensed table-striped table-hover table-dash-border">
       <thead>
           <th class="auto-size">#</th>
-          <th class="auto-size">上映日期</th>
+          <th class="auto-size">年份</th>
           <th class="auto-size">电影名称</th>
           <th class="auto-size">国家/地区</th>
           <th class="auto-size">豆瓣评分</th>
@@ -11,40 +11,38 @@
       </thead>
       <tbody>
         {% if 'movies' in params %}
+          {% from util import combine_titles %}
           {% set index = 1 %}
           {% for movie in params.get('movies') %}
             <tr>
               <td class="auto-size">{{ index }}</td>
               <td class="auto-size">
-                {% if '_release_date' in movie %}
-                  {{ movie.get('_release_date').strftime('%Y-%m-%d') }}
+                {% if movie.get('year') %}
+                  {{ movie.get('year') }}
                 {% else %}
                   未知
                 {% end %}
               </td>
               <td>
                 <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
-                  {% if 'cn_title' in movie and 'en_title' in movie %}
-                    {{ movie.get('cn_title') + ' / ' + movie.get('en_title') }}
-                  {% elif 'cn_title' in movie %}
-                    {{ movie.get('cn_title') }}
-                  {% elif 'en_title' in movie %}
-                    {{ movie.get('en_title') }}
+                  {% set title = combine_titles(movie.get('title'), movie.get('original_title')) %}
+                  {% if title %}
+                    {{ title }}
                   {% else %}
                     未知
                   {% end %}
                 </a>
               </td>
               <td class="auto-size">
-                {% if 'country' in movie and movie.get('country') %}
-                  {{ ' / '.join(movie.get('country')) }}
+                {% if movie.get('countries') %}
+                  {{ ' / '.join(movie.get('countries')) }}
                 {% else %}
                   未知
                 {% end %}
               </td>
               <td class="auto-size">
-                {% if 'douban_rating' in movie %}
-                  {{ movie.get('douban_rating') }}
+                {% if movie.get('douban') and 'rating' in movie.get('douban') %}
+                  {{ movie.get('douban').get('rating') }}
                 {% else %}
                   未知
                 {% end %}

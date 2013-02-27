@@ -5,7 +5,7 @@ Created on Feb 7, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import collections
+from settings import mongodb
 from util import encrypt
 import tornado.gen
 import tornado.web
@@ -32,7 +32,7 @@ class LoginHandler(BaseHandler):
         # regex to validate email in case regex itself changes
         if (len(email) <= 254 and len(password) <= 16):
             try:
-                response, error = yield tornado.gen.Task(collections['accounts'].find_one,
+                response, error = yield tornado.gen.Task(mongodb['accounts'].find_one,
                                                          {'email': email, 'password': encrypt(password)},
                                                          fields={'email': 1})
             except:

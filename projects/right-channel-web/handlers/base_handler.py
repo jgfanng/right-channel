@@ -3,7 +3,7 @@ Created on Jan 10, 2013
 
 @author: Fang Jiaguo
 '''
-from settings import collections
+from settings import mongodb
 import functools
 import tornado.web
 
@@ -38,7 +38,7 @@ def authenticated_async(extra_fields=[]):
                     for field in basic_fields:
                         final_fields[field] = 1
 
-                    response, error = yield tornado.gen.Task(collections['accounts'].find_one,
+                    response, error = yield tornado.gen.Task(mongodb['accounts'].find_one,
                                                              {'email': email},
                                                              fields=final_fields)
                 except:

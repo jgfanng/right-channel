@@ -5,7 +5,7 @@ Created on Jan 21, 2013
 '''
 from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import collections, settings
+from settings import settings, mongodb
 import tornado.web
 
 class MovieDetailsHandler(BaseHandler):
@@ -18,7 +18,7 @@ class MovieDetailsHandler(BaseHandler):
     @tornado.gen.engine
     def get(self, movie_id):
         try:
-            response, error = yield tornado.gen.Task(collections['movies'].find_one,
+            response, error = yield tornado.gen.Task(mongodb['movies'].find_one,
                                                      {'_id': ObjectId(movie_id)},
                                                      fields=settings['movie']['response']['verbose'])
         except:

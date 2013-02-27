@@ -18,7 +18,8 @@
         	"page": "http://movie.douban.com/later/",
             "run_at": "17:00"
         },
-        "douban250_crawler": {
+        "top250_crawler": {
+        	"page": "http://movie.douban.com/top250?format=text",
             "run_at": "17:00"
         },
         "reqs_per_min": 40,

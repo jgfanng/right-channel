@@ -5,7 +5,7 @@ Created on Jan 30, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import collections
+from settings import mongodb
 from util import encrypt
 import tornado.gen
 import tornado.web
@@ -39,7 +39,7 @@ class EditPasswordHandler(BaseHandler):
                 # the password from user input must be the same with the one in DB
                 if password_in_db == encrypt(old_password):
                     try:
-                        _, error = yield tornado.gen.Task(collections['accounts'].update,
+                        _, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                                  {'email': self.params.get('user').get('email')},
                                                                  {'$set': {'password': encrypt(new_password)}})
                     except:

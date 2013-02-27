@@ -3,7 +3,7 @@ db.movies.collections.ensureIndex({"id": 1}, {unique: true})
 
 =========Schema=============================================================
 {
-    "id": "in_theater",
+    "id": "in_theaters",
     "douban_ids": [
         "4807924"
     ]

@@ -37,12 +37,14 @@ class DoubanCrawler():
 
     def start(self):
         threads = [
-#            SeedsCrawler(),
-#            CommonMovieFetcher(),
+            SeedsCrawler(),
+            CommonMovieFetcher(),
             InTheatersCrawler(),
             InTheatersMovieFetcher(),
-#            ComingSoonCrawler(),
-#            ComingSoonMovieFetcher()
+            ComingSoonCrawler(),
+            ComingSoonMovieFetcher(),
+            Top250Crawler(),
+            Top250MovieFetcher()
         ]
         for thread in threads:
             thread.start()
@@ -54,7 +56,7 @@ class SeedsCrawler(threading.Thread):
         movie_urls = Queue()
         crawled_urls = Set()
         while True:
-            logger.info('==========Start==========')
+            logger.info('==========SeedsCrawler Start==========')
             for seed in settings['douban_crawler']['seeds_crawler']['seeds']:
                 tag_urls.put(seed)
                 crawled_urls.add(seed)
@@ -95,7 +97,7 @@ class SeedsCrawler(threading.Thread):
                 except Exception, e:
                     logger.error('%s <%s>' % (e, url_to_crawl))
 
-            logger.info('==========Finish==========')
+            logger.info('==========SeedsCrawler Finish==========')
 
 class CommonMovieFetcher(threading.Thread):
     def run(self):
@@ -129,7 +131,7 @@ class InTheatersCrawler(threading.Thread):
                 response_text = response.read()
                 logger.debug('Crawled <%s>' % page)
 
-                mongodb['movies.in_theaters'].remove()  # !important remove previous records
+                mongodb['movies.collections'].update({'id': 'in_theaters'}, {'$set': {'douban_ids': []}}, upsert=True)  # !important clear douban_ids
 
                 html_element = fromstring(response_text)
                 html_element.make_links_absolute(page)
@@ -166,7 +168,7 @@ class InTheatersMovieFetcher(threading.Thread):
                 movie_id = in_theaters_movie_ids.get()  # blocks if the queue is empty
                 movie_info = get_movie_info(movie_id)
                 mongodb['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-                mongodb['movies.in_theaters'].insert({'douban_id': movie_id})
+                mongodb['movies.collections'].update({'id': 'in_theaters'}, {'$push': {'douban_ids': movie_id}}, upsert=True)
                 logger.info('Crawled movie <%s>' % movie_info.get('title'))
 
             except PyMongoError, e:
@@ -191,7 +193,7 @@ class ComingSoonCrawler(threading.Thread):
                 response_text = response.read()
                 logger.debug('Crawled <%s>' % page)
 
-                mongodb['movies.coming_soon'].remove()  # !important remove previous records
+                mongodb['movies.collections'].update({'id': 'coming_soon'}, {'$set': {'douban_ids': []}}, upsert=True)  # !important clear douban_ids
 
                 html_element = fromstring(response_text)
                 html_element.make_links_absolute(page)
@@ -214,7 +216,11 @@ class ComingSoonCrawler(threading.Thread):
 
             logger.info('==========ComingSoonCrawler Finished=========')
 
-            time.sleep(100000)  # !important sleep till next schedule
+            # sleep till next run
+            hour, minute = tuple(settings['douban_crawler']['coming_soon_crawler']['run_at'].split(':'))
+            now = datetime.datetime.utcnow()
+            next_run = datetime.datetime(now.year, now.month, now.day, int(hour), int(minute), now.second) + datetime.timedelta(days=1)  # calculate next run time
+            time.sleep((next_run - now).total_seconds())
 
 class ComingSoonMovieFetcher(threading.Thread):
     def run(self):
@@ -224,7 +230,69 @@ class ComingSoonMovieFetcher(threading.Thread):
                 movie_id = coming_soon_movie_ids.get()  # blocks if the queue is empty
                 movie_info = get_movie_info(movie_id)
                 mongodb['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-                mongodb['movies.coming_soon'].insert({'douban_id': movie_id})
+                mongodb['movies.collections'].update({'id': 'coming_soon'}, {'$push': {'douban_ids': movie_id}}, upsert=True)
+                logger.info('Crawled movie <%s>' % movie_info.get('title'))
+
+            except PyMongoError, e:
+                logger.error('Mongodb error <%s>' % e)
+            except HTTPError, e:
+                logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (make_movie_api_url(movie_id), e.code, e.msg))
+            except URLError, e:
+                logger.error('Failed to reach server <%s> <%s>' % (make_movie_api_url(movie_id), e.reason))
+            except Exception, e:
+                logger.error('%s <%s>' % (e, make_movie_api_url(movie_id)))
+
+class Top250Crawler(threading.Thread):
+    def run(self):
+        logger = logging.getLogger('DoubanCrawler.Top250Crawler')
+        crawled_urls = Set()
+        while True:
+            logger.info('==========Top250Crawler Started==========')
+
+            try:
+                page = settings['douban_crawler']['top250_crawler']['page']
+                response = request_douban_page(page.encode('utf-8'))
+                response_text = response.read()
+                logger.debug('Crawled <%s>' % page)
+
+                mongodb['movies.collections'].update({'id': 'top250'}, {'$set': {'douban_ids': []}}, upsert=True)  # !important clear douban_ids
+
+                html_element = fromstring(response_text)
+                html_element.make_links_absolute(page)
+                link_elements = html_element.xpath('//a[@href]')
+                for link_element in link_elements:
+                    url_in_page = urldefrag(link_element.attrib['href'])[0]  # remove fragment identifier
+                    if url_in_page not in crawled_urls and movie_regex.match(url_in_page):
+                        crawled_urls.add(url_in_page)
+                        movie_id = url_in_page[len('http://movie.douban.com/subject/'):].replace('/', '')
+                        coming_soon_movie_ids.put(movie_id)
+
+            except PyMongoError, e:
+                logger.error('Mongodb error <%s>' % e)
+            except HTTPError, e:
+                logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (page, e.code, e.msg))
+            except URLError, e:
+                logger.error('Failed to reach server <%s> <%s>' % (page, e.reason))
+            except Exception, e:
+                logger.error('%s <%s>' % (e, page))
+
+            logger.info('==========Top250Crawler Finished=========')
+
+            # sleep till next run
+            hour, minute = tuple(settings['douban_crawler']['top250_crawler']['run_at'].split(':'))
+            now = datetime.datetime.utcnow()
+            next_run = datetime.datetime(now.year, now.month, now.day, int(hour), int(minute), now.second) + datetime.timedelta(days=1)  # calculate next run time
+            time.sleep((next_run - now).total_seconds())
+
+class Top250MovieFetcher(threading.Thread):
+    def run(self):
+        logger = logging.getLogger('DoubanCrawler.Top250MovieFetcher')
+        while True:
+            try:
+                movie_id = coming_soon_movie_ids.get()  # blocks if the queue is empty
+                movie_info = get_movie_info(movie_id)
+                mongodb['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
+                mongodb['movies.collections'].update({'id': 'top250'}, {'$push': {'douban_ids': movie_id}}, upsert=True)
                 logger.info('Crawled movie <%s>' % movie_info.get('title'))
 
             except PyMongoError, e:

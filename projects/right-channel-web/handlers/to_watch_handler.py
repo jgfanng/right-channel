@@ -4,7 +4,7 @@ Created on Jan 30, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import collections, settings
+from settings import settings, mongodb
 import tornado.gen
 import tornado.web
 
@@ -22,7 +22,7 @@ class ToWatchHandler(BaseHandler):
             user = self.params.get('user')
             if user.get('to_watch') and user.get('to_watch').get('movie'):
                 try:
-                    response, error = yield tornado.gen.Task(collections['movies'].find,
+                    response, error = yield tornado.gen.Task(mongodb['movies'].find,
                                                              {'_id': {'$in': user.get('to_watch').get('movie')}},
                                                              fields=settings['movie']['response']['verbose'])
                 except:

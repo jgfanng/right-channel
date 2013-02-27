@@ -10,11 +10,7 @@ import re
 settings = json.load(open('settings.json', 'r'))
 mongodb = asyncmongo.Client(
     pool_id='pool_id',
-    host=settings['mongo']['host'],
-    port=settings['mongo']['port'],
-    dbname=settings['mongo']['db'])
-collections = {
-    'movies': mongodb.connection('movies'),
-    'accounts': mongodb.connection('accounts')
-    }
+    host=settings['mongodb']['host'],
+    port=settings['mongodb']['port'],
+    dbname=settings['mongodb']['db'])
 email_regex = re.compile(settings['email_regex'])

@@ -5,7 +5,7 @@ Created on Jan 30, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import collections, email_regex
+from settings import email_regex, mongodb
 from util import encrypt
 import tornado
 
@@ -31,7 +31,7 @@ class RegisterHandler(BaseHandler):
             6 <= len(password) <= 16 and 0 < len(nick_name) <= 12):
             try:
                 # here we use insert to ensure concurrency
-                _, error = yield tornado.gen.Task(collections['accounts'].insert,
+                _, error = yield tornado.gen.Task(mongodb['accounts'].insert,
                                                   {'email': email, 'password': encrypt(password), 'nick_name': nick_name})
             except:
                 raise tornado.web.HTTPError(500)
