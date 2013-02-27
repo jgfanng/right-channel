@@ -10,16 +10,16 @@
                 "http://movie.douban.com/tag/"
             ]
         },
-        "in_theater_crawler": {
+        "in_theaters_crawler": {
         	"page": "http://movie.douban.com/nowplaying/",
-            "sched": "01:00"
+            "run_at": "17:00"
         },
         "coming_soon_crawler": {
         	"page": "http://movie.douban.com/later/",
-            "sched": "01:00"
+            "run_at": "17:00"
         },
         "douban250_crawler": {
-            "sched": "01:00"
+            "run_at": "17:00"
         },
         "reqs_per_min": 40,
         "api_key": "05bc4743e8f8808a1134d5cbbae9819e",

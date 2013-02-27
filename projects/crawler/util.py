@@ -4,11 +4,15 @@ Created on Jan 18, 2013
 
 @author: Fang Jiaguo
 '''
+from urllib import urlencode
+from urlparse import urlparse, parse_qs, urlunparse
 import calendar
 import datetime
 import re
+import threading
 import time
 import unicodedata
+import urllib2
 
 def ispunctuation(c):
     '''
@@ -81,23 +85,56 @@ def parse_min_date(date_strings):
                 min_date = date
     return min_date
 
+class request(object):
+
+    RETRY_INTERVAL = 5
+    RETRY_COUNT = 3
+    TIMEOUT = 30
+
+    def get(self, url, query_strings=None, retry_interval=RETRY_INTERVAL, retry_count=RETRY_COUNT):
+        '''Send a get request'''
+
+        if query_strings:
+            # urlparse returns tuple, then convert tuple to list
+            parse_result = list(urlparse(url))
+            # parse the 4th element (query string)
+            qs = parse_qs(parse_result[4])
+            qs.update(query_strings)
+            new_qs = urlencode(qs, doseq=True)
+            parse_result[4] = new_qs
+            url = urlunparse(parse_result)
+
+        while True:
+            try:
+                return urllib2.urlopen(url, timeout=request.TIMEOUT)
+            except:
+                retry_count -= 1
+                if retry_count < 0:
+                    raise
+                elif retry_interval > 0:
+                    time.sleep(retry_interval)
+
+request = request()
+
 class LimitedCaller(object):
     '''
     Limit function call under a threshold in a given period.
     Note this functionality is not thread safe.
     '''
 
-    def __init__(self, call, period, maxcall):
+    def __init__(self, call, period, max_calls):
         self.__call = call  # the function to call
         self.__period = period  # in seconds
-        self.__maxcall = maxcall  # max calls be made in the given period
-        self.__times = []
+        self.__max_calls = max_calls  # max calls be made in the given period
+        self.__call_times = []
+        self.__lock = threading.Lock()
 
     def __call__(self, *args, **kwargs):
-        now = time.time()
-        times = [t for t in self.__times if now - t <= self.__period]
-        if len(times) >= self.__maxcall:
-            t = times[0] + self.__period - now
-            time.sleep(t)
-        self.__times = times + [time.time()]
+        with self.__lock:
+            now = time.time()
+            times = [t for t in self.__call_times if now - t <= self.__period]
+            if len(times) >= self.__max_calls:
+                t = times[0] + self.__period - now
+                time.sleep(t)
+            self.__call_times = times + [time.time()]
         return self.__call(*args, **kwargs)
