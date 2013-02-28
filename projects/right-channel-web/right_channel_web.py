@@ -12,6 +12,7 @@ from handlers.in_theaters_movie_handler import InTheatersMovieHandler
 from handlers.login_handler import LoginHandler
 from handlers.logout_handler import LogoutHandler
 from handlers.movie_details_handler import MovieDetailsHandler
+from handlers.movie_home_handler import MovieHomeHandler
 from handlers.register_handler import RegisterHandler
 from handlers.to_watch_handler import ToWatchHandler
 from handlers.watched_handler import WatchedHandler
@@ -22,7 +23,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', HomeHandler),
-            (r'/movie', InTheatersMovieHandler),
+            (r'/movie', MovieHomeHandler),
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/intheaters', InTheatersMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieDetailsHandler),
