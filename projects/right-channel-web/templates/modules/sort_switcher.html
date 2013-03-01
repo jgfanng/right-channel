@@ -1,0 +1,10 @@
+<div class="btn-group" data-toggle="buttons-radio">
+  {% from settings import settings %}
+  {% for sort in settings['movie']['presentation']['sort'] %}
+    <a class="btn btn-small{% if params.get('sort') == sort %} active{% end %}"
+    href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{params.get('year')}}&sort={{sort}}&view={{params.get('view')}}"
+    title="按{{sort}}排序">
+      {{ sort }} <i class="icon-arrow-down"></i>
+    </a>
+  {% end %}
+</div>

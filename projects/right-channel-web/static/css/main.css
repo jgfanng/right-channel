@@ -15,7 +15,7 @@ body {
 }
 
 .row-fluid {
-  margin: 5px 0;
+  margin: 10px 0;
 }
 
 h1, h2, h3, h4, h5, h6, strong {
@@ -52,6 +52,31 @@ table .auto-size {
   margin: 10px 0;
   background-color: white;
   border: 1px solid #ccc;
+}
+
+.filter ul {
+  margin-left: 50px;
+  list-style: none;
+}
+
+.filter ul > li {
+  float: left;
+}
+
+.filter ul > li > a {
+  color: #555555;
+  display: block;
+  padding: 0 10px 0 10px;
+}
+
+.filter ul > li > a:hover {
+  color: black;
+  background-color: #d9d9d9;
+}
+
+.filter ul > li.active > a {
+  color: black;
+  background-color: #ccc;
 }
 
 .nav-secondary {
