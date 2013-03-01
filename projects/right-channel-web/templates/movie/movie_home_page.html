@@ -8,7 +8,8 @@
           {% from settings import settings %}
           {% for genre in settings['movie']['filters']['genres'] %}
             <li {% if params.get('genre') == genre %} class="active" {% end %}>
-              <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&sort={{params.get('sort')}}&view={{params.get('view')}}">{{ genre }}</a>
+              <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">{{ genre }}</a>
             </li>
           {% end %}
         </ul>
@@ -19,7 +20,10 @@
           {% from settings import settings %}
           {% for country in settings['movie']['filters']['countries'] %}
             <li {% if params.get('country') == country %} class="active" {% end %}>
-              <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&sort={{params.get('sort')}}&view={{params.get('view')}}">{{ country }}</a>
+              <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                {{ country }}
+              </a>
             </li>
           {% end %}
         </ul>
@@ -30,7 +34,10 @@
           {% from settings import settings %}
           {% for year in settings['movie']['filters']['years'] %}
             <li {% if params.get('year') == year %} class="active" {% end %}>
-              <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&sort={{params.get('sort')}}&view={{params.get('view')}}">{{ year }}</a>
+              <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                {{ year }}
+              </a>
             </li>
           {% end %}
         </ul>
@@ -42,8 +49,21 @@
     <div class="pull-left">
       {% include ../modules/sort_switcher.html %}
     </div>
+    <div class="pull-left" style="margin-left: 20px;">
+      {% include ../modules/resource_switcher.html %}
+    </div>
     <div class="pull-right">
       {% include ../modules/view_switcher.html %}
     </div>
+  </div>
+
+  <div class="content-block">
+    {% if params.get('view') == '图文' %}
+      {% include ../modules/poster_text_view.html %}
+    {% elif params.get('view') == '文本' %}
+      {% include ../modules/text_view.html %}
+    {% elif params.get('view') == '海报' %}
+      {% include ../modules/poster_view.html %}
+    {% end %}
   </div>
 {% end %}

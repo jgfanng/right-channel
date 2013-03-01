@@ -16,3 +16,12 @@ def combine_titles(title, original_title):
             return title
     else:
         return title or original_title
+
+def first_element(l):
+    return l[0] if l else None
+
+def last_element(l):
+    return l[len(l) - 1] if l else None
+
+def get_body(l):
+    return l[1:len(l) - 1] if l and len(l) > 2 else []

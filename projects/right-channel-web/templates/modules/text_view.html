@@ -1,58 +1,56 @@
-<div class="content-block">
-  <div class="row-fluid">
-    <table class="table table-condensed table-striped table-hover table-dash-border">
-      <thead>
-          <th class="auto-size">#</th>
-          <th class="auto-size">年份</th>
-          <th class="auto-size">电影名称</th>
-          <th class="auto-size">国家/地区</th>
-          <th class="auto-size">豆瓣评分</th>
-          <th class="auto-size">资源</th>
-      </thead>
-      <tbody>
-        {% if 'movies' in params %}
-          {% from util import combine_titles %}
-          {% set index = 1 %}
-          {% for movie in params.get('movies') %}
-            <tr>
-              <td class="auto-size">{{ index }}</td>
-              <td class="auto-size">
-                {% if movie.get('year') %}
-                  {{ movie.get('year') }}
+<div class="row-fluid">
+  <table class="table table-condensed table-striped table-hover table-dash-border">
+    <thead>
+        <th class="auto-size">#</th>
+        <th class="auto-size">年份</th>
+        <th class="auto-size">电影名称</th>
+        <th class="auto-size">国家/地区</th>
+        <th class="auto-size">豆瓣评分</th>
+        <th class="auto-size">资源</th>
+    </thead>
+    <tbody>
+      {% if 'movies' in params %}
+        {% from util import combine_titles %}
+        {% set index = 1 %}
+        {% for movie in params.get('movies') %}
+          <tr>
+            <td class="auto-size">{{ index }}</td>
+            <td class="auto-size">
+              {% if movie.get('year') %}
+                {{ movie.get('year') }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td>
+              <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
+                {% set title = combine_titles(movie.get('title'), movie.get('original_title')) %}
+                {% if title %}
+                  {{ title }}
                 {% else %}
                   未知
                 {% end %}
-              </td>
-              <td>
-                <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
-                  {% set title = combine_titles(movie.get('title'), movie.get('original_title')) %}
-                  {% if title %}
-                    {{ title }}
-                  {% else %}
-                    未知
-                  {% end %}
-                </a>
-              </td>
-              <td class="auto-size">
-                {% if movie.get('countries') %}
-                  {{ ' / '.join(movie.get('countries')) }}
-                {% else %}
-                  未知
-                {% end %}
-              </td>
-              <td class="auto-size">
-                {% if movie.get('douban') and 'rating' in movie.get('douban') %}
-                  {{ movie.get('douban').get('rating') }}
-                {% else %}
-                  未知
-                {% end %}
-              </td>
-              <td class="auto-size">占位</td>
-            </tr>
-            {% set index = index + 1 %}
-          {% end %}
+              </a>
+            </td>
+            <td class="auto-size">
+              {% if movie.get('countries') %}
+                {{ ' / '.join(movie.get('countries')) }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td class="auto-size">
+              {% if movie.get('douban') and 'rating' in movie.get('douban') %}
+                {{ movie.get('douban').get('rating') }}
+              {% else %}
+                未知
+              {% end %}
+            </td>
+            <td class="auto-size">占位</td>
+          </tr>
+          {% set index = index + 1 %}
         {% end %}
-      </tbody>
-    </table>
-  </div>
+      {% end %}
+    </tbody>
+  </table>
 </div>

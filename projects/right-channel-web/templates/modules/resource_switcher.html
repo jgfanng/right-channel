@@ -1,0 +1,15 @@
+<div class="btn-group">
+  <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+    {{ params.get('resource') }} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {% from settings import settings %}
+    {% for resource in settings['movie']['presentation']['resource'] %}
+      <li class="{% if params.get('resource') == resource %}active{% end %}">
+        <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{params.get('year')}}&sort={{params.get('sort')}}&resource={{resource}}&view={{params.get('view')}}">
+          {{ resource }}
+        </a>
+      </li>
+    {% end %}
+  </ul>
+</div>
