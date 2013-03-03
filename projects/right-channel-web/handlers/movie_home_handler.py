@@ -19,6 +19,7 @@ class MovieHomeHandler(BaseHandler):
         self.params['sort'] = first_element(settings['movie']['presentation']['sort'])
         self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
         self.params['view'] = first_element(settings['movie']['presentation']['view'])
+        self.params['page'] = 0
 
     @authenticated_async()
     @tornado.web.asynchronous
@@ -48,6 +49,14 @@ class MovieHomeHandler(BaseHandler):
         if self.params['view'] not in settings['movie']['presentation']['view']:
             self.params['view'] = first_element(settings['movie']['presentation']['view'])
 
+        self.params['page'] = self.get_argument('page', 0)
+        try:
+            self.params['page'] = int(self.params['page'])
+            if self.params['page'] < 0:
+                self.params['page'] = 0
+        except:
+            self.params['page'] = 0
+
         query = {}
         if self.params['genre'] == last_element(settings['movie']['filters']['genres']):
             query['genres'] = {'$nin': get_body(settings['movie']['filters']['genres'])}
@@ -74,8 +83,8 @@ class MovieHomeHandler(BaseHandler):
             response, error = yield tornado.gen.Task(mongodb['movies'].find,
                                                      query,
                                                      fields=settings['movie']['response']['verbose'],
-                                                     skip=0,
-                                                     limit=30)
+                                                     skip=self.params['page'] * settings['movie']['page_size'],
+                                                     limit=settings['movie']['page_size'])
         except:
             raise tornado.web.HTTPError(500)
 

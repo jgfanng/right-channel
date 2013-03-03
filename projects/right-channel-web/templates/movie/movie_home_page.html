@@ -9,7 +9,10 @@
           {% for genre in settings['movie']['filters']['genres'] %}
             <li {% if params.get('genre') == genre %} class="active" {% end %}>
               <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">{{ genre }}</a>
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
+                page={{params.get('page')}}">
+                {{ genre }}
+              </a>
             </li>
           {% end %}
         </ul>
@@ -21,7 +24,8 @@
           {% for country in settings['movie']['filters']['countries'] %}
             <li {% if params.get('country') == country %} class="active" {% end %}>
               <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
+                page={{params.get('page')}}">
                 {{ country }}
               </a>
             </li>
@@ -35,7 +39,8 @@
           {% for year in settings['movie']['filters']['years'] %}
             <li {% if params.get('year') == year %} class="active" {% end %}>
               <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
+                page={{params.get('page')}}">
                 {{ year }}
               </a>
             </li>
@@ -57,7 +62,7 @@
     </div>
   </div>
 
-  <div class="content-block">
+  {% if params.get('movies') %}
     {% if params.get('view') == '图文' %}
       {% include ../modules/poster_text_view.html %}
     {% elif params.get('view') == '文本' %}
@@ -65,5 +70,12 @@
     {% elif params.get('view') == '海报' %}
       {% include ../modules/poster_view.html %}
     {% end %}
-  </div>
+  {% else %}
+    <div class="row-fluid" style="text-align: center;">
+      没有找到符合条件的影片
+    </div>
+  {% end %}
+
+  {% include ../modules/pagination.html %}
+
 {% end %}

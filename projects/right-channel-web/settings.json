@@ -5,6 +5,7 @@
         "db": "right-channel"
     },
     "movie": {
+    	"page_size": 30,
         "response": {
             "verbose": {
                 "year": 1,

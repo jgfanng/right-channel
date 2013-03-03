@@ -3,7 +3,8 @@
   {% for sort in settings['movie']['presentation']['sort'] %}
     <a class="btn btn-small{% if params.get('sort') == sort %} active{% end %}"
       href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{params.get('year')}}&
-      sort={{sort}}&resource={{params.get('resource')}}&view={{params.get('view')}}"
+      sort={{sort}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
+      page={{params.get('page')}}"
       title="按{{sort}}排序">
       {{ sort }} <i class="icon-arrow-down"></i>
     </a>

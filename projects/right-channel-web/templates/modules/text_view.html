@@ -1,15 +1,15 @@
-<div class="row-fluid">
-  <table class="table table-condensed table-striped table-hover table-dash-border">
-    <thead>
-        <th class="auto-size">#</th>
-        <th class="auto-size">年份</th>
-        <th class="auto-size">电影名称</th>
-        <th class="auto-size">国家/地区</th>
-        <th class="auto-size">豆瓣评分</th>
-        <th class="auto-size">资源</th>
-    </thead>
-    <tbody>
-      {% if 'movies' in params %}
+<div class="content-block">
+  <div class="row-fluid">
+    <table class="table table-condensed table-striped table-dash-border" style="margin-bottom: 0;">
+      <thead>
+          <th class="auto-size">#</th>
+          <th class="auto-size">年份</th>
+          <th class="auto-size">电影名称</th>
+          <th class="auto-size">国家/地区</th>
+          <th class="auto-size">豆瓣评分</th>
+          <th class="auto-size">资源</th>
+      </thead>
+      <tbody>
         {% from util import combine_titles %}
         {% set index = 1 %}
         {% for movie in params.get('movies') %}
@@ -50,7 +50,7 @@
           </tr>
           {% set index = index + 1 %}
         {% end %}
-      {% end %}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
