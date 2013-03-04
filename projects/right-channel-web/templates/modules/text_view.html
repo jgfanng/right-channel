@@ -14,7 +14,7 @@
         {% set index = 1 %}
         {% for movie in params.get('movies') %}
           <tr>
-            <td class="auto-size">{{ index }}</td>
+            <td class="auto-size">{{ (params.get('page') - 1) * settings['movie']['page_size'] + index }}</td>
             <td class="auto-size">
               {% if movie.get('year') %}
                 {{ movie.get('year') }}

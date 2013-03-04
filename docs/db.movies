@@ -1,5 +1,8 @@
 =========Indexes============================================================
 db.movies.ensureIndex({"douban.id": 1}, {unique: true})
+db.movies.ensureIndex({"genres": 1})
+db.movies.ensureIndex({"countries": 1})
+db.movies.ensureIndex({"year": 1})
 
 =========Schema=============================================================
 {

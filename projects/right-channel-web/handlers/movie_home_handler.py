@@ -19,7 +19,7 @@ class MovieHomeHandler(BaseHandler):
         self.params['sort'] = first_element(settings['movie']['presentation']['sort'])
         self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
         self.params['view'] = first_element(settings['movie']['presentation']['view'])
-        self.params['page'] = 0
+        self.params['page'] = 1
 
     @authenticated_async()
     @tornado.web.asynchronous
@@ -49,13 +49,13 @@ class MovieHomeHandler(BaseHandler):
         if self.params['view'] not in settings['movie']['presentation']['view']:
             self.params['view'] = first_element(settings['movie']['presentation']['view'])
 
-        self.params['page'] = self.get_argument('page', 0)
+        self.params['page'] = self.get_argument('page', 1)
         try:
             self.params['page'] = int(self.params['page'])
-            if self.params['page'] < 0:
-                self.params['page'] = 0
+            if self.params['page'] < 1:
+                self.params['page'] = 1
         except:
-            self.params['page'] = 0
+            self.params['page'] = 1
 
         query = {}
         if self.params['genre'] == last_element(settings['movie']['filters']['genres']):
@@ -79,12 +79,21 @@ class MovieHomeHandler(BaseHandler):
         elif self.params['year'] != first_element(settings['movie']['filters']['years']):
             query['year'] = self.params['year']
 
+        sort_by = None
+        if self.params['sort'] == '热度':
+            sort_by = None
+        elif self.params['sort'] == '评分':
+            sort_by = [('douban.rating', -1)]
+        elif self.params['sort'] == '上映日期':
+            sort_by = [('year', -1)]
+
         try:
             response, error = yield tornado.gen.Task(mongodb['movies'].find,
                                                      query,
                                                      fields=settings['movie']['response']['verbose'],
-                                                     skip=self.params['page'] * settings['movie']['page_size'],
-                                                     limit=settings['movie']['page_size'])
+                                                     skip=(self.params['page'] - 1) * settings['movie']['page_size'],
+                                                     limit=settings['movie']['page_size'],
+                                                     sort=sort_by)
         except:
             raise tornado.web.HTTPError(500)
 

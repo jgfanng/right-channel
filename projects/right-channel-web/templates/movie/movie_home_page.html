@@ -1,5 +1,6 @@
 {% extends ../layout/layout.html %}
 {% block content %}
+
   <div class="content-block">
     <div class="filter">
       <div class="row-fluid">
@@ -10,7 +11,7 @@
             <li {% if params.get('genre') == genre %} class="active" {% end %}>
               <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&
                 sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
-                page={{params.get('page')}}">
+                page=1">
                 {{ genre }}
               </a>
             </li>
@@ -25,7 +26,7 @@
             <li {% if params.get('country') == country %} class="active" {% end %}>
               <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&
                 sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
-                page={{params.get('page')}}">
+                page=1">
                 {{ country }}
               </a>
             </li>
@@ -40,7 +41,7 @@
             <li {% if params.get('year') == year %} class="active" {% end %}>
               <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&
                 sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}&
-                page={{params.get('page')}}">
+                page=1">
                 {{ year }}
               </a>
             </li>
@@ -76,6 +77,8 @@
     </div>
   {% end %}
 
-  {% include ../modules/pagination.html %}
+  {% if params.get('movies') or params.get('page') > 1 %}
+    {% include ../modules/pagination.html %}
+  {% end %}
 
 {% end %}
