@@ -8,9 +8,9 @@ from handlers.base_handler import BaseHandler, authenticated_async
 from settings import settings, mongodb
 import tornado.web
 
-class MovieDetailsHandler(BaseHandler):
+class MovieProfileHandler(BaseHandler):
     def initialize(self):
-        super(MovieDetailsHandler, self).initialize()
+        super(MovieProfileHandler, self).initialize()
         self.params['site_nav'] = 'movie'
 
     @authenticated_async()
@@ -28,4 +28,4 @@ class MovieDetailsHandler(BaseHandler):
             raise tornado.web.HTTPError(500)
 
         self.params['movie'] = response[0]
-        self.render('movie/movie_details_page.html')
+        self.render('movie/movie_profile_page.html')
