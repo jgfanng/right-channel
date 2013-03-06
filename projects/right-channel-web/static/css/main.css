@@ -41,7 +41,7 @@ a:active {
   background-color: #f6f6f6;
 } */
 
-table .auto-size {
+.table .auto-size {
   width: 1px;
   white-space: nowrap;
 }

@@ -42,15 +42,15 @@ db.movies.ensureIndex({"year": 1})
         "raters": 108587,
         "link": "http://movie.douban.com/subject/4807924/"
     },
-    "source": {
-        "pptv": {
-            "id": "123456",
-            "title": "泰迪熊",
-            "similarity": 1,
-            "link": "http://movie.pptv.com/123",
-            "definition": "高清",
-            "last_updated": "2012-12-29T02:39:54.270Z"
-        }
+    "online": {
+        "pptv": [
+            {
+                "id": "123456",
+                "title": "泰迪熊",
+                "link": "http://movie.pptv.com/123",
+                "last_updated": "2012-12-29T02:39:54.270Z"
+            }
+        ]
     },
     "view": {
         "last_week": 0,

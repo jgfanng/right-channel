@@ -6,16 +6,18 @@ Created on Dec 7, 2012
 @author: Fang Jiaguo
 '''
 from Queue import Queue
-from crawlers.utils import request
-from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movie_store_collection
 from difflib import SequenceMatcher
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from threading import Thread
 from urllib2 import HTTPError, URLError
+from utils.log import get_logger
 import datetime
+import threading
 import time
+
+iqiyi_logger = get_logger('IQIYICrawler', 'iqiyi_crawler.log')
+request_iqiyi_page = LimitedCaller(request.get, 60, settings['douban_crawler']['reqs_per_min'])
 
 class IQIYICrawler(object):
     '''
@@ -211,6 +213,44 @@ class IQIYICrawler(object):
                 IQIYICrawler.logger.error('Mongodb error <%s> when manually matching movie <%s>' % (e, movie_title))
             except Exception, e:
                 IQIYICrawler.logger.error('%s <%s>' % (e, movie_title))
+
+class MovieCrawler(threading.Thread):
+    def run(self):
+        logger = logging.getLogger('IQIYICrawler.MovieCrawler')
+        while True:
+            logger.info('==========MovieCrawler Started==========')
+
+            try:
+                page = settings['iqiyi_crawler']['movie_crawler']['page']
+                response = request_douban_page(page.encode('utf-8'))
+                response_text = response.read()
+                logger.debug('Crawled <%s>' % page)
+
+                html_element = fromstring(response_text)
+                movie_elements = html_element.xpath('//a[@href]')
+                for link_element in link_elements:
+                    url_in_page = urldefrag(link_element.attrib['href'])[0]  # remove fragment identifier
+                    if url_in_page not in crawled_urls and movie_regex.match(url_in_page):
+                        crawled_urls.add(url_in_page)
+                        movie_id = url_in_page[len('http://movie.douban.com/subject/'):].replace('/', '')
+                        in_theaters_movie_ids.put(movie_id)
+
+            except PyMongoError, e:
+                logger.error('Mongodb error <%s>' % e)
+            except HTTPError, e:
+                logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (page, e.code, e.msg))
+            except URLError, e:
+                logger.error('Failed to reach server <%s> <%s>' % (page, e.reason))
+            except Exception, e:
+                logger.error('%s <%s>' % (e, page))
+
+            logger.info('==========InTheatersCrawler Finished=========')
+
+            # sleep till next run
+            hour, minute = tuple(settings['douban_crawler']['in_theaters_crawler']['run_at'].split(':'))
+            now = datetime.datetime.utcnow()
+            next_run = datetime.datetime(now.year, now.month, now.day, int(hour), int(minute), now.second) + datetime.timedelta(days=1)  # calculate next run time
+            time.sleep((next_run - now).total_seconds())
 
 if __name__ == '__main__':
     ic = IQIYICrawler(1)
