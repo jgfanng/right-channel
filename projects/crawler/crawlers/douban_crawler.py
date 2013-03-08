@@ -124,6 +124,7 @@ class InTheatersCrawler(threading.Thread):
         crawled_urls = Set()
         while True:
             logger.info('==========InTheatersCrawler Started==========')
+            crawled_urls.clear()  # !important
 
             try:
                 page = settings['douban_crawler']['in_theaters_crawler']['page']
@@ -186,6 +187,7 @@ class ComingSoonCrawler(threading.Thread):
         crawled_urls = Set()
         while True:
             logger.info('==========ComingSoonCrawler Started==========')
+            crawled_urls.clear()  # !important
 
             try:
                 page = settings['douban_crawler']['coming_soon_crawler']['page']
@@ -248,6 +250,7 @@ class Top250Crawler(threading.Thread):
         crawled_urls = Set()
         while True:
             logger.info('==========Top250Crawler Started==========')
+            crawled_urls.clear()  # !important
 
             try:
                 page = settings['douban_crawler']['top250_crawler']['page']

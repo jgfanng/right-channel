@@ -79,6 +79,11 @@ class MovieHomeHandler(BaseHandler):
         elif self.params['year'] != first_element(settings['movie']['filters']['years']):
             query['year'] = self.params['year']
 
+        if self.params['resource'] == '只显示在线观看':
+            query['online'] = {'$exists': True}
+        elif self.params['resource'] == '只显示下载资源':
+            query['download'] = {'$exists': True}
+
         sort_by = None
         if self.params['sort'] == '热度':
             sort_by = None

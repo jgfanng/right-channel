@@ -3,6 +3,9 @@ db.movies.ensureIndex({"douban.id": 1}, {unique: true})
 db.movies.ensureIndex({"genres": 1})
 db.movies.ensureIndex({"countries": 1})
 db.movies.ensureIndex({"year": 1})
+db.movies.ensureIndex({"title": 1})
+db.movies.ensureIndex({"original_title": 1})
+db.movies.ensureIndex({"aka": 1})
 
 =========Schema=============================================================
 {
@@ -42,16 +45,13 @@ db.movies.ensureIndex({"year": 1})
         "raters": 108587,
         "link": "http://movie.douban.com/subject/4807924/"
     },
-    "online": {
-        "pptv": [
-            {
-                "id": "123456",
-                "title": "泰迪熊",
-                "link": "http://movie.pptv.com/123",
-                "last_updated": "2012-12-29T02:39:54.270Z"
-            }
-        ]
-    },
+    "online": [
+        {
+            "source": "pptv",
+            "title": "泰迪熊",
+            "url": "http://movie.pptv.com/123"
+        }
+    ],
     "view": {
         "last_week": 0,
         "last_month": 0,

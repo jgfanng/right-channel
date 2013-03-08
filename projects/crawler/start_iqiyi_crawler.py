@@ -5,5 +5,5 @@ Created on Dec 12, 2012
 '''
 from crawlers.iqiyi_crawler import IQIYICrawler
 
-ic = IQIYICrawler(1)
-ic.start_crawl()
+dc = IQIYICrawler()
+dc.start()
