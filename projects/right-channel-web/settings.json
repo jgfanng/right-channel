@@ -6,10 +6,7 @@
     },
     "movie": {
     	"page_size": 30,
-        "response": {
-            "concise": {},
-            "max_count": 30
-        },
+    	"max_page": 30,
         "filters": {
             "genres": [
                 "全部",
