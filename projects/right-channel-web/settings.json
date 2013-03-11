@@ -7,19 +7,6 @@
     "movie": {
     	"page_size": 30,
         "response": {
-            "verbose": {
-                "year": 1,
-                "title": 1,
-                "original_title": 1,
-                "aka": 1,
-                "directors": 1,
-                "casts": 1,
-                "genres": 1,
-                "countries": 1,
-                "images": 1,
-                "summary": 1,
-                "douban": 1
-            },
             "concise": {},
             "max_count": 30
         },

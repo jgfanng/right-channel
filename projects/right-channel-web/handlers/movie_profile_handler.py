@@ -19,8 +19,7 @@ class MovieProfileHandler(BaseHandler):
     def get(self, movie_id):
         try:
             response, error = yield tornado.gen.Task(mongodb['movies'].find_one,
-                                                     {'_id': ObjectId(movie_id)},
-                                                     fields=settings['movie']['response']['verbose'])
+                                                     {'_id': ObjectId(movie_id)})
         except:
             raise tornado.web.HTTPError(500)
 

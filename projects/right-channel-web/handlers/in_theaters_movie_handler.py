@@ -36,8 +36,7 @@ class InTheatersMovieHandler(BaseHandler):
         if response[0]:
             try:
                 response, error = yield tornado.gen.Task(mongodb['movies'].find,
-                                                         {'douban.id': {'$in': response[0].get('douban_ids')}},
-                                                         fields=settings['movie']['response']['verbose'])
+                                                         {'douban.id': {'$in': response[0].get('douban_ids')}})
             except:
                 raise tornado.web.HTTPError(500)
 

@@ -95,7 +95,7 @@ class MovieHomeHandler(BaseHandler):
         try:
             response, error = yield tornado.gen.Task(mongodb['movies'].find,
                                                      query,
-                                                     fields=settings['movie']['response']['verbose'],
+                                                     fields={'summary': 0},
                                                      skip=(self.params['page'] - 1) * settings['movie']['page_size'],
                                                      limit=settings['movie']['page_size'],
                                                      sort=sort_by)
