@@ -5,8 +5,8 @@ Created on Jan 9, 2013
 '''
 from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler
-from utils.json_encoder_ext import JSONEncoderExt
-from utils.settings import collections, settings
+from utilities.json_encoder_ext import JSONEncoderExt
+from utilities.settings import collections, settings
 import json
 import tornado.web
 

@@ -4,8 +4,8 @@ Created on Jan 11, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler
-from utils.json_encoder_ext import JSONEncoderExt
-from utils.settings import settings, collections
+from utilities.json_encoder_ext import JSONEncoderExt
+from utilities.settings import settings, collections
 import datetime
 import json
 import tornado.web

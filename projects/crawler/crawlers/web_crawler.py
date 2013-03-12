@@ -8,8 +8,8 @@ Created on Nov 29, 2012
 from lxml.html import fromstring
 from sets import Set
 from urllib2 import HTTPError, URLError
-from utils import request
-from utils.log import log
+from utilities import request
+from utilities.log import log
 import md5
 import re
 import time

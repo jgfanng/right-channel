@@ -5,10 +5,10 @@ Created on Nov 26, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.utils import request
-from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movies_store_collection
-from crawlers.utils.title_simplifier import simplify
+from crawlers.utilities import request
+from crawlers.utilities.log import get_logger
+from crawlers.utilities.mongodb import movies_store_collection
+from crawlers.utilities.title_simplifier import simplify
 from lxml.html import fromstring
 from operator import itemgetter
 from pymongo.errors import PyMongoError

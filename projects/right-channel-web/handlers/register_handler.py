@@ -6,7 +6,7 @@ Created on Jan 30, 2013
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
 from settings import email_regex, mongodb
-from util import encrypt
+from utilities import encrypt
 import tornado
 
 class RegisterHandler(BaseHandler):

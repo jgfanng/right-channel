@@ -3,8 +3,7 @@
   {% for view in settings['movie']['presentation']['view'] %}
     <a class="btn btn-small{% if params.get('view') == view %} active{% end %}"
       href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{params.get('year')}}&
-      sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{view}}&
-      page={{params.get('page')}}"
+      sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{view}}"
       title="{{view}}模式显示">
       {{ view }}
     </a>

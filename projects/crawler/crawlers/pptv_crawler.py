@@ -5,9 +5,9 @@ Created on Nov 25, 2012
 
 @author: Fang Jiaguo
 '''
-from crawlers.utils import request
-from crawlers.utils.log import get_logger
-from crawlers.utils.mongodb import movie_source_collection
+from crawlers.utilities import request
+from crawlers.utilities.log import get_logger
+from crawlers.utilities.mongodb import movie_source_collection
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from urllib2 import HTTPError, URLError

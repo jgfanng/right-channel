@@ -3,7 +3,7 @@
   {% if params.get('movie') %}
     {% set movie = params.get('movie') %}
     <div class="content-block">
-      {% from util import combine_titles %}
+      {% from utilities import combine_titles %}
       {% set title = combine_titles(movie.get('title'), movie.get('original_title')) %}
       {% if title %}
         <h3>

@@ -1,4 +1,5 @@
 {% extends ../layout/layout.html %}
+
 {% block content %}
 
   <div class="content-block">
@@ -60,26 +61,27 @@
     </div>
   </div>
 
-  {% if params.get('movies') %}
+  <div id="content" class="row-fluid">
     {% if params.get('view') == '图文' %}
-      {% include ../modules/poster_text_view.html %}
+      <ul class="galery">
+      </ul>
     {% elif params.get('view') == '文本' %}
-      {% include ../modules/text_view.html %}
+      <div class="content-block">
+        <table class="table table-condensed table-striped table-dash-border">
+          <thead>
+              <th class="auto-size">年份</th>
+              <th class="auto-size">电影名称</th>
+              <th class="auto-size">地区</th>
+              <th class="auto-size">豆瓣评分</th>
+              <th class="auto-size">资源</th>
+          </thead>
+        </table>
+      </div>
     {% end %}
-  {% else %}
-    <div class="row-fluid" style="text-align: center;">
-      没有找到符合条件的影片
-    </div>
-  {% end %}
-
-  {% if params.get('movies') or params.get('page') > 1 %}
-    {% include ../modules/pagination.html %}
-  {% end %}
+  </div>
 
 {% end %}
 
-{% if params.get('movies') and len(params.get('movies')) >= settings['movie']['page_size'] %}
-  {% block extra_scripts %}
-    <script type="text/javascript" src="{{ static_url('js/load-more.js') }}"></script>
-  {% end %}
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/load-more.js') }}"></script>
 {% end %}

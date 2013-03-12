@@ -5,7 +5,7 @@ Created on Mar 11, 2013
 @author: Fang Jiaguo
 '''
 from settings import settings, mongodb
-from util import first_element, last_element, get_body, JSONEncoderExt
+from utilities import first_element, last_element, get_body, JSONEncoderExt
 import json
 import tornado.gen
 import tornado.web
@@ -37,9 +37,9 @@ class MovieFilterApiHandler(tornado.web.RequestHandler):
         page = self.get_argument('page', 1)
         try:
             page = int(page)
-            if page < 1:
-                page = 1
         except:
+            page = 1
+        if page < 1:
             page = 1
 
         query = {}

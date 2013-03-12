@@ -5,8 +5,8 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import settings, mongodb
-from util import first_element, last_element, get_body
+from settings import settings
+from utilities import first_element
 import tornado
 
 class MovieHomeHandler(BaseHandler):
@@ -19,7 +19,6 @@ class MovieHomeHandler(BaseHandler):
         self.params['sort'] = first_element(settings['movie']['presentation']['sort'])
         self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
         self.params['view'] = first_element(settings['movie']['presentation']['view'])
-        self.params['page'] = 1
 
     @authenticated_async()
     @tornado.web.asynchronous
@@ -49,61 +48,4 @@ class MovieHomeHandler(BaseHandler):
         if self.params['view'] not in settings['movie']['presentation']['view']:
             self.params['view'] = first_element(settings['movie']['presentation']['view'])
 
-        self.params['page'] = self.get_argument('page', 1)
-        try:
-            self.params['page'] = int(self.params['page'])
-            if self.params['page'] < 1:
-                self.params['page'] = 1
-        except:
-            self.params['page'] = 1
-
-        query = {}
-        if self.params['genre'] == last_element(settings['movie']['filters']['genres']):
-            query['genres'] = {'$nin': get_body(settings['movie']['filters']['genres'])}
-        elif self.params['genre'] != first_element(settings['movie']['filters']['genres']):
-            query['genres'] = self.params['genre']
-
-        if self.params['country'] == last_element(settings['movie']['filters']['countries']):
-            query['countries'] = {'$nin': get_body(settings['movie']['filters']['countries'])}
-        elif self.params['country'] != first_element(settings['movie']['filters']['countries']):
-            query['countries'] = self.params['country']
-
-        if self.params['year'] == last_element(settings['movie']['filters']['years']):
-            query['year'] = {'$lt': '1980'}
-        elif self.params['year'] == '80年代':
-            query['year'] = {'$gte': '1980', '$lt': '1990'}
-        elif self.params['year'] == '90年代':
-            query['year'] = {'$gte': '1990', '$lt': '2000'}
-        elif self.params['year'] == '00年代':
-            query['year'] = {'$gte': '2000', '$lt': '2009'}
-        elif self.params['year'] != first_element(settings['movie']['filters']['years']):
-            query['year'] = self.params['year']
-
-        if self.params['resource'] == '只显示在线观看':
-            query['online'] = {'$exists': True}
-        elif self.params['resource'] == '只显示下载资源':
-            query['download'] = {'$exists': True}
-
-        sort_by = None
-        if self.params['sort'] == '热度':
-            sort_by = None
-        elif self.params['sort'] == '评分':
-            sort_by = [('douban.rating', -1)]
-        elif self.params['sort'] == '上映日期':
-            sort_by = [('year', -1)]
-
-        try:
-            response, error = yield tornado.gen.Task(mongodb['movies'].find,
-                                                     query,
-                                                     fields={'summary': 0},
-                                                     skip=(self.params['page'] - 1) * settings['movie']['page_size'],
-                                                     limit=settings['movie']['page_size'],
-                                                     sort=sort_by)
-        except:
-            raise tornado.web.HTTPError(500)
-
-        if error.get('error'):
-            raise tornado.web.HTTPError(500)
-
-        self.params['movies'] = response[0]
         self.render('movie/movie_home_page.html')
