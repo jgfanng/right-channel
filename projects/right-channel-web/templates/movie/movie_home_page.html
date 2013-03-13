@@ -63,7 +63,7 @@
 
   <div id="content" class="row-fluid">
     {% if params.get('view') == '图文' %}
-      <ul class="galery">
+      <ul class="gallery">
       </ul>
     {% elif params.get('view') == '文本' %}
       <div class="content-block">
@@ -80,8 +80,13 @@
     {% end %}
   </div>
 
+  <div id="ajaxLoader" class="row-fluid" style="display: none;">
+    {% include ../modules/ajax_loader.html %}
+  </div>
+
 {% end %}
 
 {% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/load-more.js') }}"></script>
 {% end %}

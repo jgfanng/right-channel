@@ -110,7 +110,7 @@
       {% if movie.get('summary') %}
         <legend>剧情简介</legend>
         {% for paragraph in movie.get('summary').split('\n') %}
-          <p class="p-indented">{{ paragraph }}</p>
+          <p class="p-indent">{{ paragraph }}</p>
         {% end %}
       {% end %}
       

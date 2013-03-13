@@ -8,7 +8,6 @@ from handlers.edit_password_handler import EditPasswordHandler
 from handlers.edit_profile_handler import EditProfileHandler
 from handlers.home_handler import HomeHandler
 from handlers.hot_movie_handler import HotMovieHandler
-from handlers.in_theaters_movie_handler import InTheatersMovieHandler
 from handlers.login_handler import LoginHandler
 from handlers.logout_handler import LogoutHandler
 from handlers.movie_filter_api_handler import MovieFilterApiHandler
@@ -26,7 +25,6 @@ class Application(tornado.web.Application):
             (r'/', HomeHandler),
             (r'/movie', MovieHomeHandler),
             (r'/movie/hot', HotMovieHandler),
-            (r'/movie/intheaters', InTheatersMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieProfileHandler),
             (r'/account', EditPasswordHandler),
             (r'/account/towatch', ToWatchHandler),

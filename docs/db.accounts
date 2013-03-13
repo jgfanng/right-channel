@@ -9,26 +9,24 @@ db.accounts.ensureIndex({"email": 1}, {unique: true})
     "avatar": "***.jpg",
     "to_watch": {
         "movie": [
-            ObjectId("50fb1a7fb6b09317c08f39d2"),
-            ObjectId("50f9d61eb6b09317c08ebe49")
+            {
+                "title": "在极光之地",
+                "original_title": "Joanna Lumley- In The Land Of The Northern Lights",
+                "created_at": "2013-03-13"
+            }
         ]
     },
     "watched": {
         "movie": [
-            ObjectId("50f94018b6b09317c08e5a9c"),
-            ObjectId("50fa2c1eb6b09317c08ef760")
+            {
+                "title": "在极光之地",
+                "original_title": "Joanna Lumley- In The Land Of The Northern Lights",
+                "created_at": "2013-03-13"
+            }
         ]
     },
-    "download": {
-        
-    },
-    "ignore": {
-        
-    },
-    "like": {
-        
-    },
-    "dislike": {
-        
-    }
+    "download": {},
+    "ignore": {},
+    "like": {},
+    "dislike": {}
 }

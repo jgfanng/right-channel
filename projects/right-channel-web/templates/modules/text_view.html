@@ -21,19 +21,12 @@
             </td>
             <td>
               <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
-                {% set title = combine_titles(movie.get('title'), movie.get('original_title')) %}
-                {% if title %}
-                  {{ title }}
-                {% else %}
-                  未知
-                {% end %}
+                {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
               </a>
             </td>
             <td class="auto-size">
               {% if movie.get('countries') %}
                 {{ ' / '.join(movie.get('countries')) }}
-              {% else %}
-                未知
               {% end %}
             </td>
             <td class="auto-size">
@@ -41,8 +34,6 @@
                 <span class="rating">
                   {{ movie.get('douban').get('rating') }}
                 </span>
-              {% else %}
-                未知
               {% end %}
             </td>
             <td class="auto-size">占位</td>

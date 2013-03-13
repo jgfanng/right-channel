@@ -7,11 +7,6 @@ from settings import mongodb
 import functools
 import tornado.web
 
-TEXT_FORMAT = 'text'
-IMAGE_TEXT_FORMAT = 'image-text'
-IMAGE_FORMAT = 'image'
-VIEW_FORMATS = [TEXT_FORMAT, IMAGE_TEXT_FORMAT, IMAGE_FORMAT]
-
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie('email')
@@ -32,10 +27,10 @@ def authenticated_async(extra_fields=[]):
             email = self.get_secure_cookie('email')
             if email:
                 try:
-                    basic_fields = ['email', 'password', 'nick_name', 'avatar']
-                    basic_fields.extend(extra_fields)
+                    simple_fields = ['email', 'password', 'nick_name', 'avatar']
+                    simple_fields.extend(extra_fields)
                     final_fields = {}
-                    for field in basic_fields:
+                    for field in simple_fields:
                         final_fields[field] = 1
 
                     response, error = yield tornado.gen.Task(mongodb['accounts'].find_one,
