@@ -5,7 +5,7 @@ Created on Jan 21, 2013
 '''
 from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler, authenticated_async
-from settings import settings, mongodb
+from settings import mongodb
 import tornado.web
 
 class MovieProfileHandler(BaseHandler):

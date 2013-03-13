@@ -10,7 +10,7 @@ import json
 import tornado.gen
 import tornado.web
 
-class MovieFilterApiHandler(tornado.web.RequestHandler):
+class MovieFilterHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

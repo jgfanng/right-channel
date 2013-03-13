@@ -3,6 +3,7 @@ Created on Jan 16, 2013
 
 @author: Fang Jiaguo
 '''
+from apis.movie_filter_handler import MovieFilterHandler
 from handlers.default_handler import DefaultHandler
 from handlers.edit_password_handler import EditPasswordHandler
 from handlers.edit_profile_handler import EditProfileHandler
@@ -10,7 +11,6 @@ from handlers.home_handler import HomeHandler
 from handlers.hot_movie_handler import HotMovieHandler
 from handlers.login_handler import LoginHandler
 from handlers.logout_handler import LogoutHandler
-from handlers.movie_filter_api_handler import MovieFilterApiHandler
 from handlers.movie_home_handler import MovieHomeHandler
 from handlers.movie_profile_handler import MovieProfileHandler
 from handlers.register_handler import RegisterHandler
@@ -34,7 +34,7 @@ class Application(tornado.web.Application):
             (r'/login', LoginHandler),
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
-            (r'/api/movie', MovieFilterApiHandler),
+            (r'/api/movie', MovieFilterHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

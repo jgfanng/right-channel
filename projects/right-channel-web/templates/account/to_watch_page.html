@@ -14,7 +14,7 @@
         {% for movie in params.get('user').get('to_watch').get('movie') %}
           <tr>
             <td>
-              <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
+              <a href="/movie/{{ str(movie.get('id')) }}" target="_blank">
                 {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
               </a>
             </td>
