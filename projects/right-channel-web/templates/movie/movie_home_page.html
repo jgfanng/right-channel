@@ -56,28 +56,11 @@
     <div class="pull-left" style="margin-left: 20px;">
       {% include ../modules/resource_switcher.html %}
     </div>
-    <div class="pull-right">
-      {% include ../modules/view_switcher.html %}
-    </div>
   </div>
 
   <div id="content" class="row-fluid">
-    {% if params.get('view') == '图文' %}
-      <ul class="gallery">
-      </ul>
-    {% elif params.get('view') == '文本' %}
-      <div class="content-block">
-        <table class="table table-condensed table-striped table-dash-border">
-          <thead>
-              <th class="auto-size">年份</th>
-              <th class="auto-size">电影名称</th>
-              <th class="auto-size">地区</th>
-              <th class="auto-size">豆瓣评分</th>
-              <th class="auto-size">资源</th>
-          </thead>
-        </table>
-      </div>
-    {% end %}
+    <ul class="gallery">
+    </ul>
   </div>
 
   <div id="ajaxLoader" class="row-fluid" style="display: none;">

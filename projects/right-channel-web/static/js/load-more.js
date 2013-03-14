@@ -83,11 +83,13 @@ $(function() {
 					download_li = '<li><a href="/movie/{0}" target="_blank" title="立即下载"><i class="icon-download-alt"></i></a></li>'
 							.format(movie._id);
 
-				var to_watch_li = '<li><a title="想看"><i class="icon-heart"></i></a></li>';
-				var watched_li = '<li><a title="看过"><i class="icon-check"></i></a></li>'
+				var to_watch_li = '<button id="toWatch" class="btn btn-mini" title="想看" data-id="{0}"><i class="icon-heart"></i> 想看</button>'
+						.format(movie._id);
+				var watched_li = '<button id="watched" class="btn btn-mini" title="看过" data-id="{0}"><i class="icon-check"></i> 看过</button>'
+						.format(movie._id);
 
-				var toolbar_div = '<div class="toolbar"><ul>{0}{1}{2}{3}</ul></div>'
-						.format(watch_li, download_li, to_watch_li, watched_li);
+				var toolbar_div = '<div class="toolbar btn-group">{0}{1}</div>'
+						.format(to_watch_li, watched_li);
 			}
 
 			if ((i + currLength) % elementsInRow == elementsInRow - 2) {

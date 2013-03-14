@@ -7,7 +7,7 @@
     <table class="table table-condensed table-striped table-dash-border">
       <thead>
           <th class="auto-size">电影名称</th>
-          <th class="auto-size">添加日期</th>
+          <th class="auto-size">年份</th>
       </thead>
       <tbody>
         {% from utilities import combine_titles %}
@@ -19,7 +19,9 @@
               </a>
             </td>
             <td class="auto-size">
-              {{ movie.get('created_at').strftime('%Y-%m-%d') }}
+              {% if movie.get('year') %}
+                {{ movie.get('year') }}
+              {% end %}
             </td>
           </tr>
         {% end %}

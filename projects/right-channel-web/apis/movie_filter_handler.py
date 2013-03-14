@@ -94,6 +94,6 @@ class MovieFilterHandler(tornado.web.RequestHandler):
             'movies': response[0],
             'has_more': True if response[0] and len(response[0]) >= settings['movie']['page_size'] else False
         }
-        self.set_header("Content-Type", "application/json; charset=UTF-8")
+
         self.write(json.dumps(result, cls=JSONEncoderExt))
         self.finish()

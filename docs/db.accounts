@@ -13,7 +13,7 @@ db.accounts.ensureIndex({"email": 1}, {unique: true})
             	"id": ObjectId("50d078400c468ecda4b66a5a");
                 "title": "在极光之地",
                 "original_title": "Joanna Lumley- In The Land Of The Northern Lights",
-                "created_at": "2013-03-13"
+                "year": "2000"
             }
         ]
     },

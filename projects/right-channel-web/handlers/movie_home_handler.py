@@ -18,7 +18,6 @@ class MovieHomeHandler(BaseHandler):
         self.params['year'] = first_element(settings['movie']['filters']['years'])
         self.params['sort'] = first_element(settings['movie']['presentation']['sort'])
         self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
-        self.params['view'] = first_element(settings['movie']['presentation']['view'])
 
     @authenticated_async()
     @tornado.web.asynchronous
@@ -43,9 +42,5 @@ class MovieHomeHandler(BaseHandler):
         self.params['resource'] = self.get_argument('resource', first_element(settings['movie']['presentation']['resource']))
         if self.params['resource'] not in settings['movie']['presentation']['resource']:
             self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
-
-        self.params['view'] = self.get_argument('view', first_element(settings['movie']['presentation']['view']))
-        if self.params['view'] not in settings['movie']['presentation']['view']:
-            self.params['view'] = first_element(settings['movie']['presentation']['view'])
 
         self.render('movie/movie_home_page.html')

@@ -4,6 +4,7 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from apis.movie_filter_handler import MovieFilterHandler
+from apis.movie_to_watch_handler import MovieToWatchHandler
 from handlers.default_handler import DefaultHandler
 from handlers.edit_password_handler import EditPasswordHandler
 from handlers.edit_profile_handler import EditProfileHandler
@@ -26,7 +27,7 @@ class Application(tornado.web.Application):
             (r'/movie', MovieHomeHandler),
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieProfileHandler),
-            (r'/account', EditPasswordHandler),
+            (r'/account', ToWatchHandler),
             (r'/account/towatch', ToWatchHandler),
             (r'/account/watched', WatchedHandler),
             (r'/account/editprofile', EditProfileHandler),
@@ -35,13 +36,14 @@ class Application(tornado.web.Application):
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
             (r'/api/movie', MovieFilterHandler),
+            (r'/api/movie/towatch', MovieToWatchHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {
             'debug': True,
             'static_path': os.path.join(os.path.dirname(__file__), 'static'),
             'template_path': os.path.join(os.path.dirname(__file__), 'templates'),
-            'xsrf_cookies': True,
+#            'xsrf_cookies': True,
             'cookie_secret': 'B37kopZLQFSSqM1vTIeLEGWOTC/3yUiPl9Az+WlZV+A=',
             'login_url': "/login"
         }
