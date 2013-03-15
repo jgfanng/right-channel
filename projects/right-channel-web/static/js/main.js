@@ -13,7 +13,7 @@ $(function () {
             }).done(function () {
             	$btn.attr('id', 'toUnwatch');
                 $btn.removeClass('disabled');
-                $btn.addClass('btn-primary');
+                $btn.addClass('btn-inverse');
                 $btn.children('i').attr('class', 'icon-remove icon-white');
             }).fail(function (jqXHR) {
                 $btn.removeClass('disabled');
@@ -38,7 +38,7 @@ $(function () {
             }).done(function () {
             	$btn.attr('id', 'toWatch');
                 $btn.removeClass('disabled');
-                $btn.removeClass('btn-primary');
+                $btn.removeClass('btn-inverse');
                 $btn.children('i').attr('class', 'icon-ok');
             }).fail(function (jqXHR) {
                 $btn.removeClass('disabled');
