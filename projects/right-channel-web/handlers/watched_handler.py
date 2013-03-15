@@ -20,5 +20,5 @@ class WatchedHandler(BaseHandler):
         if self.params.get('user'):
             self.render('account/watched_page.html')
         else:
-            self.set_secure_cookie('next', '/account/watched', expires_days=None)  # Session cookie
+            self.set_cookie('next', '/account/watched', expires_days=None)  # Session cookie
             self.redirect('/login')

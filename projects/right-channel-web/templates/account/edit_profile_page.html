@@ -5,7 +5,6 @@
   <legend>个人资料</legend>
   {% if params.get('user') %}
     <form id="editProfile" class="form-horizontal" action="/account/editprofile" method="post">
-      {% module xsrf_form_html() %}
       <div class="control-group">
         <label class="control-label">邮箱</label>
         <div class="controls">

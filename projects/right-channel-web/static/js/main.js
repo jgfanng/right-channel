@@ -1,29 +1,73 @@
 $(function () {
-    $('#content ul.gallery').click(
-
-    function (e) {
-        var $btn = $(e.target);
-        if ($btn.prop('nodeName') == 'I') {
-            $btn = $btn.parent();
+    $('#content').on('click', '#toWatch', function (e) {
+        var $btn = $(this);
+        if (!$btn.hasClass('disabled')) {
+            var movie_id = $btn.attr('data-id');
+            $btn.addClass('disabled');
+            $.ajax({
+                type: 'POST',
+                url: '/api/movie/towatch',
+                data: {
+                    id: movie_id
+                }
+            }).done(function () {
+            	$btn.attr('id', 'toUnwatch');
+                $btn.removeClass('disabled');
+                $btn.addClass('btn-primary');
+                $btn.children('i').attr('class', 'icon-remove icon-white');
+            }).fail(function (jqXHR) {
+                $btn.removeClass('disabled');
+                if (jqXHR.status == 401) { // unauthorized
+                    $.cookie.raw = true;
+                    $.cookie('next', window.location.href);
+                    window.location.href = '/login';
+                }
+            });
         }
-        if ($btn.length === 0 || $btn.attr('id') != 'toWatch') {
-            return false;
+    }).on('click', '#toUnwatch', function (e) {
+        var $btn = $(this);
+        if (!$btn.hasClass('disabled')) {
+            var movie_id = $btn.attr('data-id');
+            $btn.addClass('disabled');
+            $.ajax({
+                type: 'delete',
+                url: '/api/movie/towatch/' + movie_id,
+                data: {
+                    id: movie_id
+                }
+            }).done(function () {
+            	$btn.attr('id', 'toWatch');
+                $btn.removeClass('disabled');
+                $btn.removeClass('btn-primary');
+                $btn.children('i').attr('class', 'icon-ok');
+            }).fail(function (jqXHR) {
+                $btn.removeClass('disabled');
+            });
         }
-        var movie_id = $btn.attr('data-id');
-        $btn.attr('disabled', 'disabled');
-        $btn.addClass('disabled');
-        $.ajax({
-            type: 'POST',
-            url: '/api/movie/towatch',
-            data: {
-                id: movie_id
-            }
-        }).done(function () {
-            alert('success');
-        }).fail(function (jqXHR) {
-            if (jqXHR.status == 401) {
-                window.location.href = '/login';
-            }
-        });
+    }).on('click', '#watched', function (e) {
+        var $btn = $(this);
+        if (!$btn.hasClass('disabled')) {
+            var movie_id = $btn.attr('data-id');
+            $btn.addClass('disabled');
+            $.ajax({
+                type: 'post',
+                url: '/api/movie/watched',
+                data: {
+                    id: movie_id
+                }
+            }).done(function () {
+            	$btn.attr('id', 'toUnwatch');
+                $btn.removeClass('disabled');
+                $btn.addClass('btn-primary');
+                $btn.children('i').addClass('icon-white');
+            }).fail(function (jqXHR) {
+                $btn.removeClass('disabled');
+                if (jqXHR.status == 401) { // unauthorized
+                    $.cookie.raw = true;
+                    $.cookie('next', window.location.href);
+                    window.location.href = '/login';
+                }
+            });
+        }
     });
 });

@@ -47,7 +47,7 @@ class LoginHandler(BaseHandler):
                     self.set_secure_cookie('email', user['email'])  # Persistent cookie
                 else:
                     self.set_secure_cookie('email', user['email'], expires_days=None)  # Session cookie
-                next_page = self.get_secure_cookie('next')
+                next_page = self.get_cookie('next')
                 if next_page:
                     self.clear_cookie('next')  # !important
                     self.redirect(next_page)

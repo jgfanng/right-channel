@@ -11,7 +11,7 @@
           {% for genre in settings['movie']['filters']['genres'] %}
             <li {% if params.get('genre') == genre %} class="active" {% end %}>
               <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}">
                 {{ genre }}
               </a>
             </li>
@@ -25,7 +25,7 @@
           {% for country in settings['movie']['filters']['countries'] %}
             <li {% if params.get('country') == country %} class="active" {% end %}>
               <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}">
                 {{ country }}
               </a>
             </li>
@@ -39,7 +39,7 @@
           {% for year in settings['movie']['filters']['years'] %}
             <li {% if params.get('year') == year %} class="active" {% end %}>
               <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}&view={{params.get('view')}}">
+                sort={{params.get('sort')}}&resource={{params.get('resource')}}">
                 {{ year }}
               </a>
             </li>

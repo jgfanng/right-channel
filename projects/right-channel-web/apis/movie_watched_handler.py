@@ -9,7 +9,7 @@ from tornado.web import HTTPError
 import tornado.gen
 import tornado.web
 
-class MovieToWatchHandler(tornado.web.RequestHandler):
+class MovieWatchedHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
@@ -35,11 +35,22 @@ class MovieToWatchHandler(tornado.web.RequestHandler):
             else:
                 raise tornado.web.HTTPError(400)  # Bad Request
 
-            # add movie to to_watch list in accounts collection
+            # add movie to watched list in accounts collection
             try:
                 response, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                          {'email': email},
-                                                         {'$addToSet': {'to_watch.movie': movie}})
+                                                         {'$addToSet': {'watched.movie': movie}})
+            except:
+                raise tornado.web.HTTPError(500)
+
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
+
+            # remove movie from to_watch list in accounts collection
+            try:
+                response, error = yield tornado.gen.Task(mongodb['accounts'].update,
+                                                         {'email': email},
+                                                         {'$pull': {'to_watch.movie': {'id': ObjectId(movie_id)}}})
             except:
                 raise tornado.web.HTTPError(500)
 

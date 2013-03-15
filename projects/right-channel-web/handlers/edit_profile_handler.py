@@ -22,7 +22,7 @@ class EditProfileHandler(BaseHandler):
         if self.params.get('user'):
             self.render('account/edit_profile_page.html')
         else:
-            self.set_secure_cookie('next', '/account/editprofile', expires_days=None)  # Session cookie
+            self.set_cookie('next', '/account/editprofile')  # Session cookie
             self.redirect('/login')
 
     @authenticated_async()

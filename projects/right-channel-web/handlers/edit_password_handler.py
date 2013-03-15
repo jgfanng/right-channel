@@ -23,7 +23,7 @@ class EditPasswordHandler(BaseHandler):
         if self.params.get('user'):
             self.render('account/edit_password_page.html')
         else:
-            self.set_secure_cookie('next', '/account/editpassword', expires_days=None)  # Session cookie
+            self.set_cookie('next', '/account/editpassword')  # Session cookie
             self.redirect('/login')
 
     @authenticated_async()
