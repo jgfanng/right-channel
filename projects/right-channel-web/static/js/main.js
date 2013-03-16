@@ -11,17 +11,17 @@ $(function () {
                     id: movie_id
                 }
             }).done(function () {
-            	$btn.attr('id', 'toUnwatch');
-                $btn.removeClass('disabled');
+            	  $btn.attr('id', 'toUnwatch');
                 $btn.addClass('btn-inverse');
                 $btn.children('i').attr('class', 'icon-remove icon-white');
             }).fail(function (jqXHR) {
-                $btn.removeClass('disabled');
                 if (jqXHR.status == 401) { // unauthorized
                     $.cookie.raw = true;
                     $.cookie('next', window.location.href);
                     window.location.href = '/login';
                 }
+            }).always(function () {
+                $btn.removeClass('disabled');
             });
         }
     }).on('click', '#toUnwatch', function (e) {
@@ -36,11 +36,10 @@ $(function () {
                     id: movie_id
                 }
             }).done(function () {
-            	$btn.attr('id', 'toWatch');
-                $btn.removeClass('disabled');
+            	  $btn.attr('id', 'toWatch');
                 $btn.removeClass('btn-inverse');
                 $btn.children('i').attr('class', 'icon-ok');
-            }).fail(function (jqXHR) {
+            }).always(function () {
                 $btn.removeClass('disabled');
             });
         }
@@ -56,17 +55,17 @@ $(function () {
                     id: movie_id
                 }
             }).done(function () {
-            	$btn.attr('id', 'toUnwatch');
-                $btn.removeClass('disabled');
-                $btn.addClass('btn-primary');
-                $btn.children('i').addClass('icon-white');
+            	  $btn.attr('id', 'unwatched');
+                $btn.addClass('btn-inverse');
+                $btn.children('i').attr('class', 'icon-remove icon-white');
             }).fail(function (jqXHR) {
-                $btn.removeClass('disabled');
                 if (jqXHR.status == 401) { // unauthorized
                     $.cookie.raw = true;
                     $.cookie('next', window.location.href);
                     window.location.href = '/login';
                 }
+            }).always(function () {
+                $btn.removeClass('disabled');
             });
         }
     });

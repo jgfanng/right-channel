@@ -1,7 +1,7 @@
 <div id="resource" class="btn-group" data-resource="{{ params.get('resource') }}">
-  <button class="btn btn-small btn-inverse dropdown-toggle" data-toggle="dropdown">
+  <a class="btn btn-small btn-inverse dropdown-toggle" data-toggle="dropdown">
     {{ params.get('resource') }} <span class="caret"></span>
-  </button>
+  </a>
   <ul class="dropdown-menu">
     {% from settings import settings %}
     {% for resource in settings['movie']['presentation']['resource'] %}
