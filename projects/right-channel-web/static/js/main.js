@@ -12,8 +12,8 @@ $(function () {
                 }
             }).done(function () {
             	  $btn.attr('id', 'toUnwatch');
-                $btn.addClass('btn-inverse');
-                $btn.children('i').attr('class', 'icon-remove icon-white');
+                $btn.addClass('active');
+                $btn.children('i').attr('class', 'icon-remove');
             }).fail(function (jqXHR) {
                 if (jqXHR.status == 401) { // unauthorized
                     $.cookie.raw = true;
@@ -37,7 +37,7 @@ $(function () {
                 }
             }).done(function () {
             	  $btn.attr('id', 'toWatch');
-                $btn.removeClass('btn-inverse');
+                $btn.removeClass('active');
                 $btn.children('i').attr('class', 'icon-ok');
             }).always(function () {
                 $btn.removeClass('disabled');

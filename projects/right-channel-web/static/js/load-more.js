@@ -88,7 +88,7 @@ $(function () {
                 var watched_li = '<button id="watched" class="btn btn-mini" data-id="{0}"><i class="icon-ok"></i> 看过</button>'
                     .format(movie._id);
 
-                var toolbar_div = '<div class="toolbar">{0}{1}</div>'
+                var toolbar_div = '<div class="toolbar btn-group">{0}{1}</div>'
                     .format(to_watch_li, watched_li);
             }
 

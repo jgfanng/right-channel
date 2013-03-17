@@ -1,30 +1,36 @@
-/***** generic styles *****/
-body {
-  padding-top: 45px;
-  color: #555555;
-  background-color: #eee;
+/***** bootstrap styles *****/
+.navbar {
+  border-bottom: 3px solid #f89406;
 }
 
-h1, h2, h3, h4, h5, h6, strong {
-  color: #222222;
+.navbar .divider-vertical {
+  border-right-color: #666666;
+  border-left-color: #222222;
+}
+
+.row-fluid {
+  margin: 10px 0;
+}
+
+.label {
+  min-width: 0;
+  min-height: 16px;
+  font-weight: bold;
+}
+
+/***** generic styles *****/
+body {
+  padding-top: 55px;
+  color: #555555;
+  background-color: #eee;
 }
 
 a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
 
-/***** navbar *****/
-.navbar {
-  border-bottom: 3px solid #f89406;
-}
-
-.navbar-inverse .divider-vertical {
-  border-right-color: #444444;
-  border-left-color: #222222;
-}
-
-.row-fluid {
-  margin: 10px 0;
+h1, h2, h3, h4, h5, h6, strong {
+  color: #222222;
 }
 
 /***** table *****/
@@ -51,7 +57,7 @@ a:link, a:visited, a:hover, a:active {
 
 /***** filter *****/
 .filter ul {
-  margin-left: 50px;
+  margin-left: 55px;
   list-style: none;
 }
 
@@ -60,7 +66,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .filter ul > li > a {
-  color: #555555;
+  color: inherit;
   display: block;
   padding: 0 10px 0 10px;
 }
@@ -72,7 +78,7 @@ a:link, a:visited, a:hover, a:active {
 
 .filter ul > li.active > a {
   color: black;
-  background-color: #ccc;
+  background-color: #c8c8c8;
 }
 
 /* .nav-secondary {
@@ -152,7 +158,7 @@ a:link, a:visited, a:hover, a:active {
 
 .gallery-element .desc {
   width: 175px;
-  height: 125px;
+  height: 122px;
   margin-left: 10px;
   overflow: hidden;
 }
@@ -170,10 +176,6 @@ a:link, a:visited, a:hover, a:active {
   right: 10px;
   bottom: 10px;
   position: absolute;
-}
-
-.gallery-element .toolbar button {
-  margin: 0 2px;
 }
 
 /* .gallery-element .toolbar ul {
@@ -231,22 +233,22 @@ a:link, a:visited, a:hover, a:active {
 } */
 
 /***** different sizes of poster *****/
-.poster-medium {
-  width: 100px;
-  height: 145px;
-}
-
-.poster-medium img {
-  width: 100%;
-  height: 100%;
-}
-
 .poster-large {
   width: 220px;
   height: 330px;
 }
 
 .poster-large img {
+  width: 100%;
+  height: 100%;
+}
+
+.poster-medium {
+  width: 100px;
+  height: 145px;
+}
+
+.poster-medium img {
   width: 100%;
   height: 100%;
 }
