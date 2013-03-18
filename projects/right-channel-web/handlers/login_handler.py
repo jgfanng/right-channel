@@ -15,7 +15,7 @@ class LoginHandler(BaseHandler):
         super(LoginHandler, self).initialize()
         self.params['site_nav'] = 'login'
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

@@ -2,50 +2,48 @@
 
 {% block content %}
 
-  <div class="content-block">
-    <div class="filter">
-      <div class="row-fluid">
-        <span class="label label-success pull-left">类型 <i class="icon-hand-right icon-white"></i></span>
-        <ul id="genre" data-genre="{{ params.get('genre') }}">
-          {% from settings import settings %}
-          {% for genre in settings['movie']['filters']['genres'] %}
-            <li {% if params.get('genre') == genre %} class="active" {% end %}>
-              <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}">
-                {{ genre }}
-              </a>
-            </li>
-          {% end %}
-        </ul>
-      </div>
-      <div class="row-fluid">
-        <span class="label label-success pull-left">地区 <i class="icon-hand-right icon-white"></i></span>
-        <ul id="country" data-country="{{ params.get('country') }}">
-          {% from settings import settings %}
-          {% for country in settings['movie']['filters']['countries'] %}
-            <li {% if params.get('country') == country %} class="active" {% end %}>
-              <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}">
-                {{ country }}
-              </a>
-            </li>
-          {% end %}
-        </ul>
-      </div>
-      <div class="row-fluid">
-        <span class="label label-success pull-left">年份 <i class="icon-hand-right icon-white"></i></span>
-        <ul id="year" data-year="{{ params.get('year') }}">
-          {% from settings import settings %}
-          {% for year in settings['movie']['filters']['years'] %}
-            <li {% if params.get('year') == year %} class="active" {% end %}>
-              <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&
-                sort={{params.get('sort')}}&resource={{params.get('resource')}}">
-                {{ year }}
-              </a>
-            </li>
-          {% end %}
-        </ul>
-      </div>
+  <div class="content-block filter">
+    <div class="row-fluid">
+      <span class="badge badge-success pull-left">类型 <i class="icon-hand-right icon-white"></i></span>
+      <ul id="genre" data-genre="{{ params.get('genre') }}">
+        {% from settings import settings %}
+        {% for genre in settings['movie']['filters']['genres'] %}
+          <li {% if params.get('genre') == genre %} class="active" {% end %}>
+            <a href="?genre={{genre}}&country={{params.get('country')}}&year={{params.get('year')}}&
+              sort={{params.get('sort')}}&resource={{params.get('resource')}}">
+              {{ genre }}
+            </a>
+          </li>
+        {% end %}
+      </ul>
+    </div>
+    <div class="row-fluid">
+      <span class="badge badge-success pull-left">地区 <i class="icon-hand-right icon-white"></i></span>
+      <ul id="country" data-country="{{ params.get('country') }}">
+        {% from settings import settings %}
+        {% for country in settings['movie']['filters']['countries'] %}
+          <li {% if params.get('country') == country %} class="active" {% end %}>
+            <a href="?genre={{params.get('genre')}}&country={{country}}&year={{params.get('year')}}&
+              sort={{params.get('sort')}}&resource={{params.get('resource')}}">
+              {{ country }}
+            </a>
+          </li>
+        {% end %}
+      </ul>
+    </div>
+    <div class="row-fluid">
+      <span class="badge badge-success pull-left">年份 <i class="icon-hand-right icon-white"></i></span>
+      <ul id="year" data-year="{{ params.get('year') }}">
+        {% from settings import settings %}
+        {% for year in settings['movie']['filters']['years'] %}
+          <li {% if params.get('year') == year %} class="active" {% end %}>
+            <a href="?genre={{params.get('genre')}}&country={{params.get('country')}}&year={{year}}&
+              sort={{params.get('sort')}}&resource={{params.get('resource')}}">
+              {{ year }}
+            </a>
+          </li>
+        {% end %}
+      </ul>
     </div>
   </div>
 
@@ -56,7 +54,7 @@
     </div>
   </div>
 
-  <div id="content" class="row-fluid">
+  <div id="content" class="row">
     <ul class="gallery">
     </ul>
   </div>
@@ -65,9 +63,4 @@
     {% include ../modules/ajax_loader.html %}
   </div>
 
-{% end %}
-
-{% block extra_scripts %}
-  <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/load-more.js') }}"></script>
 {% end %}

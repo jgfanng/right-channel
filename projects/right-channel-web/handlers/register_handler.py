@@ -14,7 +14,7 @@ class RegisterHandler(BaseHandler):
         super(RegisterHandler, self).initialize()
         self.params['site_nav'] = 'register'
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

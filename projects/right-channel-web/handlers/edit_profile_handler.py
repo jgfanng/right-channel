@@ -15,7 +15,7 @@ class EditProfileHandler(BaseHandler):
         self.params['site_nav'] = 'account'
         self.params['account_nav'] = 'editprofile'
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
@@ -25,7 +25,7 @@ class EditProfileHandler(BaseHandler):
             self.set_cookie('next', '/account/editprofile')  # Session cookie
             self.redirect('/login')
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):

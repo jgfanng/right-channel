@@ -19,7 +19,7 @@ class MovieHomeHandler(BaseHandler):
         self.params['sort'] = first_element(settings['movie']['presentation']['sort'])
         self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

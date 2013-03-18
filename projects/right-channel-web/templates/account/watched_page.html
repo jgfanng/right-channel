@@ -7,6 +7,7 @@
     <table class="table table-condensed table-striped table-dash-border">
       <thead>
           <th class="auto-size">电影名称</th>
+          <th class="auto-size">豆瓣评分</th>
           <th class="auto-size">年份</th>
       </thead>
       <tbody>
@@ -14,9 +15,16 @@
         {% for movie in params.get('user').get('watched').get('movie') %}
           <tr>
             <td>
-              <a href="/movie/{{ str(movie.get('id')) }}" target="_blank">
+              <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
                 {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
               </a>
+            </td>
+            <td class="auto-size">
+              {% if movie.get('douban') and 'rating' in movie.get('douban') %}
+                <span class="rating">
+                  {{ movie.get('douban').get('rating') }}
+                </span>
+              {% end %}
             </td>
             <td class="auto-size">
               {% if movie.get('year') %}

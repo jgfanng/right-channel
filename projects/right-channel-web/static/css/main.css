@@ -4,25 +4,34 @@
 }
 
 .navbar .divider-vertical {
-  border-right-color: #666666;
-  border-left-color: #222222;
+  border-right-color: #666;
+  border-left-color: #222;
 }
 
-.row-fluid {
-  margin: 10px 0;
+.btn-mini {
+  padding: 0px 6px;
 }
 
-.label {
-  min-width: 0;
-  min-height: 16px;
+.badge {
+  padding: 3px 3px;
   font-weight: bold;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  margin: 0;
+  vertical-align: text-top;
 }
 
 /***** generic styles *****/
 body {
   padding-top: 55px;
-  color: #555555;
+  color: #555;
   background-color: #eee;
+}
+
+.row-fluid {
+  margin: 10px 0;
 }
 
 a:link, a:visited, a:hover, a:active {
@@ -30,7 +39,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 h1, h2, h3, h4, h5, h6, strong {
-  color: #222222;
+  color: #222;
 }
 
 /***** table *****/
@@ -44,7 +53,7 @@ h1, h2, h3, h4, h5, h6, strong {
 }
 
 .table-striped tbody>tr:nth-child(odd)>td {
-  background-color: #f1f1f1;
+  background-color: #f3f3f3;
 }
 
 .table-dash-border th {
@@ -57,7 +66,7 @@ h1, h2, h3, h4, h5, h6, strong {
 
 /***** filter *****/
 .filter ul {
-  margin-left: 55px;
+  margin-left: 50px;
   list-style: none;
 }
 
@@ -73,12 +82,12 @@ h1, h2, h3, h4, h5, h6, strong {
 
 .filter ul > li > a:hover {
   color: black;
-  background-color: #d9d9d9;
+  background-color: #c8c8c8;
 }
 
 .filter ul > li.active > a {
   color: black;
-  background-color: #c8c8c8;
+  background-color: #b7b7b7;
 }
 
 /* .nav-secondary {
@@ -125,17 +134,16 @@ h1, h2, h3, h4, h5, h6, strong {
 
 /***** gallery *****/
 .gallery {
-  margin-left: 0;
+  margin-left: 12px;
   list-style: none;
 }
 
 .gallery > li {
-  margin-top: 10px;
-  margin-right: 10px;
+  margin: 0 0 8px 8px;
   float: left;
 }
 
-.gallery > li.first-row {
+/* .gallery > li.first-row {
   margin-top: 0;
 }
 
@@ -146,7 +154,7 @@ h1, h2, h3, h4, h5, h6, strong {
 .gallery > li.last-child {
   margin-right: 0;
   float: right;
-}
+} */
 
 .gallery-element {
   padding: 10px;
@@ -157,7 +165,7 @@ h1, h2, h3, h4, h5, h6, strong {
 }
 
 .gallery-element .desc {
-  width: 175px;
+  width: 176px;
   height: 122px;
   margin-left: 10px;
   overflow: hidden;
@@ -176,6 +184,19 @@ h1, h2, h3, h4, h5, h6, strong {
   right: 10px;
   bottom: 10px;
   position: absolute;
+}
+
+.gallery-element .toolbar > .btn {
+  color: #222;
+}
+
+.gallery-element .toolbar > .btn:hover,
+.gallery-element .toolbar > .btn:focus,
+.gallery-element .toolbar > .btn:active,
+.gallery-element .toolbar > .btn.active,
+.gallery-element .toolbar > .btn.disabled,
+.gallery-element .toolbar > .btn[disabled] {
+  background-color: #b7b7b7;
 }
 
 /* .gallery-element .toolbar ul {
@@ -295,7 +316,7 @@ form .help-error {
 
 /***** misc ******/
 .content-block {
-  padding: 0 20px;
+  padding: 0 10px;
   margin: 10px 0;
   background-color: white;
   border: 1px solid #ccc;

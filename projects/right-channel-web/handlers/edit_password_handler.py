@@ -16,7 +16,7 @@ class EditPasswordHandler(BaseHandler):
         self.params['site_nav'] = 'account'
         self.params['account_nav'] = 'editpassword'
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
@@ -26,7 +26,7 @@ class EditPasswordHandler(BaseHandler):
             self.set_cookie('next', '/account/editpassword')  # Session cookie
             self.redirect('/login')
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):

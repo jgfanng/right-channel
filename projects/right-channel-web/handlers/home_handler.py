@@ -12,7 +12,7 @@ class HomeHandler(BaseHandler):
         super(HomeHandler, self).initialize()
         self.params['site_nav'] = '/'
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

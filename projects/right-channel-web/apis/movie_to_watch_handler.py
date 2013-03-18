@@ -18,28 +18,42 @@ class MovieToWatchHandler(tornado.web.RequestHandler):
             # 400 Bad Request if id not provided
             movie_id = self.get_argument('id')
 
-            # get movie information from movies collection
+            # remove movie from watched list in accounts collection
             try:
-                response, error = yield tornado.gen.Task(mongodb['movies'].find_one,
-                                                         {'_id': ObjectId(movie_id)},
-                                                         fields={'title': 1, 'original_title': 1, 'year': 1})
+                _, error = yield tornado.gen.Task(mongodb['accounts'].update,
+                                                         {'email': email},
+                                                         {'$pull': {'watched.movie': ObjectId(movie_id)}})
             except:
                 raise tornado.web.HTTPError(500)
 
             if error.get('error'):
                 raise tornado.web.HTTPError(500)
 
-            if response[0]:
-                movie = response[0]
-                movie['id'] = movie.pop('_id')
-            else:
-                raise tornado.web.HTTPError(400)  # Bad Request
-
             # add movie to to_watch list in accounts collection
             try:
-                response, error = yield tornado.gen.Task(mongodb['accounts'].update,
+                _, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                          {'email': email},
-                                                         {'$addToSet': {'to_watch.movie': movie}})
+                                                         {'$addToSet': {'to_watch.movie': ObjectId(movie_id)}})
+            except:
+                raise tornado.web.HTTPError(500)
+
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
+
+            self.finish()
+        else:
+            raise HTTPError(401)  # Unauthorized
+
+    @tornado.web.asynchronous
+    @tornado.gen.engine
+    def delete(self, movie_id):
+        email = self.get_secure_cookie('email')
+        if email:
+            # remove movie from to_watch list in accounts collection
+            try:
+                _, error = yield tornado.gen.Task(mongodb['accounts'].update,
+                                                         {'email': email},
+                                                         {'$pull': {'to_watch.movie': ObjectId(movie_id)}})
             except:
                 raise tornado.web.HTTPError(500)
 

@@ -13,7 +13,7 @@ class MovieProfileHandler(BaseHandler):
         super(MovieProfileHandler, self).initialize()
         self.params['site_nav'] = 'movie'
 
-    @authenticated_async()
+    @authenticated_async
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self, movie_id):

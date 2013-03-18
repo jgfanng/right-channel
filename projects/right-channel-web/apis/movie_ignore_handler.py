@@ -9,7 +9,7 @@ from tornado.web import HTTPError
 import tornado.gen
 import tornado.web
 
-class MovieWatchedHandler(tornado.web.RequestHandler):
+class MovieIgnoreHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
@@ -18,22 +18,11 @@ class MovieWatchedHandler(tornado.web.RequestHandler):
             # 400 Bad Request if id not provided
             movie_id = self.get_argument('id')
 
-            # remove movie from to_watch list in accounts collection
+            # add movie to ignore list in accounts collection
             try:
                 _, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                          {'email': email},
-                                                         {'$pull': {'to_watch.movie': ObjectId(movie_id)}})
-            except:
-                raise tornado.web.HTTPError(500)
-
-            if error.get('error'):
-                raise tornado.web.HTTPError(500)
-
-            # add movie to watched list in accounts collection
-            try:
-                _, error = yield tornado.gen.Task(mongodb['accounts'].update,
-                                                         {'email': email},
-                                                         {'$addToSet': {'watched.movie': ObjectId(movie_id)}})
+                                                         {'$addToSet': {'ignore.movie': ObjectId(movie_id)}})
             except:
                 raise tornado.web.HTTPError(500)
 
@@ -49,11 +38,11 @@ class MovieWatchedHandler(tornado.web.RequestHandler):
     def delete(self, movie_id):
         email = self.get_secure_cookie('email')
         if email:
-            # remove movie from watched list in accounts collection
+            # remove movie from ignore list in accounts collection
             try:
                 _, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                          {'email': email},
-                                                         {'$pull': {'watched.movie': ObjectId(movie_id)}})
+                                                         {'$pull': {'ignore.movie': ObjectId(movie_id)}})
             except:
                 raise tornado.web.HTTPError(500)
 
