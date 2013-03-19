@@ -1,9 +1,26 @@
 /***** bootstrap styles *****/
-.navbar {
+.navbar-inner {
+  min-height: 40px;
+}
+
+.navbar .brand {
+  padding: 10px 20px 10px;
+}
+
+.navbar .nav>li>a {
+  padding: 10px 15px 10px;
+}
+
+.navbar-fixed-top .navbar-inner,.navbar-static-top .navbar-inner {
   border-bottom: 3px solid #f89406;
 }
 
+.navbar .nav>.active>a,.navbar .nav>.active>a:hover,.navbar .nav>.active>a:focus {
+  background-color: #333;
+}
+
 .navbar .divider-vertical {
+  height: 40px;
   border-right-color: #666;
   border-left-color: #222;
 }
@@ -17,29 +34,28 @@
   font-weight: bold;
 }
 
-[class^="icon-"],
-[class*=" icon-"] {
+[class^="icon-"],[class*=" icon-"] {
   margin: 0;
   vertical-align: text-top;
 }
 
 /***** generic styles *****/
 body {
-  padding-top: 55px;
+  padding-top: 43px;
   color: #555;
   background-color: #eee;
 }
 
-.row-fluid {
-  margin: 10px 0;
-}
-
-a:link, a:visited, a:hover, a:active {
+a:link,a:visited,a:hover,a:active {
   text-decoration: none;
 }
 
-h1, h2, h3, h4, h5, h6, strong {
+h1,h2,h3,h4,h5,h6,strong {
   color: #222;
+}
+
+.row-fluid {
+  margin: 10px 0;
 }
 
 /***** table *****/
@@ -70,22 +86,22 @@ h1, h2, h3, h4, h5, h6, strong {
   list-style: none;
 }
 
-.filter ul > li {
+.filter ul>li {
   float: left;
 }
 
-.filter ul > li > a {
+.filter ul>li>a {
   color: inherit;
   display: block;
   padding: 0 10px 0 10px;
 }
 
-.filter ul > li > a:hover {
+.filter ul>li>a:hover {
   color: black;
   background-color: #c8c8c8;
 }
 
-.filter ul > li.active > a {
+.filter ul>li.active>a {
   color: black;
   background-color: #b7b7b7;
 }
@@ -138,7 +154,7 @@ h1, h2, h3, h4, h5, h6, strong {
   list-style: none;
 }
 
-.gallery > li {
+.gallery>li {
   margin: 0 0 8px 8px;
   float: left;
 }
@@ -155,7 +171,6 @@ h1, h2, h3, h4, h5, h6, strong {
   margin-right: 0;
   float: right;
 } */
-
 .gallery-element {
   padding: 10px;
   border: 1px solid #ccc;
@@ -186,16 +201,12 @@ h1, h2, h3, h4, h5, h6, strong {
   position: absolute;
 }
 
-.gallery-element .toolbar > .btn {
+.gallery-element .toolbar>.btn {
   color: #222;
 }
 
-.gallery-element .toolbar > .btn:hover,
-.gallery-element .toolbar > .btn:focus,
-.gallery-element .toolbar > .btn:active,
-.gallery-element .toolbar > .btn.active,
-.gallery-element .toolbar > .btn.disabled,
-.gallery-element .toolbar > .btn[disabled] {
+.gallery-element .toolbar>.btn:hover,.gallery-element .toolbar>.btn:focus,.gallery-element .toolbar>.btn:active,.gallery-element .toolbar>.btn.active,.gallery-element .toolbar>.btn.disabled,.gallery-element .toolbar>.btn[disabled]
+  {
   background-color: #b7b7b7;
 }
 

@@ -4,7 +4,7 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from apis.movie_filter_handler import MovieFilterHandler
-from apis.movie_ignore_handler import MovieIgnoreHandler
+from apis.movie_ignored_handler import MovieIgnoredHandler
 from apis.movie_to_watch_handler import MovieToWatchHandler
 from apis.movie_watched_handler import MovieWatchedHandler
 from handlers.default_handler import DefaultHandler
@@ -42,8 +42,8 @@ class Application(tornado.web.Application):
             (r'/api/movie/towatch/([0-9a-f]{24})', MovieToWatchHandler),
             (r'/api/movie/watched', MovieWatchedHandler),
             (r'/api/movie/watched/([0-9a-f]{24})', MovieWatchedHandler),
-            (r'/api/movie/ignore', MovieIgnoreHandler),
-            (r'/api/movie/ignore/([0-9a-f]{24})', MovieIgnoreHandler),
+            (r'/api/movie/ignored', MovieIgnoredHandler),
+            (r'/api/movie/ignored/([0-9a-f]{24})', MovieIgnoredHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

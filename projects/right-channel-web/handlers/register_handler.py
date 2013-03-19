@@ -4,17 +4,16 @@ Created on Jan 30, 2013
 
 @author: Fang Jiaguo
 '''
-from handlers.base_handler import BaseHandler, authenticated_async
+from handlers.base_handler import BaseHandler, user_profile
 from settings import email_regex, mongodb
 from utilities import encrypt
 import tornado
 
 class RegisterHandler(BaseHandler):
     def initialize(self):
-        super(RegisterHandler, self).initialize()
         self.params['site_nav'] = 'register'
 
-    @authenticated_async
+    @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

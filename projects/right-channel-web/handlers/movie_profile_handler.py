@@ -4,16 +4,15 @@ Created on Jan 21, 2013
 @author: Fang Jiaguo
 '''
 from bson.objectid import ObjectId
-from handlers.base_handler import BaseHandler, authenticated_async
+from handlers.base_handler import BaseHandler, user_profile
 from settings import mongodb
 import tornado.web
 
 class MovieProfileHandler(BaseHandler):
     def initialize(self):
-        super(MovieProfileHandler, self).initialize()
         self.params['site_nav'] = 'movie'
 
-    @authenticated_async
+    @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self, movie_id):

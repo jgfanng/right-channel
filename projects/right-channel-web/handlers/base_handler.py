@@ -8,17 +8,18 @@ import functools
 import tornado.web
 
 class BaseHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, **kwargs):
+        self.params = {}
+        super(BaseHandler, self).__init__(application, request, **kwargs)
+
     def get_current_user(self):
         return self.get_secure_cookie('email')
-
-    def initialize(self):
-        self.params = {}
 
     def render(self, template_name, **kwargs):
         kwargs['params'] = self.params
         super(BaseHandler, self).render(template_name, **kwargs)
 
-def authenticated_async(method):
+def user_profile(method):
     @functools.wraps(method)
     @tornado.web.asynchronous
     @tornado.gen.engine

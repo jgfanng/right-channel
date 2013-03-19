@@ -3,18 +3,17 @@ Created on Jan 30, 2013
 
 @author: Fang Jiaguo
 '''
-from handlers.base_handler import BaseHandler, authenticated_async
+from handlers.base_handler import BaseHandler, user_profile
 from settings import mongodb
 import tornado.gen
 import tornado.web
 
 class WatchedHandler(BaseHandler):
     def initialize(self):
-        super(WatchedHandler, self).initialize()
         self.params['site_nav'] = 'account'
         self.params['account_nav'] = 'watched'
 
-    @authenticated_async
+    @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

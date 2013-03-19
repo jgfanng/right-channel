@@ -17,7 +17,7 @@ db.accounts.ensureIndex({"email": 1}, {unique: true})
             "id": ObjectId("50d078400c468ecda4b66a5a")
         ]
     },
-    "ignore": {
+    "ignored": {
         "movie": [
             "id": ObjectId("50d078400c468ecda4b66a5a")
         ]

@@ -5,18 +5,17 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from handlers.base_handler import BaseHandler, VIEW_FORMATS, IMAGE_TEXT_FORMAT, \
-    authenticated_async
+    user_profile
 from settings import settings, mongodb
 import tornado
 
 class InTheatersMovieHandler(BaseHandler):
     def initialize(self):
-        super(InTheatersMovieHandler, self).initialize()
         self.params['site_nav'] = 'movie'
         self.params['movie_nav'] = 'intheaters'
         self.params['view_format'] = IMAGE_TEXT_FORMAT
 
-    @authenticated_async()
+    @user_profile()
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):

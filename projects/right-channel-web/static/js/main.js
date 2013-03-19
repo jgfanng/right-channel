@@ -1,4 +1,4 @@
-/***** utilities *****/
+/** *** utilities **** */
 $(function() {
 	String.prototype.format = function() {
 		var s = this;
@@ -11,7 +11,7 @@ $(function() {
 	};
 });
 
-/***** load more *****/
+/** *** load more **** */
 $(function() {
 	var scroll = 10;
 	var isLoading = false;
@@ -133,17 +133,23 @@ $(function() {
 			}
 
 			{
-				var to_watch_li = '<button id="toWatch" class="btn btn-mini" data-id="{0}" title="想看本片"><i class="icon-star"></i> 想看</button>'
-						.format(movie._id);
+				var $to_watch_btn = $('<button id="toWatch" data-id="{0}" class="btn btn-mini" title="想看本片"><i class="icon-star"></i> 想看</button>'
+						.format(movie._id));
 
-				var watched_li = '<button id="watched" class="btn btn-mini" data-id="{0}" title="看过本片"><i class="icon-check"></i> 看过</button>'
-						.format(movie._id);
+				var $watched_btn = $('<button id="watched" data-id="{0}" class="btn btn-mini" title="已看本片"><i class="icon-check"></i> 已看</button>'
+						.format(movie._id));
 
-				var ignore_li = '<button id="ignore" class="btn btn-mini" data-id="{0}" title="忽略本片"><i class="icon-eye-close"></i> 忽略</button>'
-						.format(movie._id);
+				if (movie.watched) {
+					$to_watch_btn.hide();
+					$watched_btn.addClass('active');
+					$watched_btn.attr('title', '取消已看本片');
+				} else if (movie.to_watch) {
+					$to_watch_btn.addClass('active');
+					$to_watch_btn.attr('title', '取消想看本片');
+				}
 
 				var toolbar_div = '<div class="toolbar btn-group">{0}{1}{2}</div>'
-						.format(to_watch_li, watched_li, ignore_li);
+						.format($to_watch_btn.wrap('<div>').parent().html(), $watched_btn.wrap('<div>').parent().html());
 			}
 
 			html += '<li><div class="gallery-element">{0}{1}{2}</div></li>'
@@ -164,93 +170,155 @@ $(function() {
 	loadMore();
 });
 
-/***** use actions: ignore, to watch, watched *****/
-$(function () {
-    $('#content').on('click', '#toWatch', function (e) {
-        var $btn = $(this);
-        if (!$btn.hasClass('disabled')) {
-            var movie_id = $btn.attr('data-id');
-            $btn.addClass('disabled');
-            $.ajax({
-                type: 'POST',
-                url: '/api/movie/towatch',
-                data: {
-                    id: movie_id
-                }
-            }).done(function () {
-                $btn.attr('id', 'toUnwatch');
-                $btn.addClass('active');
-            }).fail(function (jqXHR) {
-                if (jqXHR.status == 401) { // unauthorized
-                    $.cookie.raw = true;
-                    $.cookie('next', window.location.href);
-                    window.location.href = '/login';
-                }
-            }).always(function () {
-                $btn.removeClass('disabled');
-            });
-        }
-    }).on('click', '#toUnwatch', function (e) {
-        var $btn = $(this);
-        if (!$btn.hasClass('disabled')) {
-            var movie_id = $btn.attr('data-id');
-            $btn.addClass('disabled');
-            $.ajax({
-                type: 'delete',
-                url: '/api/movie/towatch/' + movie_id,
-                data: {
-                    id: movie_id
-                }
-            }).done(function () {
-                $btn.attr('id', 'toWatch');
-                $btn.removeClass('active');
-            }).always(function () {
-                $btn.removeClass('disabled');
-            });
-        }
-    }).on('click', '#watched', function (e) {
-        var $btn = $(this);
-        if (!$btn.hasClass('disabled')) {
-            var movie_id = $btn.attr('data-id');
-            $btn.addClass('disabled');
-            $.ajax({
-                type: 'post',
-                url: '/api/movie/watched',
-                data: {
-                    id: movie_id
-                }
-            }).done(function () {
-            	$btn.closest('li').remove()
-            }).fail(function (jqXHR) {
-            	$btn.removeClass('disabled');
-                if (jqXHR.status == 401) { // unauthorized
-                    $.cookie.raw = true;
-                    $.cookie('next', window.location.href);
-                    window.location.href = '/login';
-                }
-            });
-        }
-    }).on('click', '#ignore', function (e) {
-        var $btn = $(this);
-        if (!$btn.hasClass('disabled')) {
-            var movie_id = $btn.attr('data-id');
-            $btn.addClass('disabled');
-            $.ajax({
-                type: 'post',
-                url: '/api/movie/ignore',
-                data: {
-                    id: movie_id
-                }
-            }).done(function () {
-            	$btn.closest('li').remove()
-            }).fail(function (jqXHR) {
-            	$btn.removeClass('disabled');
-                if (jqXHR.status == 401) { // unauthorized
-                    $.cookie.raw = true;
-                    $.cookie('next', window.location.href);
-                    window.location.href = '/login';
-                }
-            });
-        }
-    });
+/** *** use actions: ignored, to watch, watched **** */
+$(function() {
+	$('#content').on('click', '#toWatch', function(e) {
+		var $btn = $(this);
+		if (!$btn.hasClass('disabled')) {
+			if (!$btn.hasClass('active')) {
+				var movie_id = $btn.attr('data-id');
+				$btn.addClass('disabled');
+				$.ajax({
+					type : 'POST',
+					url : '/api/movie/towatch',
+					data : {
+						id : movie_id
+					}
+				}).done(function() {
+					$btn.attr('title', '取消想看本片');
+					$btn.addClass('active');
+				}).fail(function(jqXHR) {
+					if (jqXHR.status == 401) { // unauthorized
+						$.cookie.raw = true;
+						$.cookie('next', window.location.href);
+						window.location.href = '/login';
+					}
+				}).always(function() {
+					$btn.removeClass('disabled');
+				});
+			} else {
+				var movie_id = $btn.attr('data-id');
+				$btn.addClass('disabled');
+				$.ajax({
+					type : 'delete',
+					url : '/api/movie/towatch/' + movie_id,
+				}).done(function() {
+					$btn.attr('title', '想看本片');
+					$btn.removeClass('active');
+				}).fail(function(jqXHR) {
+					if (jqXHR.status == 401) { // unauthorized
+						$.cookie.raw = true;
+						$.cookie('next', window.location.href);
+						window.location.href = '/login';
+					}
+				}).always(function() {
+					$btn.removeClass('disabled');
+				});
+			}
+		}
+	}).on('click', '#watched', function(e) {
+		var $btn = $(this);
+		if (!$btn.hasClass('disabled')) {
+			if (!$btn.hasClass('active')) {
+				var movie_id = $btn.attr('data-id');
+				$btn.addClass('disabled');
+				$.ajax({
+					type : 'post',
+					url : '/api/movie/watched',
+					data : {
+						id : movie_id
+					}
+				}).done(function() {
+					$btn.attr('title', '取消已看本片');
+					$btn.addClass('active');
+					// deal with toWatch button
+					var $toWatchBtn = $btn.prev();
+					$toWatchBtn.attr('title', '想看本片');
+					$toWatchBtn.removeClass('active');
+					$toWatchBtn.hide();
+					// $btn.closest('li').hide()
+				}).fail(function(jqXHR) {
+					if (jqXHR.status == 401) { // unauthorized
+						$.cookie.raw = true;
+						$.cookie('next', window.location.href);
+						window.location.href = '/login';
+					}
+				}).always(function() {
+					$btn.removeClass('disabled');
+				});
+			} else {
+				var movie_id = $btn.attr('data-id');
+				$btn.addClass('disabled');
+				$.ajax({
+					type : 'delete',
+					url : '/api/movie/watched/' + movie_id,
+				}).done(function() {
+					$btn.attr('title', '已看本片');
+					$btn.removeClass('active');
+					// deal with toWatch button
+					var $toWatchBtn = $btn.prev();
+					$toWatchBtn.attr('title', '想看本片');
+					$toWatchBtn.removeClass('active');
+					$toWatchBtn.show();
+				}).fail(function(jqXHR) {
+					if (jqXHR.status == 401) { // unauthorized
+						$.cookie.raw = true;
+						$.cookie('next', window.location.href);
+						window.location.href = '/login';
+					}
+				}).always(function() {
+					$btn.removeClass('disabled');
+				});
+			}
+		}
+	}).on('click', '#ignored', function(e) {
+		var $btn = $(this);
+		if (!$btn.hasClass('disabled')) {
+			var movie_id = $btn.attr('data-id');
+			$btn.addClass('disabled');
+			$.ajax({
+				type : 'post',
+				url : '/api/movie/ignored',
+				data : {
+					id : movie_id
+				}
+			}).done(function() {
+				$btn.attr('id', 'unwatched');
+				$btn.attr('title', '取消忽略本片');
+				$btn.addClass('active');
+				$btn.closest('li').hide()
+			}).fail(function(jqXHR) {
+				if (jqXHR.status == 401) { // unauthorized
+					$.cookie.raw = true;
+					$.cookie('next', window.location.href);
+					window.location.href = '/login';
+				}
+			}).always(function() {
+				$btn.removeClass('disabled');
+			});
+			;
+		}
+	}).on('click', '#unignored', function(e) {
+		var $btn = $(this);
+		if (!$btn.hasClass('disabled')) {
+			var movie_id = $btn.attr('data-id');
+			$btn.addClass('disabled');
+			$.ajax({
+				type : 'delete',
+				url : '/api/movie/ignored/' + movie_id,
+			}).done(function() {
+				$btn.attr('id', 'ignored');
+				$btn.attr('title', '忽略本片');
+				$btn.removeClass('active');
+			}).fail(function(jqXHR) {
+				if (jqXHR.status == 401) { // unauthorized
+					$.cookie.raw = true;
+					$.cookie('next', window.location.href);
+					window.location.href = '/login';
+				}
+			}).always(function() {
+				$btn.removeClass('disabled');
+			});
+		}
+	});
 });

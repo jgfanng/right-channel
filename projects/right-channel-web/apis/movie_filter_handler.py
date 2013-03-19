@@ -4,13 +4,15 @@ Created on Mar 11, 2013
 
 @author: Fang Jiaguo
 '''
+from handlers.base_handler import BaseHandler, user_profile
 from settings import settings, mongodb
 from utilities import first_element, last_element, get_body, JSONEncoderExt
 import json
 import tornado.gen
 import tornado.web
 
-class MovieFilterHandler(tornado.web.RequestHandler):
+class MovieFilterHandler(BaseHandler):
+    @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
@@ -90,9 +92,33 @@ class MovieFilterHandler(tornado.web.RequestHandler):
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
+        # set to_watch, watched and ignored status
+        movies = response[0]
+        user = self.params.get('user')
+        if user and user.get('to_watch') and user.get('to_watch').get('movie'):
+            for movie in movies:
+                if movie.get('_id') in user.get('to_watch').get('movie'):
+                    movie['to_watch'] = True
+                else:
+                    movie['to_watch'] = False
+
+        if user and user.get('watched') and user.get('watched').get('movie'):
+            for movie in movies:
+                if movie.get('_id') in user.get('watched').get('movie'):
+                    movie['watched'] = True
+                else:
+                    movie['watched'] = False
+
+        if user and user.get('ignored') and user.get('ignored').get('movie'):
+            for movie in movies:
+                if movie.get('_id') in user.get('ignored').get('movie'):
+                    movie['ignored'] = True
+                else:
+                    movie['ignored'] = False
+
         result = {
             'movies': response[0],
-            'more': True if response[0] and len(response[0]) >= settings['movie']['page_size'] else False
+            'more': True if len(response[0]) >= settings['movie']['page_size'] else False
         }
 
         self.write(json.dumps(result, cls=JSONEncoderExt))

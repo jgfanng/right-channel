@@ -4,14 +4,13 @@ Created on Jan 16, 2013
 
 @author: Fang Jiaguo
 '''
-from handlers.base_handler import BaseHandler, authenticated_async
+from handlers.base_handler import BaseHandler, user_profile
 from settings import settings
 from utilities import first_element
 import tornado
 
 class MovieHomeHandler(BaseHandler):
     def initialize(self):
-        super(MovieHomeHandler, self).initialize()
         self.params['site_nav'] = 'movie'
         self.params['genre'] = first_element(settings['movie']['filters']['genres'])
         self.params['country'] = first_element(settings['movie']['filters']['countries'])
@@ -19,7 +18,7 @@ class MovieHomeHandler(BaseHandler):
         self.params['sort'] = first_element(settings['movie']['presentation']['sort'])
         self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
 
-    @authenticated_async
+    @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
