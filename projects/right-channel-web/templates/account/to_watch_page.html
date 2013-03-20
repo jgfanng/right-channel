@@ -3,20 +3,20 @@
 {% block account_content %}
 
   {% if params.get('user') and params.get('user').get('to_watch') and params.get('user').get('to_watch').get('movie') %}
-    <legend>我想看的({{ len(params.get('user').get('to_watch').get('movie')) }})</legend>
-    <table class="table table-condensed table-striped table-dash-border">
+    <legend>我想看的(<span id="movieCount">{{ len(params.get('user').get('to_watch').get('movie')) }}</span>)</legend>
+    <table class="table table-condensed table-hover table-dash-border">
       <thead>
           <th class="auto-size">电影名称</th>
           <th class="auto-size">豆瓣评分</th>
           <th class="auto-size">年份</th>
+          <td class="auto-size"></td>
       </thead>
       <tbody>
-        {% from utilities import combine_titles %}
         {% for movie in params.get('user').get('to_watch').get('movie') %}
           <tr>
             <td>
               <a href="/movie/{{ str(movie.get('_id')) }}" target="_blank">
-                {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
+                {{ movie.get('title') }}
               </a>
             </td>
             <td class="auto-size">
@@ -31,6 +31,12 @@
                 {{ movie.get('year') }}
               {% end %}
             </td>
+            <td class="auto-size">
+              <div class="btn-group toolbar pull-right">
+                <button id="watched" data-id="{{ movie.get('_id') }}" class="btn btn-mini" title="已看本片"><i class="icon-check"></i> 已看</button>
+                <button id="remove" data-id="{{ movie.get('_id') }}" class="btn btn-mini" title="移除"><i class="icon-remove"></i> 移除</button>
+              </div>
+            </td>
           </tr>
         {% end %}
       </tbody>
@@ -39,4 +45,8 @@
     <legend>我想看的(0)</legend>
   {% end %}
 
+{% end %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/account-to-watch.js') }}"></script>
 {% end %}

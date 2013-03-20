@@ -142,13 +142,13 @@ $(function() {
 				if (movie.watched) {
 					$to_watch_btn.hide();
 					$watched_btn.addClass('active');
-					$watched_btn.attr('title', '取消已看本片');
+					$watched_btn.attr('title', '取消已看');
 				} else if (movie.to_watch) {
 					$to_watch_btn.addClass('active');
-					$to_watch_btn.attr('title', '取消想看本片');
+					$to_watch_btn.attr('title', '取消想看');
 				}
 
-				var toolbar_div = '<div class="toolbar btn-group">{0}{1}{2}</div>'
+				var toolbar_div = '<div class="btn-group toolbar">{0}{1}</div>'
 						.format($to_watch_btn.wrap('<div>').parent().html(), $watched_btn.wrap('<div>').parent().html());
 			}
 
@@ -170,7 +170,7 @@ $(function() {
 	loadMore();
 });
 
-/** *** use actions: ignored, to watch, watched **** */
+/** *** movie category: ignored, to watch, watched **** */
 $(function() {
 	$('#content').on('click', '#toWatch', function(e) {
 		var $btn = $(this);
@@ -185,7 +185,7 @@ $(function() {
 						id : movie_id
 					}
 				}).done(function() {
-					$btn.attr('title', '取消想看本片');
+					$btn.attr('title', '取消想看');
 					$btn.addClass('active');
 				}).fail(function(jqXHR) {
 					if (jqXHR.status == 401) { // unauthorized
@@ -201,7 +201,7 @@ $(function() {
 				$btn.addClass('disabled');
 				$.ajax({
 					type : 'delete',
-					url : '/api/movie/towatch/' + movie_id,
+					url : '/api/movie/towatch/' + movie_id
 				}).done(function() {
 					$btn.attr('title', '想看本片');
 					$btn.removeClass('active');
@@ -229,7 +229,7 @@ $(function() {
 						id : movie_id
 					}
 				}).done(function() {
-					$btn.attr('title', '取消已看本片');
+					$btn.attr('title', '取消已看');
 					$btn.addClass('active');
 					// deal with toWatch button
 					var $toWatchBtn = $btn.prev();
@@ -251,7 +251,7 @@ $(function() {
 				$btn.addClass('disabled');
 				$.ajax({
 					type : 'delete',
-					url : '/api/movie/watched/' + movie_id,
+					url : '/api/movie/watched/' + movie_id
 				}).done(function() {
 					$btn.attr('title', '已看本片');
 					$btn.removeClass('active');
@@ -284,7 +284,7 @@ $(function() {
 				}
 			}).done(function() {
 				$btn.attr('id', 'unwatched');
-				$btn.attr('title', '取消忽略本片');
+				$btn.attr('title', '取消忽略');
 				$btn.addClass('active');
 				$btn.closest('li').hide()
 			}).fail(function(jqXHR) {
@@ -305,7 +305,7 @@ $(function() {
 			$btn.addClass('disabled');
 			$.ajax({
 				type : 'delete',
-				url : '/api/movie/ignored/' + movie_id,
+				url : '/api/movie/ignored/' + movie_id
 			}).done(function() {
 				$btn.attr('id', 'ignored');
 				$btn.attr('title', '忽略本片');

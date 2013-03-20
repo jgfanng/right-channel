@@ -1,109 +1,135 @@
 /***** bootstrap styles *****/
+
 .navbar-inner {
-  min-height: 40px;
+    min-height: 40px
 }
 
 .navbar .brand {
-  padding: 10px 20px 10px;
+    padding: 10px 20px 10px
 }
 
 .navbar .nav>li>a {
-  padding: 10px 15px 10px;
+    padding: 10px 15px 10px
 }
 
-.navbar-fixed-top .navbar-inner,.navbar-static-top .navbar-inner {
-  border-bottom: 3px solid #f89406;
+.navbar-fixed-top .navbar-inner,
+.navbar-static-top .navbar-inner {
+    border-bottom: 3px solid #f89406
 }
 
-.navbar .nav>.active>a,.navbar .nav>.active>a:hover,.navbar .nav>.active>a:focus {
-  background-color: #333;
+.navbar .nav>.active>a,
+.navbar .nav>.active>a:hover,
+.navbar .nav>.active>a:focus {
+    background-color: #333
 }
 
 .navbar .divider-vertical {
-  height: 40px;
-  border-right-color: #666;
-  border-left-color: #222;
+    height: 40px;
+    border-right-color: #666;
+    border-left-color: #222;
 }
 
 .btn-mini {
-  padding: 0px 6px;
+    padding: 0px 6px
 }
 
 .badge {
-  padding: 3px 3px;
-  font-weight: bold;
+    padding: 3px 3px;
+    font-weight: bold;
 }
 
-[class^="icon-"],[class*=" icon-"] {
-  margin: 0;
-  vertical-align: text-top;
+[class^="icon-"],
+[class*=" icon-"] {
+    margin: 0;
+    vertical-align: text-top;
+}
+
+legend {
+    border-bottom: 1px solid #e5e5e5
 }
 
 /***** generic styles *****/
+
 body {
-  padding-top: 43px;
-  color: #555;
-  background-color: #eee;
+    padding-top: 43px;
+    color: #555;
+    background-color: #eee;
 }
 
-a:link,a:visited,a:hover,a:active {
-  text-decoration: none;
+a:link,
+a:visited,
+a:hover,
+a:active {
+    text-decoration: none
 }
 
-h1,h2,h3,h4,h5,h6,strong {
-  color: #222;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+    color: #222
 }
 
 .row-fluid {
-  margin: 10px 0;
+    margin: 10px 0
 }
 
 /***** table *****/
+
 .table {
-  margin-bottom: 0px;
+    margin-bottom: 0px
 }
 
 .table .auto-size {
-  width: 1px;
-  white-space: nowrap;
+    width: 1px;
+    white-space: nowrap;
 }
 
 .table-striped tbody>tr:nth-child(odd)>td {
-  background-color: #f3f3f3;
+    background-color: #f3f3f3
 }
 
 .table-dash-border th {
-  border: None
+    border: None
 }
 
 .table-dash-border td {
-  border-top: 1px dashed #ababab;
+    border-top: 1px dashed #ababab
+}
+
+.table-hover tbody tr:hover > td,
+.table-hover tbody tr:hover > th {
+    background-color: #f3f3f3;
 }
 
 /***** filter *****/
+
 .filter ul {
-  margin-left: 50px;
-  list-style: none;
+    margin-left: 50px;
+    list-style: none;
 }
 
 .filter ul>li {
-  float: left;
+    float: left
 }
 
 .filter ul>li>a {
-  color: inherit;
-  display: block;
-  padding: 0 10px 0 10px;
+    color: inherit;
+    display: block;
+    padding: 0 10px 0 10px;
 }
 
 .filter ul>li>a:hover {
-  color: black;
-  background-color: #c8c8c8;
+    color: black;
+    background-color: #c8c8c8;
 }
 
 .filter ul>li.active>a {
-  color: black;
-  background-color: #b7b7b7;
+    color: black;
+    background-color: #b7b7b7;
 }
 
 /* .nav-secondary {
@@ -149,14 +175,15 @@ h1,h2,h3,h4,h5,h6,strong {
 } */
 
 /***** gallery *****/
+
 .gallery {
-  margin-left: 12px;
-  list-style: none;
+    margin-left: 12px;
+    list-style: none;
 }
 
 .gallery>li {
-  margin: 0 0 8px 8px;
-  float: left;
+    margin: 0 0 8px 8px;
+    float: left;
 }
 
 /* .gallery > li.first-row {
@@ -171,43 +198,51 @@ h1,h2,h3,h4,h5,h6,strong {
   margin-right: 0;
   float: right;
 } */
+
 .gallery-element {
-  padding: 10px;
-  border: 1px solid #ccc;
-  background-color: white;
-  overflow: auto;
-  position: relative;
+    padding: 10px;
+    background-color: white;
+    overflow: auto;
+    position: relative;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
 }
 
 .gallery-element .desc {
-  width: 176px;
-  height: 122px;
-  margin-left: 10px;
-  overflow: hidden;
+    width: 176px;
+    height: 122px;
+    margin-left: 10px;
+    overflow: hidden;
 }
 
 .gallery-element .desc p {
-  margin: 0;
-  font-size: 12px;
+    margin: 0;
+    font-size: 12px;
 }
 
 .gallery-element .desc p .title {
-  font-size: 14px;
+    font-size: 14px
 }
 
 .gallery-element .toolbar {
-  right: 10px;
-  bottom: 10px;
-  position: absolute;
+    right: 10px;
+    bottom: 10px;
+    position: absolute;
 }
 
-.gallery-element .toolbar>.btn {
-  color: #222;
+.toolbar .btn {
+    color: #222
 }
 
-.gallery-element .toolbar>.btn:hover,.gallery-element .toolbar>.btn:focus,.gallery-element .toolbar>.btn:active,.gallery-element .toolbar>.btn.active,.gallery-element .toolbar>.btn.disabled,.gallery-element .toolbar>.btn[disabled]
-  {
-  background-color: #b7b7b7;
+.toolbar .btn:hover,
+.toolbar .btn:focus,
+.toolbar .btn:active,
+.toolbar .btn.active,
+.toolbar .btn.disabled,
+.toolbar .btn[disabled] {
+    background-color: #b7b7b7
 }
 
 /* .gallery-element .toolbar ul {
@@ -265,90 +300,98 @@ h1,h2,h3,h4,h5,h6,strong {
 } */
 
 /***** different sizes of poster *****/
+
 .poster-large {
-  width: 220px;
-  height: 330px;
+    width: 220px;
+    height: 330px;
 }
 
 .poster-large img {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .poster-medium {
-  width: 100px;
-  height: 145px;
+    width: 100px;
+    height: 145px;
 }
 
 .poster-medium img {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 /***** profile *****/
+
 .profile {
-  overflow: auto;
-  position: relative;
+    overflow: auto;
+    position: relative;
 }
 
 .profile .desc {
-  width: 665px;
-  height: 300px;
-  margin-left: 10px;
-  overflow: hidden;
+    width: 665px;
+    height: 300px;
+    margin-left: 10px;
+    overflow: hidden;
 }
 
 .profile .toolbar {
-  right: 0;
-  bottom: 2px;
-  position: absolute;
+    right: 0;
+    bottom: 2px;
+    position: absolute;
 }
 
 /***** form *****/
+
 form .help-info {
-  color: #999;
-  font-size: 12px;
+    color: #999;
+    font-size: 12px;
 }
 
 form .help-error {
-  color: red;
-  font-size: 12px;
+    color: red;
+    font-size: 12px;
 }
 
 /***** ajax loading picture *****/
+
 .ajax-loader {
-  background-image: url("../img/ajax-loader.gif");
-  background-repeat: no-repeat;
-  background-position: -6px -3px;
-  width: 208px;
-  height: 13px;
-  margin: 0 auto;
+    background-image: url("../img/ajax-loader.gif");
+    background-repeat: no-repeat;
+    background-position: -6px -3px;
+    width: 208px;
+    height: 13px;
+    margin: 0 auto;
 }
 
 /***** misc ******/
+
 .content-block {
-  padding: 0 10px;
-  margin: 10px 0;
-  background-color: white;
-  border: 1px solid #ccc;
+    padding: 0 10px;
+    margin: 10px 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
 }
 
 .year {
-  color: #888;
+    color: #888
 }
 
 .rating {
-  color: #FF6600;
-  font-size: 14px;
-  font-weight: bold;
+    color: #FF6600;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .p-indent {
-  text-indent: 2em;
+    text-indent: 2em
 }
 
 .operation-alert {
-  margin: 10px 0;
+    margin: 10px 0
 }
 
 /* th {
@@ -365,104 +408,107 @@ box-shadow: 0 1px 0   rgba(255,255,255,.8) inset;
 border-top: none;
 text-shadow: 0 1px 0   rgba(255,255,255,.5);
 } */
+
 .logo-media {
-  background-image: url(../img/platform-logo.png);
-  background-repeat: no-repeat;
-  height: 16px;
-  line-height: 16px;
-  display: inline-block;
-  padding-left: 16px;
-  padding-right: 3px;
-  cursor: pointer;
-  margin-bottom: 5px;
-  white-space: nowrap;
+    background-image: url(../img/platform-logo.png);
+    background-repeat: no-repeat;
+    height: 16px;
+    line-height: 16px;
+    display: inline-block;
+    padding-left: 16px;
+    padding-right: 3px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    white-space: nowrap;
 }
 
 .logo-youku {
-  background-position: 0 0;
+    background-position: 0 0
 }
 
-.logo-ku6,.logo-kuliu {
-  background-position: 0 -26px;
+.logo-ku6,
+.logo-kuliu {
+    background-position: 0 -26px
 }
 
 .logo-pptv {
-  background-position: 0 -52px;
+    background-position: 0 -52px
 }
 
 .logo-iqiyi {
-  background-position: 0 -78px;
+    background-position: 0 -78px
 }
 
-.logo-souhu,.logo-sohu {
-  background-position: 0 -104px;
+.logo-souhu,
+.logo-sohu {
+    background-position: 0 -104px
 }
 
 .logo-tudou {
-  background-position: 0 -130px;
+    background-position: 0 -130px
 }
 
 .logo-sina {
-  background-position: 0 -156px;
+    background-position: 0 -156px
 }
 
 .logo-leshi {
-  background-position: 0 -182px;
+    background-position: 0 -182px
 }
 
 .logo-wuliu {
-  background-position: 0 -206px;
+    background-position: 0 -206px
 }
 
 .logo-m1905 {
-  background-position: 0 -233px;
-  width: 36px;
+    background-position: 0 -233px;
+    width: 36px;
 }
 
 .logo-kumi {
-  background-position: 0 -259px;
+    background-position: 0 -259px
 }
 
 .logo-xunlei {
-  background-position: 0 -284px;
+    background-position: 0 -284px
 }
 
 .logo-tengxun {
-  background-position: 0 -310px;
+    background-position: 0 -310px
 }
 
 .logo-liu {
-  background-position: 0 -335px;
+    background-position: 0 -335px
 }
 
 .logo-tv189 {
-  background-position: 0 -362px;
+    background-position: 0 -362px
 }
 
 .logo-cntv {
-  background-position: 0 -387px;
+    background-position: 0 -387px
 }
 
 .logo-wysp {
-  background-position: 0 -411px;
+    background-position: 0 -411px
 }
 
 .logo-bsy {
-  background-position: 0 -435px;
+    background-position: 0 -435px
 }
 
 .logo-hstv {
-  background-position: 0 -461px;
+    background-position: 0 -461px
 }
 
 .logo-pps {
-  background-position: 0 -481px;
+    background-position: 0 -481px
 }
 
 .logo-taohua {
-  background-position: 0 -501px;
+    background-position: 0 -501px
 }
 
 .logo-ifeng {
-  background-position: 1px -523px;
+    background-position: 1px -523px
 }

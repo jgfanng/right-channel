@@ -9,7 +9,7 @@ from settings import settings
 from utilities import first_element
 import tornado
 
-class MovieHomeHandler(BaseHandler):
+class MovieCategoryHandler(BaseHandler):
     def initialize(self):
         self.params['site_nav'] = 'movie'
         self.params['genre'] = first_element(settings['movie']['filters']['genres'])
@@ -42,4 +42,4 @@ class MovieHomeHandler(BaseHandler):
         if self.params['resource'] not in settings['movie']['presentation']['resource']:
             self.params['resource'] = first_element(settings['movie']['presentation']['resource'])
 
-        self.render('movie/movie_home_page.html')
+        self.render('movie/movie_category_page.html')
