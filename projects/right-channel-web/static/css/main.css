@@ -213,16 +213,17 @@ strong {
 .gallery-element .desc {
     width: 176px;
     height: 122px;
+    font-size: 12px;
     margin-left: 10px;
     overflow: hidden;
 }
 
-.gallery-element .desc p {
+.gallery-element p {
     margin: 0;
-    font-size: 12px;
 }
 
-.gallery-element .desc p .title {
+.gallery-element .title,
+.gallery-element .rating {
     font-size: 14px
 }
 
@@ -301,44 +302,24 @@ strong {
 
 /***** different sizes of poster *****/
 
-.poster-large {
+/* .poster-large {
     width: 220px;
     height: 330px;
-}
-
-.poster-large img {
-    width: 100%;
-    height: 100%;
-}
+} */
 
 .poster-medium {
     width: 100px;
     height: 145px;
 }
 
-.poster-medium img {
-    width: 100%;
-    height: 100%;
+/***** movie profile *****/
+
+.profile p {
+    margin: 0 0 5px 0;
 }
 
-/***** profile *****/
-
-.profile {
-    overflow: auto;
-    position: relative;
-}
-
-.profile .desc {
-    width: 665px;
-    height: 300px;
-    margin-left: 10px;
-    overflow: hidden;
-}
-
-.profile .toolbar {
-    right: 0;
-    bottom: 2px;
-    position: absolute;
+.profile .rating {
+    font-size: 16px;
 }
 
 /***** form *****/
@@ -382,13 +363,12 @@ form .help-error {
 
 .rating {
     color: #FF6600;
-    font-size: 14px;
     font-weight: bold;
 }
 
-.p-indent {
+/* .p-indent {
     text-indent: 2em
-}
+} */
 
 .operation-alert {
     margin: 10px 0

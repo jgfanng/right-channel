@@ -54,7 +54,7 @@ $(function() {
 		for ( var i = 0; i < movies.length; i++) {
 			var movie = movies[i];
 
-			var poster_div = '<div class="pull-left poster-medium"><a href="/movie/{0}" target="_blank"><img src="{1}"></a></div>'
+			var poster_div = '<div class="pull-left"><a href="/movie/{0}" target="_blank"><img src="{1}" class="poster-medium"></a></div>'
 					.format(
 							movie._id,
 							[
@@ -133,7 +133,7 @@ $(function() {
 			}
 
 			{
-				var $to_watch_btn = $('<button id="toWatch" data-id="{0}" class="btn btn-mini" title="想看本片"><i class="icon-star"></i> 想看</button>'
+				var $to_watch_btn = $('<button id="toWatch" data-id="{0}" class="btn btn-mini" title="想看本片"><i class="icon-eye-open"></i> 想看</button>'
 						.format(movie._id));
 
 				var $watched_btn = $('<button id="watched" data-id="{0}" class="btn btn-mini" title="已看本片"><i class="icon-check"></i> 已看</button>'
