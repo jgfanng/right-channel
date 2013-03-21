@@ -11,8 +11,7 @@ from sets import Set
 from settings import settings, mongodb
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse, urlunparse
-from utilities import LimitedCaller, request
-from utilities.log import get_logger
+from utilities import LimitedCaller, request, get_logger
 import datetime
 import logging
 import re
@@ -26,7 +25,7 @@ request_iqiyi_page = LimitedCaller(request.get, 60, settings['iqiyi_crawler']['r
 
 class IQIYICrawler(object):
     '''
-    Crawler for iqiyi movie (http://www.iqiyi.com/dianying/).
+    Crawler for iqiyi movie.
     '''
 
     def start(self):

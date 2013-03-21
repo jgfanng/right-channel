@@ -45,14 +45,16 @@ db.movies.ensureIndex({"aka": 1})
         "raters": 108587,
         "link": "http://movie.douban.com/subject/4807924/"
     },
-    "online": [
-        {
-            "source": "pptv",
+    "online": {
+        "pptv": {
+            "id": "123",
             "title": "泰迪熊",
-            "url": "http://movie.pptv.com/123"
+            "url": "http://movie.pptv.com/123",
+            "watch_times": 0,
+            "last_updated": "2012-12-29"
         }
-    ],
-    "view": {
+    },
+    "watch": {
         "last_week": 0,
         "last_month": 0,
         "history": 0,

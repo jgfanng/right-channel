@@ -12,8 +12,7 @@ from sets import Set
 from settings import settings, mongodb
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from utilities import LimitedCaller, request
-from utilities.log import get_logger
+from utilities import LimitedCaller, request, get_logger
 import datetime
 import json
 import logging

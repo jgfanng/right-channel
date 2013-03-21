@@ -27,6 +27,15 @@
         "tag_regex": "^http://movie\\.douban\\.com/tag/[^?]*(\\?start=[0-9]+&type=T)?$",
         "movie_regex": "^http://movie\\.douban\\.com/subject/[0-9]+/?$"
     },
+    "pptv_crawler": {
+        "movie_crawler": {
+            "page": "http://list.pptv.com/sort_list/1---------%s.html",
+            "run_at": "17:00"
+        },
+        "tv_crawler": {},
+        "reqs_per_min": 30,
+        "movie_regex": "^http://v\\.pptv\\.com/show/(?P<id>[0-9a-zA-Z]+)\\.html$"
+    },
     "iqiyi_crawler": {
         "movie_crawler": {
             "page": "http://list.iqiyi.com/www/1/------------2-1-%s-1---.html",
@@ -34,7 +43,7 @@
         },
         "tv_crawler": {},
         "reqs_per_min": 30,
-        "movie_regex": "^http://www\\.iqiyi\\.com/dianying/[0-9]{8}/[0-9a-z]+\\.html$",
-        "vip_movie_regex": "^http://vip\\.iqiyi\\.com/[0-9]{8}/[0-9a-z]+\\.html$"
+        "movie_regex": "^http://www\\.iqiyi\\.com/dianying/[0-9]{8}/[0-9a-zA-Z]+\\.html$",
+        "vip_movie_regex": "^http://vip\\.iqiyi\\.com/[0-9]{8}/[0-9a-zA-Z]+\\.html$"
     }
 }
