@@ -45,7 +45,8 @@
 }
 
 legend {
-    border-bottom: 1px solid #e5e5e5
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 /***** generic styles *****/
@@ -314,12 +315,20 @@ strong {
 
 /***** movie profile *****/
 
+.profile h3 {
+    margin: 0 0 10px 0;
+}
+
 .profile p {
     margin: 0 0 5px 0;
 }
 
 .profile .rating {
     font-size: 16px;
+}
+
+.profile .toolbar {
+    margin-top: 10px;
 }
 
 /***** form *****/

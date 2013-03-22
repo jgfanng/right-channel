@@ -58,7 +58,7 @@ class MovieCrawler(threading.Thread):
                             title = link_element.text
                             url = link_element.attrib['href']
                             m = movie_regex.match(url)
-                            if title and url not in crawled_urls and m:
+                            if title and m and url not in crawled_urls:
                                 find_movie = True
                                 crawled_urls.add(url)
                                 title = title.strip()

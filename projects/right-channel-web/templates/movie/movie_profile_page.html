@@ -3,23 +3,26 @@
   {% if params.get('movie') %}
     {% set movie = params.get('movie') %}
     <div class="content-block">
-      <h3>
-        {% from utilities import combine_titles %}
-        {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
-        {% if movie.get('year') %}
-          <span class="year">
-            ({{ movie.get('year') }})
-          </span>
-        {% end %}
-      </h3>
-
       <div class="row-fluid profile">
         <div class="span3">
           <a>
             <img src="http://img3.douban.com/lpic/s11356673.jpg">
           </a>
+          <div class="btn-group toolbar">
+            <button id="toWatch" data-id="{{ movie.get('_id') }}" class="btn btn-small" title="想看本片"><i class="icon-eye-open"></i> 想看</button>
+            <button id="watched" data-id="{{ movie.get('_id') }}" class="btn btn-small" title="已看本片"><i class="icon-check"></i> 已看</button>
+          </div>
         </div>
         <div class="span9">
+          <h3>
+            {% from utilities import combine_titles %}
+            {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
+            {% if movie.get('year') %}
+              <span class="year">
+                ({{ movie.get('year') }})
+              </span>
+            {% end %}
+          </h3>
           {% if movie.get('directors') %}
             <p>
               <strong>导演:</strong>
@@ -58,7 +61,7 @@
               </span>
               {% if movie.get('douban') and movie.get('douban').get('link') %}
                 <a href="{{ movie.get('douban').get('link') }}" target="_blank">
-                  详细...
+                  详情...
                 </a>
               {% end %}
             </p>
@@ -71,11 +74,26 @@
         </div>
       </div>
       <div class="row-fluid">
-        <div class="btn-group toolbar">
-          <button id="toWatch" data-id="{{ movie.get('_id') }}" class="btn btn-small" title="想看本片"><i class="icon-eye-open"></i> 想看</button>
-          <button id="watched" data-id="{{ movie.get('_id') }}" class="btn btn-small" title="已看本片"><i class="icon-check"></i> 已看</button>
-        </div>
+        <legend>在线观看</legend>
+        {% if movie.get('online') and movie.get('online').keys() %}
+          <div id="online" class="row-fluid">
+            {% from settings import settings %}
+            {% for provider in movie.get('online').keys() %}
+              <a data-provider="{{ provider }}" data-id="{{ movie.get('online').get(provider).get('id') }}">{{ settings['providers'][provider]}}</a>
+            {% end %}
+          </div>
+          <div id="flashContent"></div>
+        {% else %}
+          <div class="alert alert-info">
+            尊敬的用户，本片暂无在线观看资源！添加本片至想看列表，如有在线观看资源，系统会第一时间提醒您！
+          </div>
+        {% end %}
       </div>
     </div>
   {% end %}
+{% end %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/swfobject.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/load-flash.js') }}"></script>
 {% end %}
