@@ -1,0 +1,2 @@
+# run at 00:00 everyday, pipe all the output to the null device (discard)
+0 0 * * * /usr/bin/python *.py > /dev/null 2>&1
