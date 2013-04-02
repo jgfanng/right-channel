@@ -1,0 +1,118 @@
+# create index
+curl -XPUT http://localhost:9200/rightchannel
+
+# create movie mapping
+curl -XPOST http://localhost:9200/rightchannel/movie/_mapping -d'
+{
+    "movie": {
+        "properties": {
+            "year": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "title": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "original_title": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "aka": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "directors": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "casts": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "genres": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "countries": {
+                "type": "string",
+                "analyzer": "ik"
+            },
+            "summary": {
+                "type": "string",
+                "analyzer": "ik"
+            }
+        }
+    }
+}'
+
+# index sample documents
+curl -XPOST http://localhost:9200/rightchannel/movie/1 -d'
+{
+    "year": "2006",
+    "title": "英雄 第一季",
+    "original_title": "Heroes",
+    "aka": [
+        "超能英雄 第一季",
+        "变种群英 第一季",
+        "天骄 第一季",
+        "群英荟萃 第一季"
+    ]
+}'
+
+curl -XPOST http://localhost:9200/rightchannel/movie/2 -d'
+{
+    "year": "2002",
+    "title": "英雄",
+    "original_title": "英雄",
+    "aka": [
+        "Hero"
+    ]
+}'
+
+curl -XPOST http://localhost:9200/rightchannel/movie/3 -d'
+{
+    "year": "2011",
+    "title": "英雄使命",
+    "original_title": "英雄使命",
+    "aka": [
+        "女子炸弹英雄",
+        "女子别动队"
+    ]
+}'
+
+curl -XPOST http://localhost:9200/rightchannel/movie/4 -d'
+{
+    "year": "1986",
+    "title": "英雄本色",
+    "original_title": "英雄本色",
+    "aka": [
+        "A Better Tomorrow",
+        "Gangland Boss",
+        "Ying huang boon sik"
+    ]
+}'
+
+# query
+curl -XPOST http://localhost:9200/rightchannel/movie/_search  -d'
+{
+    "query": {
+        "match": {
+            "title": "使命"
+        }
+    }
+}'
+
+curl -XPOST http://localhost:9200/rightchannel/movie/_search  -d'
+{
+    "query": {
+        "multi_match": {
+            "query": "英雄",
+            "fields": [
+                "title",
+                "original_title",
+                "aka"
+            ]
+        }
+    }
+}'
