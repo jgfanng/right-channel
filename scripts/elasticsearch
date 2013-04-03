@@ -5,6 +5,9 @@ curl -XPUT http://localhost:9200/rightchannel
 curl -XPOST http://localhost:9200/rightchannel/movie/_mapping -d'
 {
     "movie": {
+        "_all" : {
+            "enabled" : false
+        },
         "properties": {
             "year": {
                 "type": "string",
@@ -41,6 +44,26 @@ curl -XPOST http://localhost:9200/rightchannel/movie/_mapping -d'
             "summary": {
                 "type": "string",
                 "analyzer": "ik"
+            },
+            "images": {
+                "type": "object",
+                "index": "no",
+                "include_in_all": false
+            },
+            "douban": {
+                "type": "object",
+                "index": "no",
+                "include_in_all": false
+            },
+            "resources": {
+                "type": "object",
+                "index": "no",
+                "include_in_all": false
+            },
+            "watched": {
+                "type": "object",
+                "index": "no",
+                "include_in_all": false
             }
         }
     }
