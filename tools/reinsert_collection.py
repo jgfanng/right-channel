@@ -17,29 +17,3 @@ for r in db['temp'].find():
     time.sleep(0.001)
 
 db['temp'].remove()
-
-
-# -*- coding: utf-8 -*-
-from pyelasticsearch.client import ElasticSearch
-conn = ElasticSearch('http://localhost:9200/')
-query = {
-    "query": {
-        "multi_match": {
-            "query": "Legend of the Drunken Master",
-            "fields": [
-                "title",
-                "original_title",
-                "aka",
-                "directors",
-                "casts",
-                "countries",
-                "genres",
-                "summary"
-            ]
-        }
-    }
-}
-result = conn.search(query, index='rightchannel', doc_type='movie', size=10)
-print result.get('hits').get('total')
-for r in result.get('hits').get('hits'):
-    print r.get('_score'), r.get('_source').get('title'), r.get('_source').get('original_title'), r.get('_source').get('aka')
