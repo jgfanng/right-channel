@@ -7,7 +7,6 @@ Created on Nov 25, 2012
 '''
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
-from sets import Set
 from settings import settings, mongodb
 from urllib2 import HTTPError, URLError
 from utilities import LimitedCaller, request, get_logger
@@ -18,7 +17,7 @@ import threading
 
 pptv_logger = get_logger('PPTVCrawler', 'pptv_crawler.log')
 movie_regex = re.compile(settings['pptv_crawler']['movie_regex'])
-request_pptv_page = LimitedCaller(request.get, 60, settings['pptv_crawler']['reqs_per_min'])
+request_pptv_page = LimitedCaller(request.get, settings['pptv_crawler']['reqs_per_min'])
 
 class PPTVCrawler(object):
     '''
@@ -38,8 +37,6 @@ class MovieCrawler(threading.Thread):
         logger.info('==========MovieCrawler Started==========')
 
         page_index = 1
-        crawled_urls = Set()
-
         while True:
             try:
                 page = settings['pptv_crawler']['movie_crawler']['page'] % page_index
@@ -55,14 +52,13 @@ class MovieCrawler(threading.Thread):
                     try:
                         title = link_element.text
                         url = link_element.attrib['href']
-                        m = movie_regex.match(url)
-                        if title and m and url not in crawled_urls:
+                        match = movie_regex.match(url)
+                        if title and match:  # leave image URL
                             find_movie = True
-                            crawled_urls.add(url)
                             title = title.strip()
 
                             result = mongodb['movies'].find_and_modify(query={'$or': [{'title': title}, {'original_title': title}, {'aka': title}]},
-                                                                       update={'$set': {'online.pptv': {'id': m.groupdict().get('id'), 'title': title, 'url': url, 'last_updated': datetime.datetime.utcnow()}}},
+                                                                       update={'$set': {'online.pptv': {'id': match.groupdict().get('id'), 'title': title, 'url': url, 'last_updated': datetime.datetime.utcnow()}}},
                                                                        fields={'_id': 1})
                             if result:
                                 logger.info('Match with douban <%s>' % title)

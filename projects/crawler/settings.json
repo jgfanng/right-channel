@@ -17,13 +17,13 @@
             ]
         },
         "in_theaters_crawler": {
-            "page": "http://movie.douban.com/nowplaying/",
+            "page": "http://movie.douban.com/nowplaying/"
         },
         "coming_soon_crawler": {
-            "page": "http://movie.douban.com/later/",
+            "page": "http://movie.douban.com/later/"
         },
         "top250_crawler": {
-            "page": "http://movie.douban.com/top250?format=text",
+            "page": "http://movie.douban.com/top250?format=text"
         },
         "reqs_per_min": 40,
         "api_key": "05bc4743e8f8808a1134d5cbbae9819e",
@@ -32,7 +32,7 @@
     },
     "pptv_crawler": {
         "movie_crawler": {
-            "page": "http://list.pptv.com/sort_list/1---------%s.html",
+            "page": "http://list.pptv.com/sort_list/1---------%s.html"
         },
         "tv_crawler": {},
         "reqs_per_min": 30,
@@ -40,7 +40,7 @@
     },
     "iqiyi_crawler": {
         "movie_crawler": {
-            "page": "http://list.iqiyi.com/www/1/------------2-1-%s-1---.html",
+            "page": "http://list.iqiyi.com/www/1/------------2-1-%s-1---.html"
         },
         "tv_crawler": {},
         "reqs_per_min": 30,

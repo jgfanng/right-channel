@@ -141,13 +141,12 @@ request = Request()
 class LimitedCaller(object):
     '''
     Limit function call under a threshold in a given period.
-    Note this functionality is not thread safe.
     '''
 
-    def __init__(self, call, period, max_calls):
-        self.__call = call  # the function to call
-        self.__period = period  # in seconds
+    def __init__(self, method, max_calls, period=60):
+        self.__method = method  # the function to call
         self.__max_calls = max_calls  # max calls be made in the given period
+        self.__period = period  # in seconds
         self.__call_times = []
         self.__lock = threading.Lock()
 
@@ -159,4 +158,4 @@ class LimitedCaller(object):
                 t = times[0] + self.__period - now
                 time.sleep(t)
             self.__call_times = times + [time.time()]
-        return self.__call(*args, **kwargs)
+        return self.__method(*args, **kwargs)

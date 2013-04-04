@@ -1,2 +1,6 @@
-# run at 00:00 everyday, pipe all the output to the null device (discard)
-0 0 * * * /usr/bin/python *.py > /dev/null 2>&1
+# Change the working directory to the source folder.
+# The && will only run the second command if the first completes successfully.
+# Run at 00:00 everyday, pipe all the output to the null device (discard).
+0 0 * * * cd /path/to/source/folder && /usr/bin/python /path/to/source/folder/test.py > /dev/null 2>&1
+
+* * * * * cd /path/to/source/folder && /usr/bin/python /path/to/source/folder/test.py >> /path/to/source/folder/logs/cron.log 2>&1
