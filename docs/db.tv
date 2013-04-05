@@ -1,0 +1,73 @@
+=========Indexes============================================================
+db.tv.ensureIndex({"douban.id": 1}, {unique: true})
+db.tv.ensureIndex({"genres": 1})
+db.tv.ensureIndex({"countries": 1})
+db.tv.ensureIndex({"year": 1})
+db.tv.ensureIndex({"title": 1})
+db.tv.ensureIndex({"original_title": 1})
+db.tv.ensureIndex({"aka": 1})
+
+=========Schema=============================================================
+{
+    "year": "2012",
+    "title": "行尸走肉 第三季",
+    "original_title": "The Walking Dead",
+    "aka": [
+        "行尸走肉"
+    ],
+    "directors": [
+        "Gregory Nicotero"
+    ],
+    "casts": [
+        "安德鲁·林肯"
+    ],
+    "genres": [
+        "剧情",
+		"惊悚",
+		"恐怖"
+    ],
+    "countries": [
+        "美国"
+    ],
+    "summary": "本片根据托尼·摩尔（Tony Moore）的同名漫画改编，是是电视史上第一部正宗的僵尸电视剧。镇治安官瑞克·格里姆斯在一次行动中遭受枪击，当他从昏迷中醒来时，发现小镇上阴气沉沉，死尸遍地。更为恐怖的是，有的死尸游走于街头巷尾，嗜血如命，早已化作恐怖的丧尸。从一对幸存的父子口中得知，大批的幸存者早已疏散到亚特兰大市的避难所。为了找到失踪的妻儿，瑞克只身上路。然而亚特兰大早已沦陷成为死城，丧尸在此占有绝对的统治地位。被丧尸围攻的瑞克得到数名幸存者的救助，经过一番奋力厮杀，他们最终返回到野外的营地。 《行尸走肉》讲述了警察瑞克在一次执法行动中因中弹负伤而不省人事，当他从昏迷中苏醒后却惊讶地发现，这个世界已然天翻地覆。周遭一派死境，丧尸横行，没有活人踪影。死里逃生的瑞克赶到家中，却不见妻儿的踪影…… 尽管僵尸题材有些老套，但这部漫画却着重刻画了人物角色的心理活动与变化，人性中的黑暗面在大灾难中暴露无疑。哀殍遍野，丧尸满目，人类在其中苟延残喘，带来毁灭与伤害的不仅仅是那些行尸走肉，还有活人间的互相争斗。故事将主人公一次次抛入绝境的同时，也给予观者一种如临末世的悲望。 数周昏睡之后，郡治安官Rick Grimes在空荡的医院中醒来，赫然发现自己只身一人。迷惑？不安？悲凉孤寂？命运为他准备的惊喜远没有结束——因为，他所熟知的那个世界已经荡然无存！ Robert Kirkman畅销漫画改编；《肖申克的救赎》导演、三度奥斯卡提名获得者Frank Darabont担任编剧、执行制片并执导首集；《终结者》、《异型II》、《绿巨人》制片人Gale Anne Hurd出任执行制片；还有众多美剧常客加盟演出。本剧将展示末日下的世界，讲述生存的传奇...要知道，能配得上”行尸走肉”这个称呼的，可不仅仅是爱。",
+    "images": {
+		small: "http://img3.douban.com/spic/s11356673.jpg",
+		large: "http://img3.douban.com/lpic/s11356673.jpg",
+		medium: "http://img3.douban.com/mpic/s11356673.jpg"
+	},
+    "douban": {
+        "id": "10545971",
+        "rating": 7,
+        "ratings_count": 108587,
+        "reviews_count": 0,
+        "wish_count": 0,
+        "collect_count": 0,
+        "do_count": 0,
+        "comments_count": 0,
+        "url": "http://movie.douban.com/subject/10545971/"
+    },
+    "resources": {
+        "online": {
+            "pptv": {
+                "id": "123",
+                "title": "泰迪熊",
+                "url": "http://movie.pptv.com/123",
+                "watch_times": 0,
+                "last_updated": "2012-12-29"
+            }
+        },
+        "offline": {
+        }
+    }
+    "watched": {
+        "last_week": 0,
+        "last_month": 0,
+        "history": 0,
+        "detail": [
+            {
+                "date": "2012-12-29",
+                "total": 0
+            }
+        ]
+    }
+}

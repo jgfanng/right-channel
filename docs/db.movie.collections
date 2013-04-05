@@ -1,5 +1,5 @@
 =========Indexes============================================================
-db.movies.collections.ensureIndex({"id": 1}, {unique: true})
+db.movie.collections.ensureIndex({"id": 1}, {unique: true})
 
 =========Schema=============================================================
 {

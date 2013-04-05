@@ -1,0 +1,8 @@
+# 每分钟运行一次
+# 先执行cd命令将工作目录切换到源文件所在目录
+# 将正常和错误的结果都输出到指定文件
+* * * * * cd /path/to/source/folder && /usr/bin/python /path/to/source/folder/test.py >> /path/to/source/folder/logs/cron.log 2>&1
+
+# 每天凌晨0点运行
+# 忽略正常和错误的结果
+0 0 * * * cd /path/to/source/folder && /usr/bin/python /path/to/source/folder/test.py > /dev/null 2>&1

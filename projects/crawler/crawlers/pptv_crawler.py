@@ -36,11 +36,11 @@ class MovieCrawler(threading.Thread):
         logger = logging.getLogger('PPTVCrawler.MovieCrawler')
         logger.info('==========MovieCrawler Started==========')
 
-        page_index = 1
+        page_index = 0
         while True:
             try:
-                page = settings['pptv_crawler']['movie_crawler']['page'] % page_index
                 page_index += 1
+                page = settings['pptv_crawler']['movie_crawler']['page'] % page_index
                 response = request_pptv_page(page.encode('utf-8'))
                 response_text = response.read()
                 logger.debug('Crawled <%s>' % page)

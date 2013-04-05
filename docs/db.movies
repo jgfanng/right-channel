@@ -42,8 +42,13 @@ db.movies.ensureIndex({"aka": 1})
     "douban": {
         "id": "4807924",
         "rating": 7,
-        "raters": 108587,
-        "link": "http://movie.douban.com/subject/4807924/"
+        "ratings_count": 108587,
+        "reviews_count": 0,
+        "wish_count": 0,
+        "collect_count": 0,
+        "do_count": 0,
+        "comments_count": 0,
+        "url": "http://movie.douban.com/subject/4807924/"
     },
     "resources": {
         "online": {

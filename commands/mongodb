@@ -1,0 +1,2 @@
+# 备份collection
+db.src.find().forEach( function(c){db.dest.insert(c)} )

@@ -5,13 +5,11 @@
         "db": "right-channel"
     },
     "douban_crawler": {
-        "seeds_crawler": {
+        "initial_crawler": {
             "seeds": [
                 "http://movie.douban.com/tag/"
-            ]
-        },
-        "sitemap_crawler": {
-            "xml_names": [
+            ],
+            "sitemaps": [
                 "sitemap_updated%s.xml",
                 "sitemap%s.xml"
             ]
