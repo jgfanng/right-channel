@@ -5,6 +5,7 @@ Created on Nov 25, 2012
 
 @author: Fang Jiaguo
 '''
+from crawlers.base_crawler import BaseCrawler
 from lxml.html import fromstring
 from pymongo.errors import PyMongoError
 from settings import settings, mongodb
@@ -19,7 +20,7 @@ pptv_logger = get_logger('PPTVCrawler', 'pptv_crawler.log')
 movie_regex = re.compile(settings['pptv_crawler']['movie_regex'])
 request_pptv_page = LimitedCaller(request.get, settings['pptv_crawler']['reqs_per_min'])
 
-class PPTVCrawler(object):
+class PPTVCrawler(BaseCrawler):
     '''
     Crawler for pptv movie.
     '''
