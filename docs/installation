@@ -5,7 +5,7 @@ bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.7.0
 # 2. 安装mongodb river
 bin/plugin -url https://github.com/downloads/richardwilly98/elasticsearch-river-mongodb/elasticsearch-river-mongodb-1.6.4.zip -install river-mongodb
 # 3. 配置mongodb replica sets http://docs.mongodb.org/manual/tutorial/deploy-replica-set/
-# 4. 建立river
+# 4. 创建river
 curl -XPUT 'http://localhost:9200/_river/mongodb/_meta' -d '{ 
     "type": "mongodb",
     "mongodb": {

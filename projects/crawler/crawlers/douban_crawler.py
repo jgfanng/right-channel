@@ -44,7 +44,7 @@ class DoubanCrawler():
     def start(self):
         threads = [
             InitialCrawler(),
-            LowPriMovieFetcher(),
+            LowPriorityMovieFetcher(),
 #            InTheatersCrawler(),
 #            InTheatersMovieFetcher(),
 #            ComingSoonCrawler(),
@@ -161,8 +161,8 @@ class InitialCrawler(threading.Thread):
 
             InitialCrawler.logger.info('==========InitialCrawler Finish==========')
 
-class LowPriMovieFetcher(threading.Thread):
-    logger = logging.getLogger('DoubanCrawler.CommonMovieFetcher')
+class LowPriorityMovieFetcher(threading.Thread):
+    logger = logging.getLogger('DoubanCrawler.LowPriorityMovieFetcher')
 
     def run(self):
         while True:  # infinite loop
@@ -172,19 +172,19 @@ class LowPriMovieFetcher(threading.Thread):
                 subtype = movie_info.pop('subtype')
                 if subtype == 'movie':
                     mongodb['movies'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-                    LowPriMovieFetcher.logger.info('Crawled movie <%s>' % movie_info.get('title'))
+                    LowPriorityMovieFetcher.logger.info('Crawled movie <%s>' % movie_info.get('title'))
                 else:
                     mongodb['tv'].update({'douban.id': movie_id}, {'$set': movie_info}, upsert=True)
-                    LowPriMovieFetcher.logger.info('Crawled tv <%s>' % movie_info.get('title'))
+                    LowPriorityMovieFetcher.logger.info('Crawled tv <%s>' % movie_info.get('title'))
 
             except PyMongoError, e:
-                LowPriMovieFetcher.logger.error('Mongodb error <%s>' % e)
+                LowPriorityMovieFetcher.logger.error('Mongodb error <%s>' % e)
             except HTTPError, e:
-                LowPriMovieFetcher.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (construct_movie_api_url(movie_id), e.code, e.msg))
+                LowPriorityMovieFetcher.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (construct_movie_api_url(movie_id), e.code, e.msg))
             except URLError, e:
-                LowPriMovieFetcher.logger.error('Failed to reach server <%s> <%s>' % (construct_movie_api_url(movie_id), e.reason))
+                LowPriorityMovieFetcher.logger.error('Failed to reach server <%s> <%s>' % (construct_movie_api_url(movie_id), e.reason))
             except Exception, e:
-                LowPriMovieFetcher.logger.error('%s <%s>' % (e, construct_movie_api_url(movie_id)))
+                LowPriorityMovieFetcher.logger.error('%s <%s>' % (e, construct_movie_api_url(movie_id)))
 
 # class InTheatersCrawler(threading.Thread):
 #    def run(self):

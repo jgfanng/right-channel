@@ -69,6 +69,20 @@ curl -XPOST http://localhost:9200/rightchannel/movie/_mapping -d'
     }
 }'
 
+# 创建river
+curl -XPUT 'http://localhost:9200/_river/mongodb/_meta' -d'
+{
+    "type": "mongodb",
+    "mongodb": {
+        "db": "right-channel",
+        "collection": "movies"
+    },
+    "index": {
+        "name": "rightchannel",
+        "type": "movie"
+    }
+}'
+
 # index sample documents
 curl -XPOST http://localhost:9200/rightchannel/movie/1 -d'
 {
