@@ -4,6 +4,11 @@
         "port": 27017,
         "db": "right-channel"
     },
+    "elasticsearch": {
+        "host": "127.0.0.1",
+        "port": 27017,
+        "index": "rightchannel"
+    },
     "douban_crawler": {
         "initial_crawler": {
             "seeds": [
