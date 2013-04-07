@@ -13,7 +13,7 @@ from sets import Set
 from settings import settings, mongodb
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from utilities import LimitedCaller, request, get_logger
+from utilities import LimitedCaller, get_logger, send_request
 import datetime
 import gzip
 import json
@@ -25,8 +25,8 @@ import threading
 douban_logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 tag_regex = re.compile(settings['douban_crawler']['tag_regex'])
 movie_regex = re.compile(settings['douban_crawler']['movie_regex'])
-request_douban_api = LimitedCaller(request.get, settings['douban_crawler']['reqs_per_min'])
-request_douban_page = LimitedCaller(request.get, settings['douban_crawler']['reqs_per_min'])
+request_douban_page = LimitedCaller(send_request, settings['douban_crawler']['page_reqs_per_min'])
+request_douban_api = LimitedCaller(send_request, settings['douban_crawler']['api_reqs_per_min'])
 tag_url_pool = Queue()
 movie_url_pool = Queue()
 crawled_url_pool = Set()
@@ -37,10 +37,6 @@ movie_id_highp_pool = Queue()  # high priority
 # top250_movie_ids = Queue()
 
 class DoubanCrawler():
-    '''
-    Crawler for douban move site (http://movie.douban.com/).
-    '''
-
     def start(self):
         threads = [
             InitialCrawler(),

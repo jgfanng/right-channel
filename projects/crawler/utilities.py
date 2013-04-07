@@ -13,37 +13,6 @@ import threading
 import time
 import urllib2
 
-class Request(object):
-
-    RETRY_INTERVAL = 5
-    RETRY_COUNT = 3
-    TIMEOUT = 30
-
-    def get(self, url, query_strings=None, retry_interval=RETRY_INTERVAL, retry_count=RETRY_COUNT):
-        '''Send a get request'''
-
-        if query_strings:
-            # urlparse returns tuple, then convert tuple to list
-            parse_result = list(urlparse(url))
-            # parse the 4th element (query string)
-            qs = parse_qs(parse_result[4])
-            qs.update(query_strings)
-            new_qs = urlencode(qs, doseq=True)
-            parse_result[4] = new_qs
-            url = urlunparse(parse_result)
-
-        while True:
-            try:
-                return urllib2.urlopen(url, timeout=request.TIMEOUT)
-            except:
-                retry_count -= 1
-                if retry_count < 0:
-                    raise
-                elif retry_interval > 0:
-                    time.sleep(retry_interval)
-
-request = Request()
-
 class LimitedCaller(object):
     '''
     Limit function call under a threshold in a given period.
@@ -136,6 +105,21 @@ class LimitedCaller(object):
 #            if not min_date or date < min_date:
 #                min_date = date
 #    return min_date
+
+def send_request(url, query_strings=None):
+    '''Send a get request'''
+
+    if query_strings:
+        # urlparse returns tuple, then convert tuple to list
+        parse_result = list(urlparse(url))
+        # parse the 4th element (query string)
+        qs = parse_qs(parse_result[4])
+        qs.update(query_strings)
+        new_qs = urlencode(qs, doseq=True)
+        parse_result[4] = new_qs
+        url = urlunparse(parse_result)
+
+    return urllib2.urlopen(url)
 
 def get_logger(name, log_file):
     # Severity level: DEBUG/INFO/WARN/ERROR/CRITICAL
