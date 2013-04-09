@@ -13,7 +13,7 @@ from sets import Set
 from settings import settings, mongodb
 from urllib2 import HTTPError, URLError
 from urlparse import urldefrag
-from utilities import LimitedCaller, get_logger, send_request
+from utilities import LimitedCaller, get_logger, send_request, get_child_logger
 import datetime
 import gzip
 import json
@@ -21,6 +21,7 @@ import logging
 import os
 import re
 import threading
+import time
 
 douban_logger = get_logger('DoubanCrawler', 'douban_crawler.log')
 tag_regex = re.compile(settings['douban_crawler']['tag_regex'])
@@ -41,6 +42,7 @@ class DoubanCrawler():
         threads = [
             InitialCrawler(),
             LowPriorityMovieFetcher(),
+            StatusReporter()
 #            InTheatersCrawler(),
 #            InTheatersMovieFetcher(),
 #            ComingSoonCrawler(),
@@ -54,7 +56,7 @@ class DoubanCrawler():
 class InitialCrawler(threading.Thread):
     logger = logging.getLogger('DoubanCrawler.InitialCrawler')
 
-    def prepare_seeds(self):
+    def init(self):
         crawled_url_pool.clear()
 
         InitialCrawler.logger.info('prepare seeds from config')
@@ -118,7 +120,7 @@ class InitialCrawler(threading.Thread):
         while True:  # infinite loop
             InitialCrawler.logger.info('==========InitialCrawler Start==========')
 
-            self.prepare_seeds()
+            self.init()
             while True:
                 try:
                     if not tag_url_pool.empty():
@@ -181,6 +183,16 @@ class LowPriorityMovieFetcher(threading.Thread):
                 LowPriorityMovieFetcher.logger.error('Failed to reach server <%s> <%s>' % (construct_movie_api_url(movie_id), e.reason))
             except Exception, e:
                 LowPriorityMovieFetcher.logger.error('%s <%s>' % (e, construct_movie_api_url(movie_id)))
+
+class StatusReporter(threading.Thread):
+    def __init__(self):
+        self.logger = get_child_logger('DoubanCrawler', 'StatusReporter')
+        threading.Thread.__init__(self)
+
+    def run(self):
+        while True:
+            self.logger.debug('Totally Crawled=%s, Tag URL=%s, Movie URL=%s, Left Movie IDs=%s' % (len(crawled_url_pool), tag_url_pool.qsize(), movie_url_pool.qsize(), low_movie_id_pool.qsize()))
+            time.sleep(5)
 
 # class InTheatersCrawler(threading.Thread):
 #    def run(self):
