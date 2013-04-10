@@ -67,11 +67,11 @@ class MovieCrawler(threading.Thread):
                             directors_elements = html_element.xpath(u'//*[normalize-space(text())="导演："]')
                             if directors_elements:
                                 directors_element = directors_elements[0]
-                                directors = [director.strip() for director in (directors_element.xpath('./a/text()') or directors_element.xpath('../a/text()')) if director.strip() != '展开']  # special case
+                                directors = [director.strip() for director in (directors_element.xpath('./a/text()') or directors_element.xpath('../a/text()'))]  # special case
                             casts_elements = html_element.xpath(u'//*[normalize-space(text())="主演："]')
                             if casts_elements:
                                 casts_element = casts_elements[0]
-                                casts = [cast.strip() for cast in (casts_element.xpath('./a/text()') or casts_element.xpath('../a/text()')) if cast.strip() != '展开']  # special case
+                                casts = [cast.strip() for cast in (casts_element.xpath('./a[@href and @title]/text()') or casts_element.xpath('../a/text()'))]  # special case
                         except HTTPError, e:
                             self.logger.error('Server cannot fulfill the request <%s> <%s> <%s>' % (url, e.code, e.msg))
                         except URLError, e:
