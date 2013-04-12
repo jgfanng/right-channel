@@ -144,12 +144,12 @@ def get_logger(name, log_file):
 def get_child_logger(parent, child):
     return logging.getLogger('.'.join([parent, child]))
 
-def calc_similarity(s_base, s_another):
-    if s_base is None or s_another is None:
+def calc_similarity(s_standard, s_candidate):
+    if s_standard is None or s_candidate is None:
         return 0
 
-    m = SequenceMatcher(None, s_base, s_another)
-    if len(s_base) >= len(s_another):
+    m = SequenceMatcher(None, s_standard, s_candidate)
+    if len(s_standard) >= len(s_candidate):
         return m.ratio()
 
     # each block represents a sequence of matching characters in a string
@@ -162,10 +162,10 @@ def calc_similarity(s_base, s_another):
     scores = []
     for block in blocks:
         start = block[1] - block[0] if (block[1] - block[0]) > 0 else 0
-        end = start + len(s_base)
-        s_sub = s_another[start:end]
+        end = start + len(s_standard)
+        s_sub = s_candidate[start:end]
 
-        m = SequenceMatcher(None, s_base, s_sub)
+        m = SequenceMatcher(None, s_standard, s_sub)
         scores.append(m.ratio())
 
     return max(scores)

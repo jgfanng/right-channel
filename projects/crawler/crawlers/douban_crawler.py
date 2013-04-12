@@ -18,6 +18,7 @@ import datetime
 import gzip
 import json
 import logging
+import md5
 import os
 import re
 import threading
@@ -62,7 +63,7 @@ class InitialCrawler(threading.Thread):
         InitialCrawler.logger.info('prepare seeds from config')
         for seed in settings['douban_crawler']['initial_crawler']['seeds']:
             tag_url_pool.put(seed)
-            crawled_url_pool.add(seed)
+            crawled_url_pool.add(md5.new(seed).digest())
 
         InitialCrawler.logger.info('prepare seeds from sitemap')
         for sitemap in settings['douban_crawler']['initial_crawler']['sitemaps']:
@@ -95,7 +96,7 @@ class InitialCrawler(threading.Thread):
                         match = movie_regex.match(element.text)
                         if match:
                             movie_url_pool.put(element.text)
-                            crawled_url_pool.add(element.text)
+                            crawled_url_pool.add(md5.new(element.text).digest())
                             low_movie_id_pool.put(match.groupdict().get('id'))
 
                         # It's safe to call clear() here because no descendants will be accessed
@@ -139,15 +140,16 @@ class InitialCrawler(threading.Thread):
                     link_elements = html_element.xpath('//a[@href]')
                     for link_element in link_elements:
                         url_in_page = urldefrag(link_element.attrib['href'])[0]  # remove fragment identifier
-                        if url_in_page not in crawled_url_pool:
+                        url_md5 = md5.new(url_in_page).digest()
+                        if url_md5 not in crawled_url_pool:
                             if tag_regex.match(url_in_page):
                                 tag_url_pool.put(url_in_page)
-                                crawled_url_pool.add(url_in_page)
+                                crawled_url_pool.add(url_md5)
                             else:
                                 match = movie_regex.match(url_in_page)
                                 if match:
                                     movie_url_pool.put(url_in_page)
-                                    crawled_url_pool.add(url_in_page)
+                                    crawled_url_pool.add(url_md5)
                                     low_movie_id_pool.put(match.groupdict().get('id'))
 
                 except HTTPError, e:

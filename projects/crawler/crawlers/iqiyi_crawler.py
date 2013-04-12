@@ -5,6 +5,7 @@ Created on Dec 7, 2012
 
 @author: Fang Jiaguo
 '''
+from crawlers.base_crawler import BaseCrawler
 from lxml.html import fromstring
 from sets import Set
 from settings import settings
@@ -12,7 +13,6 @@ from urllib2 import HTTPError, URLError
 from urlparse import urlparse, urlunparse
 from utilities import LimitedCaller, get_logger, send_request, get_child_logger
 import re
-import threading
 
 movie_regex = re.compile(settings['iqiyi_crawler']['movie_regex'])
 vip_movie_regex = re.compile(settings['iqiyi_crawler']['vip_movie_regex'])
@@ -29,10 +29,10 @@ class IQIYICrawler(object):
         for thread in threads:
             thread.start()
 
-class MovieCrawler(threading.Thread):
+class MovieCrawler(BaseCrawler):
     def __init__(self):
         self.logger = get_child_logger('IQIYICrawler', 'MovieCrawler')
-        threading.Thread.__init__(self)
+        super(MovieCrawler, self).__init__()
 
     def run(self):
         self.logger.info('==========MovieCrawler Started==========')
@@ -80,6 +80,8 @@ class MovieCrawler(threading.Thread):
                             self.logger.error('%s <%s>' % (e, url))
 
                         self.logger.info('Crawled movie <%s, %s, %s>' % (title, ' '.join(directors) if directors else None, ' '.join(casts) if casts else None))
+                        t, s = self.find_most_similar_movie(title, None, None, directors, casts)
+                        self.logger.info('Find the most similar movie <%s, %s>' % (t, s))
 
                 if not find_movie:
                     break

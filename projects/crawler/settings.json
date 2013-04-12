@@ -47,7 +47,7 @@
             "page": "http://list.iqiyi.com/www/1/------------2-1-%s-1---.html"
         },
         "tv_crawler": {},
-        "reqs_per_min": 30,
+        "reqs_per_min": 10,
         "movie_regex": "^http://www\\.iqiyi\\.com/dianying/[0-9]{8}/[0-9a-zA-Z]+\\.html$",
         "vip_movie_regex": "^http://vip\\.iqiyi\\.com/[0-9]{8}/[0-9a-zA-Z]+\\.html$"
     }
