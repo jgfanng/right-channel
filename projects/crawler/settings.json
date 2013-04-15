@@ -40,15 +40,14 @@
         },
         "tv_crawler": {},
         "reqs_per_min": 30,
-        "movie_regex": "^http://v\\.pptv\\.com/show/(?P<id>[0-9a-zA-Z]+)\\.html$"
+        "movie_regex": "^http://v\\.pptv\\.com/show/[0-9a-zA-Z]+\\.html$"
     },
     "iqiyi_crawler": {
         "movie_crawler": {
             "page": "http://list.iqiyi.com/www/1/------------2-1-%s-1---.html"
         },
         "tv_crawler": {},
-        "reqs_per_min": 10,
-        "movie_regex": "^http://www\\.iqiyi\\.com/dianying/[0-9]{8}/[0-9a-zA-Z]+\\.html$",
-        "vip_movie_regex": "^http://vip\\.iqiyi\\.com/[0-9]{8}/[0-9a-zA-Z]+\\.html$"
+        "reqs_per_min": 30,
+        "movie_regex": "^http://(?:www\\.iqiyi\\.com/dianying|vip\\.iqiyi\\.com)/[0-9]+/[0-9a-z]+\\.html(?:\\?fc=[0-9a-z]+)?$"
     }
 }
