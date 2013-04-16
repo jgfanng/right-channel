@@ -107,7 +107,7 @@ $(function() {
 
 			{
 				if ('year' in movie)
-					var title_p = '<p><a href="/movie/{0}" target="_blank" class="title">{1}</a> <span class="year">({2})</span></p>'
+					var title_p = '<p><a href="/movie/{0}" target="_blank" class="title">{1}</a> <span class="muted">({2})</span></p>'
 							.format(movie._id, movie.title, movie.year);
 				else
 					var title_p = '<p><a href="/movie/{0}" target="_blank" class="title">{1}</a></p>'

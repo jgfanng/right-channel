@@ -141,9 +141,6 @@ def get_logger(name, log_file):
 
     return logger
 
-def get_child_logger(parent, child):
-    return logging.getLogger('.'.join([parent, child]))
-
 def calc_similarity(s_standard, s_candidate):
     if s_standard is None or s_candidate is None:
         return 0

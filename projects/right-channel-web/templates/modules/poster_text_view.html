@@ -70,10 +70,10 @@
           </div>
           <div class="toolbar">
             <ul>
-              {% if movie.get('online')%}
+              {% if movie.get('resources') and movie.get('resources').get('online') %}
                 <li><a href="/movie/{{ str(movie.get('_id')) }}" target="_blank" title="立即观看"><i class="icon-play"></i></a></li>
               {% end %}
-              {% if movie.get('download')%}
+              {% if movie.get('resources') and movie.get('resources').get('offline') %}
                 <li><a title="立即下载"><i class="icon-download-alt"></i></a></li>
               {% end %}
               <li><a title="想看"><i class="icon-heart"></i></a></li>

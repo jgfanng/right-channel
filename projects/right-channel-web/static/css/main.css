@@ -49,12 +49,16 @@ legend {
     border-bottom: 1px solid #e5e5e5;
 }
 
+.muted {
+  color: #999;
+}
+
 /***** generic styles *****/
 
 body {
     padding-top: 43px;
     color: #555;
-    background-color: #eee;
+    background-color: #dce0d3;
 }
 
 a:link,
@@ -74,9 +78,9 @@ strong {
     color: #222
 }
 
-.row-fluid {
+/* .row-fluid {
     margin: 10px 0
-}
+} */
 
 /***** table *****/
 
@@ -205,10 +209,7 @@ strong {
     background-color: white;
     overflow: auto;
     position: relative;
-    border: 1px solid #ccc;
-    -webkit-border-radius: 4px;
-       -moz-border-radius: 4px;
-            border-radius: 4px;
+    border: 1px solid #b2b2b2;
 }
 
 .gallery-element .desc {
@@ -315,11 +316,12 @@ strong {
 
 /***** movie profile *****/
 
-.profile h3 {
-    margin: 0 0 10px 0;
+.profile h2 {
+    margin: 0 0 5px 0;
 }
 
 .profile p {
+    font-size: 13px;
     margin: 0 0 5px 0;
 }
 
@@ -356,23 +358,26 @@ form .help-error {
 
 /***** misc ******/
 
-.content-block {
-    padding: 0 10px;
-    margin: 10px 0;
+.container-bordered {
     background-color: white;
-    border: 1px solid #ccc;
-    -webkit-border-radius: 4px;
-       -moz-border-radius: 4px;
-            border-radius: 4px;
+    border: 1px solid #b2b2b2;
 }
 
-.year {
+/* .year {
     color: #888
-}
+} */
 
 .rating {
-    color: #FF6600;
+    color: #ff6600;
     font-weight: bold;
+}
+
+.default-margin {
+    margin: 10px 0;
+}
+
+.default-padding {
+    padding: 0 10px;
 }
 
 /* .p-indent {

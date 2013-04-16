@@ -62,9 +62,9 @@ class MovieFilterHandler(BaseHandler):
             query['year'] = year
 
         if resource == '只显示在线观看':
-            query['online'] = {'$exists': True}
+            query['resources.online'] = {'$exists': True}
         elif resource == '只显示下载资源':
-            query['download'] = {'$exists': True}
+            query['resources.offline'] = {'$exists': True}
 
         sort_by = None
         if sort == '热度':
