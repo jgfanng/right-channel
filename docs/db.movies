@@ -53,9 +53,9 @@ db.movies.ensureIndex({"aka": 1})
     "resources": {
         "online": {
             "pptv": {
-                "id": "123",
                 "title": "泰迪熊",
                 "url": "http://movie.pptv.com/123",
+                "similarity": 1.0,
                 "watch_times": 0,
                 "last_updated": "2012-12-29"
             }

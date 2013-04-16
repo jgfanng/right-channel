@@ -74,42 +74,21 @@
               </p>
             {% end %}
           </div>
-          <div class="row-fluid">
-            <div class="btn-group">
-              <button class="btn btn-primary">立即观看</button>
-              <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
-            </div>
-<div class="btn-group">
-            <a class="btn btn-primary" href="#">Primary</a>
-            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-          </div>
-          <div class="row-fluid">
-            <legend>在线观看</legend>
-            {% if movie.get('online') and movie.get('online').keys() %}
-              <div id="online" class="row-fluid">
-                {% from settings import settings %}
-                {% for provider in movie.get('online').keys() %}
-                  <a data-provider="{{ provider }}" data-id="{{ movie.get('online').get(provider).get('id') }}">{{ settings['providers'][provider]}}</a>
-                {% end %}
+          
+          <div class="row-fluid default-margin">
+            {% if movie.get('resources') and movie.get('resources').get('online') and movie.get('resources').get('online').keys() %}
+              <div class="btn-group">
+                <button class="btn btn-primary"><i class="icon-play icon-white"></i> 立即观看</button>
+                <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  {% from settings import settings %}
+                  {% for provider in movie.get('resources').get('online').keys() %}
+                    <li><a href="{{ movie.get('resources').get('online').get(provider).get('url') }}" target="_blank">{{ settings['providers'][provider]['name']}}</a></li>
+                  {% end %}
+                </ul>
               </div>
-              <div id="flashContent"></div>
             {% else %}
-              <div class="alert alert-info">
+              <div class="alert">
                 尊敬的用户，本片暂无在线资源！添加本片至想看列表，如有在线资源，系统会第一时间提醒您！
               </div>
             {% end %}

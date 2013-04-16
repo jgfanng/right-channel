@@ -33,16 +33,20 @@
     padding: 0px 6px
 }
 
+.dropdown-menu > li > a {
+  color: #333;
+}
+
 .badge {
     padding: 3px 3px;
     font-weight: bold;
 }
 
-[class^="icon-"],
+/* [class^="icon-"],
 [class*=" icon-"] {
     margin: 0;
     vertical-align: text-top;
-}
+} */
 
 legend {
     margin-bottom: 10px;
