@@ -35,22 +35,22 @@ class IQIYIMovieCrawler(threading.Thread):
                 self.logger.debug('Crawled %s', page)
                 html_element = html.fromstring(response_text)
                 li_elements = html_element.xpath('//ul/li/a[re:match(@href, "%s") and @class="title"]/..' % settings['iqiyi_crawler']['movie_regex'],
-                                                   namespaces={'re': 'http://exslt.org/regular-expressions'})
+                                                 namespaces={'re': 'http://exslt.org/regular-expressions'})
 
                 find_movie = False
                 for li_element in li_elements:
-                    a_elements = li_element.xpath('./a[re:match(@href, "%s") and @class="title"]' % settings['iqiyi_crawler']['movie_regex'],
+                    title_elements = li_element.xpath('./a[re:match(@href, "%s") and @class="title"]' % settings['iqiyi_crawler']['movie_regex'],
                                                   namespaces={'re': 'http://exslt.org/regular-expressions'})
-                    if a_elements:
+                    if title_elements:
                         find_movie = True
-                        url = a_elements[0].attrib['href']
-                        title = a_elements[0].text
+                        url = title_elements[0].attrib['href']
+                        title = title_elements[0].text
                         directors = None
                         casts = None
-                        directors_elements = li_element.xpath(u'.//p/span[normalize-space(text())="导演："]/..')
+                        directors_elements = li_element.xpath(u'.//*[normalize-space(text())="导演："]/..')
                         if directors_elements:
                             directors = directors_elements[0].xpath('./a/text()')
-                        casts_elements = li_element.xpath(u'.//p/span[normalize-space(text())="主演："]/..')
+                        casts_elements = li_element.xpath(u'.//*[normalize-space(text())="主演："]/..')
                         if casts_elements:
                             casts = casts_elements[0].xpath('./a/text()')
 
@@ -91,14 +91,14 @@ class PPTVMovieCrawler(threading.Thread):
 
                 find_movie = False
                 for li_element in li_elements:
-                    a_elements = li_element.xpath('./p/a[re:match(@href, "%s") and @title]' % settings['pptv_crawler']['movie_regex'],
+                    title_elements = li_element.xpath('./p/a[re:match(@href, "%s") and @title]' % settings['pptv_crawler']['movie_regex'],
                                                   namespaces={'re': 'http://exslt.org/regular-expressions'})
-                    if a_elements:
+                    if title_elements:
                         find_movie = True
-                        url = a_elements[0].attrib['href']
-                        title = a_elements[0].attrib['title']
+                        url = title_elements[0].attrib['href']
+                        title = title_elements[0].attrib['title']
                         casts = None
-                        casts_elements = li_element.xpath(u'./p[normalize-space(text())="演员:"]')
+                        casts_elements = li_element.xpath(u'.//*[normalize-space(text())="演员:"]')
                         if casts_elements:
                             casts = casts_elements[0].xpath('./a/@title')
 
@@ -199,8 +199,8 @@ class MovieItem(object):
 if __name__ == '__main__':
     threads = [
         IQIYIMovieCrawler(),
-#        PPTVMovieCrawler(),
-#        OnlineMovieMatcher()
+        PPTVMovieCrawler(),
+        OnlineMovieMatcher()
     ]
     for thread in threads:
         thread.start()
