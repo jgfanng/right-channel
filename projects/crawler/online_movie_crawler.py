@@ -21,7 +21,7 @@ class IQIYIMovieCrawler(threading.Thread):
     def __init__(self):
         self.source = 'iqiyi'
         self.logger = logger.getChild('IQIYIMovieCrawler')
-        self.request_iqiyi_page = LimitedCaller(send_request, settings['iqiyi_crawler']['reqs_per_min'])
+        self.request_iqiyi_page = LimitedCaller(send_request, settings['online_movie_crawler']['iqiyi_movie_crawler']['reqs_per_min'])
         threading.Thread.__init__(self)
 
     def run(self):
@@ -29,17 +29,17 @@ class IQIYIMovieCrawler(threading.Thread):
         while True:
             try:
                 page_index += 1
-                page = settings['iqiyi_crawler']['movie_crawler']['page'] % page_index
+                page = settings['online_movie_crawler']['iqiyi_movie_crawler']['page'] % page_index
                 response = self.request_iqiyi_page(page)
                 response_text = response.read()
                 self.logger.debug('Crawled %s', page)
                 html_element = html.fromstring(response_text)
-                li_elements = html_element.xpath('//ul/li/a[re:match(@href, "%s") and @class="title"]/..' % settings['iqiyi_crawler']['movie_regex'],
+                li_elements = html_element.xpath('//ul/li/a[re:match(@href, "%s") and @class="title"]/..' % settings['online_movie_crawler']['iqiyi_movie_crawler']['url_regex'],
                                                  namespaces={'re': 'http://exslt.org/regular-expressions'})
 
                 find_movie = False
                 for li_element in li_elements:
-                    title_elements = li_element.xpath('./a[re:match(@href, "%s") and @class="title"]' % settings['iqiyi_crawler']['movie_regex'],
+                    title_elements = li_element.xpath('./a[re:match(@href, "%s") and @class="title"]' % settings['online_movie_crawler']['iqiyi_movie_crawler']['url_regex'],
                                                   namespaces={'re': 'http://exslt.org/regular-expressions'})
                     if title_elements:
                         find_movie = True
@@ -73,7 +73,7 @@ class PPTVMovieCrawler(threading.Thread):
     def __init__(self):
         self.source = 'pptv'
         self.logger = logger.getChild('PPTVMovieCrawler')
-        self.request_pptv_page = LimitedCaller(send_request, settings['pptv_crawler']['reqs_per_min'])
+        self.request_pptv_page = LimitedCaller(send_request, settings['online_movie_crawler']['pptv_movie_crawler']['reqs_per_min'])
         threading.Thread.__init__(self)
 
     def run(self):
@@ -81,17 +81,17 @@ class PPTVMovieCrawler(threading.Thread):
         while True:
             try:
                 page_index += 1
-                page = settings['pptv_crawler']['movie_crawler']['page'] % page_index
+                page = settings['online_movie_crawler']['pptv_movie_crawler']['page'] % page_index
                 response = self.request_pptv_page(page)
                 response_text = response.read()
                 self.logger.debug('Crawled %s', page)
                 html_element = html.fromstring(response_text)
-                li_elements = html_element.xpath('//ul/li/p/a[re:match(@href, "%s") and @title]/../..' % settings['pptv_crawler']['movie_regex'],
+                li_elements = html_element.xpath('//ul/li/p/a[re:match(@href, "%s") and @title]/../..' % settings['online_movie_crawler']['pptv_movie_crawler']['url_regex'],
                                                  namespaces={'re': 'http://exslt.org/regular-expressions'})
 
                 find_movie = False
                 for li_element in li_elements:
-                    title_elements = li_element.xpath('./p/a[re:match(@href, "%s") and @title]' % settings['pptv_crawler']['movie_regex'],
+                    title_elements = li_element.xpath('./p/a[re:match(@href, "%s") and @title]' % settings['online_movie_crawler']['pptv_movie_crawler']['url_regex'],
                                                   namespaces={'re': 'http://exslt.org/regular-expressions'})
                     if title_elements:
                         find_movie = True
