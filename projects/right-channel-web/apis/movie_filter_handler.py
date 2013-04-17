@@ -87,7 +87,7 @@ class MovieFilterHandler(BaseHandler):
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
-        # set to_watch, watched and ignored status
+        # set to_watch, watched and not_interested status
         movies = response[0]
         user = self.params.get('user')
         if user and user.get('to_watch') and user.get('to_watch').get('movie'):
@@ -104,12 +104,12 @@ class MovieFilterHandler(BaseHandler):
                 else:
                     movie['watched'] = False
 
-        if user and user.get('ignored') and user.get('ignored').get('movie'):
+        if user and user.get('not_interested') and user.get('not_interested').get('movie'):
             for movie in movies:
-                if movie.get('_id') in user.get('ignored').get('movie'):
-                    movie['ignored'] = True
+                if movie.get('_id') in user.get('not_interested').get('movie'):
+                    movie['not_interested'] = True
                 else:
-                    movie['ignored'] = False
+                    movie['not_interested'] = False
 
         result = {
             'movies': response[0],

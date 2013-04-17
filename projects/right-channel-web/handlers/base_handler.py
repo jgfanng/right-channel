@@ -35,9 +35,8 @@ def user_profile(method):
             if error.get('error'):
                 raise tornado.web.HTTPError(500)
 
-            user = response[0]
-            if user:
-                self.params['user'] = user
+            if response[0]:
+                self.params['user'] = response[0]
 
         method(self, *args, **kwargs)
 

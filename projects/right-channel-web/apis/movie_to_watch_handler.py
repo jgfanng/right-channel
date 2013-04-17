@@ -18,17 +18,6 @@ class MovieToWatchHandler(tornado.web.RequestHandler):
             # 400 Bad Request if id not provided
             movie_id = self.get_argument('id')
 
-            # remove movie from watched list in accounts collection
-            try:
-                _, error = yield tornado.gen.Task(mongodb['accounts'].update,
-                                                         {'email': email},
-                                                         {'$pull': {'watched.movie': ObjectId(movie_id)}})
-            except:
-                raise tornado.web.HTTPError(500)
-
-            if error.get('error'):
-                raise tornado.web.HTTPError(500)
-
             # add movie to to_watch list in accounts collection
             try:
                 _, error = yield tornado.gen.Task(mongodb['accounts'].update,

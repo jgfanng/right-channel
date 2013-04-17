@@ -172,7 +172,7 @@ $(function() {
 
 /** *** movie category: ignored, to watch, watched **** */
 $(function() {
-	$('#content').on('click', '#toWatch', function(e) {
+	$('#content').on('click', function(e) {
 		var $btn = $(this);
 		if (!$btn.hasClass('disabled')) {
 			if (!$btn.hasClass('active')) {

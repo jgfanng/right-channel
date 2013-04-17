@@ -25,5 +25,30 @@ class MovieProfileHandler(BaseHandler):
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
-        self.params['movie'] = response[0]
+        # 404 not found if no movie found
+        movie = response[0]
+        if not movie:  # None or []
+            raise tornado.web.HTTPError(404)
+
+        # set to_watch, watched and not_interested status
+        user = self.params.get('user')
+        if user and user.get('to_watch') and user.get('to_watch').get('movie'):
+            if movie.get('_id') in user.get('to_watch').get('movie'):
+                movie['to_watch'] = True
+            else:
+                movie['to_watch'] = False
+
+        if user and user.get('watched') and user.get('watched').get('movie'):
+            if movie.get('_id') in user.get('watched').get('movie'):
+                movie['watched'] = True
+            else:
+                movie['watched'] = False
+
+        if user and user.get('not_interested') and user.get('not_interested').get('movie'):
+            if movie.get('_id') in user.get('not_interested').get('movie'):
+                movie['not_interested'] = True
+            else:
+                movie['not_interested'] = False
+
+        self.params['movie'] = movie
         self.render('movie/movie_profile_page.html')

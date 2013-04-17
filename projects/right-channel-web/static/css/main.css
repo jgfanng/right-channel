@@ -38,7 +38,7 @@
 }
 
 .badge {
-    padding: 3px 3px;
+    padding: 3px 6px;
     font-weight: bold;
 }
 
@@ -122,7 +122,7 @@ strong {
 }
 
 .filter ul>li {
-    float: left
+    float: left;
 }
 
 .filter ul>li>a {
@@ -138,7 +138,7 @@ strong {
 
 .filter ul>li.active>a {
     color: black;
-    background-color: #b7b7b7;
+    background-color: #aaa;
 }
 
 /* .nav-secondary {
@@ -229,8 +229,8 @@ strong {
 }
 
 .gallery-element .title,
-.gallery-element .rating {
-    font-size: 14px
+.gallery-element .douban-rating {
+    font-size: 14px;
 }
 
 .gallery-element .toolbar {
@@ -239,18 +239,21 @@ strong {
     position: absolute;
 }
 
-.toolbar .btn {
-    color: #222
-}
+/* toolbar */
 
-.toolbar .btn:hover,
+/* .toolbar .btn {
+    background-color: #bbb;
+    color: #222;
+} */
+
+/* .toolbar .btn:hover,
 .toolbar .btn:focus,
 .toolbar .btn:active,
 .toolbar .btn.active,
 .toolbar .btn.disabled,
 .toolbar .btn[disabled] {
-    background-color: #b7b7b7
-}
+    background-color: #aaa;
+} */
 
 /* .gallery-element .toolbar ul {
   list-style: none;
@@ -325,16 +328,33 @@ strong {
 }
 
 .profile p {
-    font-size: 13px;
+    font-size: 12px;
     margin: 0 0 5px 0;
 }
 
-.profile .rating {
-    font-size: 16px;
+.profile .douban-rating {
+    font-size: 15px;
 }
 
-.profile .toolbar {
+/* .profile .toolbar {
     margin-top: 10px;
+} */
+
+/* horizontal ul */
+
+.ul-horizontal {
+    list-style: none;
+    margin: 0;
+}
+
+.ul-horizontal > li {
+    float: left;
+    padding-right: 10px;
+}
+
+.ul-horizontal > li > a {
+    color: inherit;
+    display: block;
 }
 
 /***** form *****/
@@ -364,15 +384,15 @@ form .help-error {
 
 .container-bordered {
     background-color: white;
-    border: 1px solid #b2b2b2;
+    border: 1px solid #bbb;
 }
 
 /* .year {
     color: #888
 } */
 
-.rating {
-    color: #ff6600;
+.douban-rating {
+    color: #007711;
     font-weight: bold;
 }
 
@@ -389,8 +409,41 @@ form .help-error {
 } */
 
 .operation-alert {
-    margin: 10px 0
+    margin: 10px 0;
 }
+
+/* platform logos */
+
+.logo-platform {
+    background: url(../img/platform-logos.png) no-repeat;
+    display: inline-block;
+    vertical-align: -2px;
+}
+
+.logo-platform-douban {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -0px;
+}
+
+.logo-platform-imdb {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -16px;
+}
+
+.logo-platform-iqiyi {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -32px;
+}
+
+.logo-platform-pptv {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -48px;
+}
+
 
 /* th {
 background-color: #dce9f9;
@@ -407,7 +460,7 @@ border-top: none;
 text-shadow: 0 1px 0   rgba(255,255,255,.5);
 } */
 
-.logo-media {
+/* .logo-media {
     background-image: url(../img/platform-logo.png);
     background-repeat: no-repeat;
     height: 16px;
@@ -509,4 +562,4 @@ text-shadow: 0 1px 0   rgba(255,255,255,.5);
 
 .logo-ifeng {
     background-position: 1px -523px
-}
+} */

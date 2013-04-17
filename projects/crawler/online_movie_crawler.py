@@ -19,7 +19,7 @@ movie_pool = Queue()
 
 class IQIYIMovieCrawler(threading.Thread):
     def __init__(self):
-        self.source = 'iqiyi'
+        self.provider = 'iqiyi'
         self.logger = logger.getChild('IQIYIMovieCrawler')
         self.request_iqiyi_page = LimitedCaller(send_request, settings['online_movie_crawler']['iqiyi_movie_crawler']['reqs_per_min'])
         threading.Thread.__init__(self)
@@ -54,7 +54,7 @@ class IQIYIMovieCrawler(threading.Thread):
                         if casts_elements:
                             casts = casts_elements[0].xpath('./a/text()')
 
-                        movie_pool.put(MovieItem(self.source, url, title, directors=directors, casts=casts))
+                        movie_pool.put(MovieItem(self.provider, url, title, directors=directors, casts=casts))
                         self.logger.info('Crawled %s(title) %s(director) %s(cast)', title, ' '.join(directors) if directors else None, ' '.join(casts) if casts else None)
 
                 if not find_movie:
@@ -71,7 +71,7 @@ class IQIYIMovieCrawler(threading.Thread):
 
 class PPTVMovieCrawler(threading.Thread):
     def __init__(self):
-        self.source = 'pptv'
+        self.provider = 'pptv'
         self.logger = logger.getChild('PPTVMovieCrawler')
         self.request_pptv_page = LimitedCaller(send_request, settings['online_movie_crawler']['pptv_movie_crawler']['reqs_per_min'])
         threading.Thread.__init__(self)
@@ -102,7 +102,7 @@ class PPTVMovieCrawler(threading.Thread):
                         if casts_elements:
                             casts = casts_elements[0].xpath('./a/@title')
 
-                        movie_pool.put(MovieItem(self.source, url, title, casts=casts))
+                        movie_pool.put(MovieItem(self.provider, url, title, casts=casts))
                         self.logger.info('Crawled %s(title) %s(cast)', title, ' '.join(casts) if casts else None)
 
                 if not find_movie:
@@ -177,18 +177,18 @@ class OnlineMovieMatcher(threading.Thread):
 
                 if max_movie:
                     mongodb['movies'].update({'_id': ObjectId(max_movie.get('_source').get('_id'))},
-                                             {'$set': {'resources.online.%s' % movie_item.source: {'url': movie_item.url, 'similarity': max_score, 'last_updated': datetime.datetime.utcnow()}}})
-                    self.logger.info('%s(%s) %s(douban) %s(similarity)', movie_item.title, movie_item.source, max_movie.get('_source').get('title'), max_score)
+                                             {'$set': {'resources.online.%s' % movie_item.provider: {'url': movie_item.url, 'similarity': max_score, 'last_updated': datetime.datetime.utcnow()}}})
+                    self.logger.info('%s(%s) %s(douban) %s(similarity)', movie_item.title, movie_item.provider, max_movie.get('_source').get('title'), max_score)
                 else:
-                    self.logger.warn('No similar movie for %s(%s)', movie_item.title, movie_item.source)
+                    self.logger.warn('No similar movie for %s(%s)', movie_item.title, movie_item.provider)
             except PyMongoError, e:
                 self.logger.error('Mongodb error %s' % e)
             except Exception, e:
                 self.logger.error(e)
 
 class MovieItem(object):
-    def __init__(self, source, url, title, year=None, countries=None, directors=None, casts=None):
-        self.source = source
+    def __init__(self, provider, url, title, year=None, countries=None, directors=None, casts=None):
+        self.provider = provider
         self.url = url
         self.title = title
         self.year = year

@@ -9,7 +9,7 @@ from tornado.web import HTTPError
 import tornado.gen
 import tornado.web
 
-class MovieIgnoredHandler(tornado.web.RequestHandler):
+class MovieNotInterestedHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
@@ -18,11 +18,11 @@ class MovieIgnoredHandler(tornado.web.RequestHandler):
             # 400 Bad Request if id not provided
             movie_id = self.get_argument('id')
 
-            # add movie to ignored list in accounts collection
+            # add movie to not_interested list in accounts collection
             try:
                 _, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                          {'email': email},
-                                                         {'$addToSet': {'ignored.movie': ObjectId(movie_id)}})
+                                                         {'$addToSet': {'not_interested.movie': ObjectId(movie_id)}})
             except:
                 raise tornado.web.HTTPError(500)
 
@@ -38,11 +38,11 @@ class MovieIgnoredHandler(tornado.web.RequestHandler):
     def delete(self, movie_id):
         email = self.get_secure_cookie('email')
         if email:
-            # remove movie from ignored list in accounts collection
+            # remove movie from not_interested list in accounts collection
             try:
                 _, error = yield tornado.gen.Task(mongodb['accounts'].update,
                                                          {'email': email},
-                                                         {'$pull': {'ignored.movie': ObjectId(movie_id)}})
+                                                         {'$pull': {'not_interested.movie': ObjectId(movie_id)}})
             except:
                 raise tornado.web.HTTPError(500)
 
