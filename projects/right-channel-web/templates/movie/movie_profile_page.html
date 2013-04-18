@@ -9,7 +9,7 @@
             <img src="http://img3.douban.com/lpic/s11356673.jpg">
           </a>
           <div class="row-fluid default-margin">
-          这里是分享
+            {% include ../modules/share.html %}
           </div>
         </div>
         
@@ -101,21 +101,21 @@
               </div>
             {% end %}
             
-            <div id="userActions" class="btn-group pull-right">
+            <div class="btn-group pull-right">
               {% if movie.get('to_watch') %}
-                <button data-id="{{ movie.get('_id') }}" data-action="towatch" data-next-operation="unmark" title="从想看列表中移除" class="btn btn-small btn-primary"> <i class="icon-eye-open icon-white"></i> 想看</button>
+                <button id="toWatch" data-id="{{ movie.get('_id') }}" data-current-status="marked" class="btn btn-small btn-info" title="已加入想看列表"> <i class="icon-eye-open icon-white"></i> 想看</button>
               {% else %}
-                <button data-id="{{ movie.get('_id') }}" data-action="towatch" data-next-operation="mark" title="加入想看列表" class="btn btn-small"> <i class="icon-eye-open"></i> 想看</button>
+                <button id="toWatch" data-id="{{ movie.get('_id') }}" data-current-status="unmarked" class="btn btn-small" title="加入想看列表"> <i class="icon-eye-open"></i> 想看</button>
               {% end %}
               {% if movie.get('watched') %}
-                <button data-id="{{ movie.get('_id') }}" data-action="watched" data-next-operation="unmark" title="从已看列表中移除" class="btn btn-small btn-success"> <i class="icon-check icon-white"></i> 已看</button>
+                <button id="watched" data-id="{{ movie.get('_id') }}" data-current-status="marked" class="btn btn-small btn-success" title="已加入已看列表"> <i class="icon-check icon-white"></i> 已看</button>
               {% else %}
-                <button data-id="{{ movie.get('_id') }}" data-action="watched" data-next-operation="mark" title="加入已看列表" class="btn btn-small"> <i class="icon-check"></i> 已看</button>
+                <button id="watched" data-id="{{ movie.get('_id') }}" data-current-status="unmarked" class="btn btn-small" title="加入已看列表"> <i class="icon-check"></i> 已看</button>
               {% end %}
               {% if movie.get('not_interested') %}
-                <button data-id="{{ movie.get('_id') }}" data-action="notinterested" data-next-operation="unmark" title="取消标记" class="btn btn-small btn-inverse"> <i class="icon-eye-close icon-white"></i> 没兴趣</button>
+                <button id="notInterested" data-id="{{ movie.get('_id') }}" data-current-status="marked" class="btn btn-small btn-inverse" title="已标记为没兴趣"> <i class="icon-eye-close icon-white"></i> 没兴趣</button>
               {% else %}
-                <button data-id="{{ movie.get('_id') }}" data-action="notinterested" data-next-operation="mark" title="标记为没兴趣" class="btn btn-small"> <i class="icon-eye-close"></i> 没兴趣</button>
+                <button id="notInterested" data-id="{{ movie.get('_id') }}" data-current-status="unmarked" class="btn btn-small" title="标记为没兴趣"> <i class="icon-eye-close"></i> 没兴趣</button>
               {% end %}
             </div>
           </div>
@@ -127,11 +127,18 @@
 
 {% block extra_scripts %}
   <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/user-action-on-movie.js') }}"></script>
-  <script>
+  <script type="text/javascript">
     $(function() {
-        $('#userActions').on('click', function(e) {
-        	performUserActionOnMovie(e.target);
+        $('#toWatch').click(function() {
+            toggleToWatch($(this));
+        });
+        $('#watched').click(function() {
+            toggleWatched($(this));
+        });
+        $('#notInterested').click(function() {
+            toggleNotInterested($(this));
         });
     });
   </script>

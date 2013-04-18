@@ -37,7 +37,12 @@ class MovieFilterHandler(BaseHandler):
             resource = first_element(settings['movie']['presentation']['resource'])
 
         page = self.get_argument('page', 1)
-        page = int(page) if isinstance(page, int) and int(page) > 0 else 1
+        try:
+            page = int(page)
+        except:
+            page = 1
+        if page <= 0:
+            page = 1
 
         query = {}
         if genre == last_element(settings['movie']['filters']['genres']):
