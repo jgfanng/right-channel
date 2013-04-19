@@ -46,15 +46,15 @@
   color: #999;
 }
 
+[class^="icon-"],
+[class*=" icon-"] {
+    margin: 0;
+/*     vertical-align: text-top; */
+}
+
 /* legend {
     margin-bottom: 10px;
     border-bottom: 1px solid #e5e5e5;
-} */
-
-/* [class^="icon-"],
-[class*=" icon-"] {
-    margin: 0;
-    vertical-align: text-top;
 } */
 
 /***** generic styles *****/
@@ -133,11 +133,13 @@ strong {
 }
 
 .category-selection ul>li>a:hover {
-    background-color: #c8c8c8;
+    color: white;
+    background-color: #4e4f4b;
 }
 
 .category-selection ul>li.active>a {
-    background-color: #aaa;
+    color: white;
+    background-color: #080808;
 }
 
 /* .nav-secondary {
@@ -310,15 +312,25 @@ strong {
 
 /***** poster *****/
 
-.poster-medium-container {
-    width: 100px;
-    height: 145px;
+.poster-container {
     position: relative;
 }
 
 .poster-medium {
     width: 100px;
     height: 145px;
+}
+
+.poster-play-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url("../img/play-white.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: rgba(0, 0, 0, .5);
 }
 
 .poster-badge {
@@ -339,8 +351,8 @@ strong {
     bottom: 0;
 }
 
-.poster-medium-container .caption,
-.poster-medium-container .duration {
+.poster-container .caption,
+.poster-container .duration {
     text-align: center;
 }
 
@@ -397,17 +409,6 @@ form .help-error {
     font-size: 12px;
 }
 
-/***** ajax loading picture *****/
-
-.ajax-loader {
-    background-image: url("../img/ajax-loader.gif");
-    background-repeat: no-repeat;
-    background-position: -6px -3px;
-    width: 208px;
-    height: 13px;
-    margin: 0 auto;
-}
-
 /***** misc ******/
 
 .default-margin {
@@ -440,14 +441,32 @@ form .help-error {
     color: #888
 } */
 
+/***** images *****/
+
+.ajax-loader {
+    background-image: url("../img/ajax-loader.gif");
+    background-repeat: no-repeat;
+    background-position: -6px -3px;
+    width: 208px;
+    height: 13px;
+    margin: 0 auto;
+}
+
 /* platform logos */
 
-.logo-platform {
+[class^="logo-platform-"],
+[class*=" logo-platform-"] {
     background: url(../img/platform-logos.png) no-repeat;
     display: inline-block;
-    /* vertical-align: -2px; */
     vertical-align: text-top;
 }
+
+/* .logo-platform {
+    background: url(../img/platform-logos.png) no-repeat;
+    display: inline-block;
+    vertical-align: -2px;
+    vertical-align: text-top;
+} */
 
 .logo-platform-douban {
     width: 16px;

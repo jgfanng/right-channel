@@ -42,9 +42,11 @@ $(function() {
 			var movie = movies[i];
 
 			{
-				var poster_img = '<a href="/movie/{0}" target="_blank"><img src="{1}" class="poster-medium"></a>'
+				var playable = 'resources' in movie && 'online' in movie.resources;
+				var poster_img = '<a href="/movie/{0}" class="{1}" target="_blank"><img src="{2}" class="poster-medium"><div class="poster-play-mask" style="display: none;"></div></a>'
 					.format(
 						movie._id,
+						playable ? 'playable' : 'notplayable',
 						[
 							'http://img2.static.dianying.fm/poster/m/5071c79f90d7a90a4169efcd',
 							'http://img2.static.dianying.fm/poster/m/5071ccf190d7a90a416a6557',
@@ -94,12 +96,12 @@ $(function() {
 							.floor(Math.random() * 45)]);
 				
 				var top_div = '';
-				if ('resources' in movie && 'online' in movie.resources)
-					top_div = '<div class="poster-badge poster-badge-top"><a href="/movie/{0}" title="立即观看" target="_blank"><i class="icon-play icon-white"></i></a></div>'.format(movie._id);
+				if (playable)
+					top_div = '<div class="poster-badge poster-badge-top"><a href="/movie/{0}" title="立即观看" target="_blank"><i class="icon-play-circle icon-white"></i></a></div>'.format(movie._id);
 				
 				var bottom_div = '<div class="poster-badge poster-badge-bottom duration">00:00:00</div>';
 				
-				var poster_div = '<div class="pull-left poster-medium-container">{0}{1}{2}</div>'.format(poster_img, top_div, bottom_div);
+				var poster_div = '<div class="pull-left poster-container">{0}{1}{2}</div>'.format(poster_img, top_div, bottom_div);
 			}
 
 			{
@@ -112,7 +114,7 @@ $(function() {
 
 				var rating_p = ''
 				if ('douban' in movie && 'rating' in movie.douban)
-					rating_p = '<p><strong>评分:</strong> <a href="{0}" title="豆瓣评分{1}" class="douban-rating" target="_blank"><i class="logo-platform logo-platform-douban"></i> {1}</a></p>'
+					rating_p = '<p><strong>评分:</strong> <a href="{0}" title="豆瓣评分{1}" class="douban-rating" target="_blank"><i class="logo-platform-douban"></i> {1}</a></p>'
 							.format(movie.douban.url, movie.douban.rating);
 
 				var genre_p = '';
@@ -130,29 +132,34 @@ $(function() {
 			}
 
 			{
-				var $to_watch_btn = $('<button id="toWatch" data-id="{0}" data-current-status="unmarked" class="btn btn-mini" title="加入想看列表"><i class="icon-eye-open"></i></button>'
+				var $to_watch_btn = $('<button data-id="{0}" data-action="towatch" class="btn btn-mini unmarked" title="加入想看列表"><i class="icon-eye-open"></i></button>'
 						.format(movie._id));
 
-				var $watched_btn = $('<button id="watched" data-id="{0}" data-current-status="unmarked" class="btn btn-mini" title="加入已看列表"><i class="icon-check"></i></button>'
+				var $watched_btn = $('<button data-id="{0}" data-action="watched" class="btn btn-mini unmarked" title="加入已看列表"><i class="icon-check"></i></button>'
 						.format(movie._id));
 
-				var $not_interested_btn = $('<button id="notInterested" data-id="{0}" data-current-status="unmarked" class="btn btn-mini" title="标记为没兴趣"><i class="icon-eye-close"></i></button>'
+				var $not_interested_btn = $('<button data-id="{0}" data-action="notinterested" class="btn btn-mini unmarked" title="标记为没兴趣"><i class="icon-eye-close"></i></button>'
 						.format(movie._id));
 
 				if (movie.to_watch) {
+					$to_watch_btn.removeClass('unmarked');
+					$to_watch_btn.addClass('marked');
 					$to_watch_btn.addClass('btn-info');
 					$to_watch_btn.children('i').addClass('icon-white');
-					$to_watch_btn.attr('data-current-status', 'marked');
 					$to_watch_btn.attr('title', '已加入想看列表');
-				} else if (movie.watched) {
+				}
+				if (movie.watched) {
+					$watched_btn.removeClass('unmarked');
+					$watched_btn.addClass('marked');
 					$watched_btn.addClass('btn-success');
 					$watched_btn.children('i').addClass('icon-white');
-					$watched_btn.attr('data-current-status', 'marked');
 					$watched_btn.attr('title', '已加入已看列表');
-				} else if (movie.not_interested) {
+				}
+				if (movie.not_interested) {
+					$not_interested_btn.removeClass('unmarked');
+					$not_interested_btn.addClass('marked');
 					$not_interested_btn.addClass('btn-inverse');
 					$not_interested_btn.children('i').addClass('icon-white');
-					$not_interested_btn.attr('data-current-status', 'marked');
 					$not_interested_btn.attr('title', '已标记为没兴趣');
 				}
 

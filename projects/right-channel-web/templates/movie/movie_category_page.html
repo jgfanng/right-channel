@@ -72,14 +72,16 @@
   <script type="text/javascript" src="{{ static_url('js/user-action-on-movie.js') }}"></script>
   <script type="text/javascript">
     $(function() {
-        $('#content').on('click', '#toWatch', function(e) {
-        	toggleToWatch($(this));
-        });
-        $('#content').on('click', '#watched', function(e) {
-        	toggleWatched($(this));
-        });
-        $('#content').on('click', '#notInterested', function(e) {
-        	toggleNotInterested($(this));
+        $('#content').on('click', '.unmarked', function() {
+        	userActionMark($(this));
+        }).on('click', '.marked', function() {
+        	userActionUnmark($(this));
+        }).on('mouseenter', '.playable', function() {
+        	$(this).children('.poster-play-mask').fadeIn();
+        	$(this).siblings('div').fadeOut();
+        }).on('mouseleave', '.playable', function() {
+            $(this).children('.poster-play-mask').fadeOut();
+            $(this).siblings('div').fadeIn();
         });
     });
   </script>
