@@ -80,7 +80,7 @@ class MovieFilterHandler(BaseHandler):
             sort_by = [('year', -1)]
 
         try:
-            response, error = yield tornado.gen.Task(mongodb['movies'].find,
+            result, error = yield tornado.gen.Task(mongodb['movies'].find,
                                                      query,
                                                      fields={'summary': 0},
                                                      skip=(page - 1) * settings['movie']['page_size'],
@@ -92,34 +92,32 @@ class MovieFilterHandler(BaseHandler):
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
-        # set to_watch, watched and not_interested status
-        movies = response[0]
+        # set user behaviors: to_watch, watched and not_interested
+        movies = result[0]
         user = self.params.get('user')
-        if user and user.get('to_watch') and user.get('to_watch').get('movie'):
-            for movie in movies:
-                if movie.get('_id') in user.get('to_watch').get('movie'):
-                    movie['to_watch'] = True
-                else:
-                    movie['to_watch'] = False
+        if user and movies:
+            try:
+                user_id = user.get('_id')
+                result, error = yield tornado.gen.Task(mongodb['user_behaviors'].find,
+                                                       {'user_id': user_id, 'movie_id': {'$in': [movie.get('_id') for movie in movies]}})
+                user_behaviors = result[0]
+                for behavior in user_behaviors:
+                    for movie in movies:
+                        if behavior.get('movie_id') == movie.get('_id'):
+                            if behavior.get('behavior_type'):
+                                movie['my_behavior'] = behavior.get('behavior_type')
+                            if behavior.get('rating'):
+                                movie['my_rating'] = behavior.get('rating')
+            except:
+                raise tornado.web.HTTPError(500)
 
-        if user and user.get('watched') and user.get('watched').get('movie'):
-            for movie in movies:
-                if movie.get('_id') in user.get('watched').get('movie'):
-                    movie['watched'] = True
-                else:
-                    movie['watched'] = False
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
 
-        if user and user.get('not_interested') and user.get('not_interested').get('movie'):
-            for movie in movies:
-                if movie.get('_id') in user.get('not_interested').get('movie'):
-                    movie['not_interested'] = True
-                else:
-                    movie['not_interested'] = False
-
-        result = {
-            'movies': response[0],
-            'more': True if len(response[0]) >= settings['movie']['page_size'] else False
+        response = {
+            'movies': movies,
+            'more': True if len(movies) >= settings['movie']['page_size'] else False
         }
 
-        self.write(json.dumps(result, cls=JSONEncoderExt))
+        self.write(json.dumps(response, cls=JSONEncoderExt))
         self.finish()

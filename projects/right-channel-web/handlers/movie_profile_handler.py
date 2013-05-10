@@ -17,8 +17,8 @@ class MovieProfileHandler(BaseHandler):
     @tornado.gen.engine
     def get(self, movie_id):
         try:
-            response, error = yield tornado.gen.Task(mongodb['movies'].find_one,
-                                                     {'_id': ObjectId(movie_id)})
+            result, error = yield tornado.gen.Task(mongodb['movies'].find_one,
+                                                   {'_id': ObjectId(movie_id)})
         except:
             raise tornado.web.HTTPError(500)
 
@@ -26,29 +26,28 @@ class MovieProfileHandler(BaseHandler):
             raise tornado.web.HTTPError(500)
 
         # 404 not found if no movie found
-        movie = response[0]
+        movie = result[0]
         if not movie:  # None or []
             raise tornado.web.HTTPError(404)
 
-        # set to_watch, watched and not_interested status
+        # set user behaviors: to_watch, watched and not_interested
         user = self.params.get('user')
-        if user and user.get('to_watch') and user.get('to_watch').get('movie'):
-            if movie.get('_id') in user.get('to_watch').get('movie'):
-                movie['to_watch'] = True
-            else:
-                movie['to_watch'] = False
+        if user and movie:
+            try:
+                user_id = user.get('_id')
+                result, error = yield tornado.gen.Task(mongodb['user_behaviors'].find_one,
+                                                       {'user_id': user_id, 'movie_id': movie.get('_id')})
+                if result[0]:
+                    user_behavior = result[0]
+                    if user_behavior.get('behavior_type'):
+                        movie['my_behavior'] = user_behavior.get('behavior_type')
+                    if user_behavior.get('rating'):
+                        movie['my_rating'] = user_behavior.get('rating')
+            except:
+                raise tornado.web.HTTPError(500)
 
-        if user and user.get('watched') and user.get('watched').get('movie'):
-            if movie.get('_id') in user.get('watched').get('movie'):
-                movie['watched'] = True
-            else:
-                movie['watched'] = False
-
-        if user and user.get('not_interested') and user.get('not_interested').get('movie'):
-            if movie.get('_id') in user.get('not_interested').get('movie'):
-                movie['not_interested'] = True
-            else:
-                movie['not_interested'] = False
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
 
         self.params['movie'] = movie
         self.render('movie/movie_profile_page.html')

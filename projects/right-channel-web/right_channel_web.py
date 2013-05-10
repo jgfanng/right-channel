@@ -4,9 +4,8 @@ Created on Jan 16, 2013
 @author: Fang Jiaguo
 '''
 from apis.movie_filter_handler import MovieFilterHandler
-from apis.movie_not_interested_handler import MovieNotInterestedHandler
-from apis.movie_to_watch_handler import MovieToWatchHandler
-from apis.movie_watched_handler import MovieWatchedHandler
+from apis.movie_rating_handler import MovieRatingHandler
+from apis.movie_user_behavior_handler import MovieUserBehaviorHandler
 from handlers.default_handler import DefaultHandler
 from handlers.edit_password_handler import EditPasswordHandler
 from handlers.edit_profile_handler import EditProfileHandler
@@ -38,12 +37,9 @@ class Application(tornado.web.Application):
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
             (r'/api/movie', MovieFilterHandler),
-            (r'/api/movie/towatch', MovieToWatchHandler),
-            (r'/api/movie/towatch/([0-9a-f]{24})', MovieToWatchHandler),
-            (r'/api/movie/watched', MovieWatchedHandler),
-            (r'/api/movie/watched/([0-9a-f]{24})', MovieWatchedHandler),
-            (r'/api/movie/notinterested', MovieNotInterestedHandler),
-            (r'/api/movie/notinterested/([0-9a-f]{24})', MovieNotInterestedHandler),
+            (r'/api/movie/userbehavior', MovieUserBehaviorHandler),
+            (r'/api/movie/userbehavior/([0-9a-f]{24})', MovieUserBehaviorHandler),
+            (r'/api/movie/rating', MovieRatingHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

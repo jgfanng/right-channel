@@ -6,23 +6,5 @@ db.accounts.ensureIndex({"email": 1}, {unique: true})
     "email": "example@abc.com",
     "password": "4dd679ee885c1b97840f062c301fb391173a8e09504a2a3dfef0df2ed6959757",
     "nick_name": "yapianyu",
-    "avatar": "***.jpg",
-    "to_watch": {
-        "movie": [
-            "id": ObjectId("50d078400c468ecda4b66a5a")
-        ]
-    },
-    "watched": {
-        "movie": [
-            "id": ObjectId("50d078400c468ecda4b66a5a")
-        ]
-    },
-    "not_interested": {
-        "movie": [
-            "id": ObjectId("50d078400c468ecda4b66a5a")
-        ]
-    },
-    "download": {},
-    "like": {},
-    "dislike": {}
+    "avatar": "***.jpg"
 }

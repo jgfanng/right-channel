@@ -1,0 +1,11 @@
+=========Indexes============================================================
+db.user_behaviors.ensureIndex({"user_id": 1, "movie_id": 1}, {unique: true})
+
+=========Schema=============================================================
+{
+    "user_id": ObjectId("50d078400c468ecda4b66a5a"),
+    "movie_id": ObjectId("50d078400c468ecda4b66a5a"),
+    "behavior_type": "to_watch",
+    "rating": 5,
+    "last_updated": "2012-12-29"
+}

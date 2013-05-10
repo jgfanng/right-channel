@@ -3,7 +3,7 @@
 {% block account_content %}
 
   {% if params.get('user') and params.get('user').get('watched') and params.get('user').get('watched').get('movie') %}
-    <legend>我已看的(<span id="movieCount">{{ len(params.get('user').get('watched').get('movie')) }}</span>)</legend>
+    <legend>我看过的(<span id="movieCount">{{ len(params.get('user').get('watched').get('movie')) }}</span>)</legend>
     <table class="table table-condensed table-hover table-dash-border">
       <thead>
           <th class="auto-size">电影名称</th>
@@ -42,7 +42,7 @@
       </tbody>
     </table>
   {% else %}
-    <legend>我已看的(0)</legend>
+    <legend>我看过的(0)</legend>
   {% end %}
 
 {% end %}

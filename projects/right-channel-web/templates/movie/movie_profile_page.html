@@ -96,22 +96,16 @@
               </div>
             {% end %}
             
-            <div class="btn-group pull-right user-actions">
-              {% if movie.get('to_watch') %}
-                <button data-id="{{ movie.get('_id') }}" data-action="towatch" class="btn btn-small btn-info marked" title="已加入想看列表"> <i class="icon-eye-open icon-white"></i> 想看</button>
-              {% else %}
-                <button data-id="{{ movie.get('_id') }}" data-action="towatch" class="btn btn-small unmarked" title="加入想看列表"> <i class="icon-eye-open"></i> 想看</button>
-              {% end %}
-              {% if movie.get('watched') %}
-                <button data-id="{{ movie.get('_id') }}" data-action="watched" class="btn btn-small btn-success marked" title="已加入已看列表"> <i class="icon-check icon-white"></i> 已看</button>
-              {% else %}
-                <button data-id="{{ movie.get('_id') }}" data-action="watched" class="btn btn-small unmarked" title="加入已看列表"> <i class="icon-check"></i> 已看</button>
-              {% end %}
-              {% if movie.get('not_interested') %}
-                <button data-id="{{ movie.get('_id') }}" data-action="notinterested" class="btn btn-small btn-inverse marked" title="已标记为没兴趣"> <i class="icon-eye-close icon-white"></i> 没兴趣</button>
-              {% else %}
-                <button data-id="{{ movie.get('_id') }}" data-action="notinterested" class="btn btn-small unmarked" title="标记为没兴趣"> <i class="icon-eye-close"></i> 没兴趣</button>
-              {% end %}
+            <div class="btn-group pull-right user-behaviors">
+              {% set user_behaviors = {'to_watch': '想看', 'watched': '看过', 'not_interested': '没兴趣'} %}
+              <button class="btn btn-small btn-primary disabled marked-hint" style="display: {{ '' if movie.get('my_behavior') else 'none' }};">已标记为{{ user_behaviors.get(movie.get('my_behavior')) }}</button>
+              <button data-movie-id="{{ movie.get('_id') }}" class="btn btn-small btn-primary marked" title="取消标记" style="display: {{ '' if movie.get('my_behavior') else 'none' }};"><i class="icon-remove icon-white"></i></button>
+              <button data-movie-id="{{ movie.get('_id') }}" data-behavior-type="to_watch" class="btn btn-small btn-primary unmarked" title="标记为想看" style="display: {{ 'none' if movie.get('my_behavior') else '' }};"><i class="icon-eye-open icon-white"></i> 想看</button>
+              <button data-movie-id="{{ movie.get('_id') }}" data-behavior-type="watched" class="btn btn-small btn-primary unmarked" title="标记为看过" style="display: {{ 'none' if movie.get('my_behavior') else '' }};"><i class="icon-check icon-white"></i> 看过</button>
+              <button data-movie-id="{{ movie.get('_id') }}" data-behavior-type="not_interested" class="btn btn-small btn-primary unmarked" title="标记为没兴趣" style="display: {{ 'none' if movie.get('my_behavior') else '' }};"><i class="icon-eye-close icon-white"></i> 没兴趣</button>
+            </div>
+            
+            <div id="starRating" class="pull-right" data-movie-id="{{ movie.get('_id') }}" data-rating="{{ movie.get('my_rating') }}">
             </div>
           </div>
           
@@ -136,15 +130,32 @@
 {% end %}
 
 {% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/jquery.raty.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/user-action-on-movie.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/user-behaviors.js') }}"></script>
   <script type="text/javascript">
     $(function() {
-        $('.user-actions').on('click', '.unmarked', function() {
-        	userActionMark($(this));
+    	/* initialize star rating */
+    	$('#starRating').raty({
+            half     : true,
+            size     : 24,
+            starHalf : '{{ static_url("img/star-half-big.png") }}',
+            starOff  : '{{ static_url("img/star-off-big.png") }}',
+            starOn   : '{{ static_url("img/star-on-big.png") }}',
+            hints    : ['很差', '较差', '还行', '推荐', '力荐'],
+            space    : false,
+            score    : $('#starRating').attr('data-rating'),
+            click    : function(score, evt) {
+                           rating($(this).attr('data-movie-id'), score);
+                       }
+        });
+    	
+    	/* call function on click */
+        $('.user-behaviors').on('click', '.unmarked', function() {
+        	userBehaviorMark($(this));
         }).on('click', '.marked', function() {
-        	userActionUnmark($(this));
+        	userBehaviorUnmark($(this));
         });
     });
   </script>

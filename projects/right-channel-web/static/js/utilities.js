@@ -70,7 +70,7 @@ $(function() {
 //						id : movie_id
 //					}
 //				}).done(function() {
-//					$btn.attr('title', '取消已看');
+//					$btn.attr('title', '取消看过');
 //					$btn.addClass('active');
 //					// deal with toWatch button
 //					var $toWatchBtn = $btn.prev();
@@ -94,7 +94,7 @@ $(function() {
 //					type : 'delete',
 //					url : '/api/movie/watched/' + movie_id
 //				}).done(function() {
-//					$btn.attr('title', '已看本片');
+//					$btn.attr('title', '看过本片');
 //					$btn.removeClass('active');
 //					// deal with toWatch button
 //					var $toWatchBtn = $btn.prev();

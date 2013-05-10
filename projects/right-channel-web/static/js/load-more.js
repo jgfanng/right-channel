@@ -135,7 +135,7 @@ $(function() {
 				var $to_watch_btn = $('<button data-id="{0}" data-action="towatch" class="btn btn-mini unmarked" title="加入想看列表"><i class="icon-eye-open"></i></button>'
 						.format(movie._id));
 
-				var $watched_btn = $('<button data-id="{0}" data-action="watched" class="btn btn-mini unmarked" title="加入已看列表"><i class="icon-check"></i></button>'
+				var $watched_btn = $('<button data-id="{0}" data-action="watched" class="btn btn-mini unmarked" title="加入看过列表"><i class="icon-check"></i></button>'
 						.format(movie._id));
 
 				var $not_interested_btn = $('<button data-id="{0}" data-action="notinterested" class="btn btn-mini unmarked" title="标记为没兴趣"><i class="icon-eye-close"></i></button>'
@@ -153,7 +153,7 @@ $(function() {
 					$watched_btn.addClass('marked');
 					$watched_btn.addClass('btn-success');
 					$watched_btn.children('i').addClass('icon-white');
-					$watched_btn.attr('title', '已加入已看列表');
+					$watched_btn.attr('title', '已加入看过列表');
 				}
 				if (movie.not_interested) {
 					$not_interested_btn.removeClass('unmarked');
@@ -163,7 +163,7 @@ $(function() {
 					$not_interested_btn.attr('title', '已标记为没兴趣');
 				}
 
-				var toolbar_div = '<div class="btn-group user-actions">{0}{1}{2}</div>'
+				var toolbar_div = '<div class="btn-group user-behaviors">{0}{1}{2}</div>'
 						.format($to_watch_btn.wrap('<div>').parent().html(), $watched_btn.wrap('<div>').parent().html(), $not_interested_btn.wrap('<div>').parent().html());
 			}
 

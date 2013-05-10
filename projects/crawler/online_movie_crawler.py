@@ -7,6 +7,7 @@ Created on Apr 12, 2013
 from Queue import Queue
 from bson.objectid import ObjectId
 from lxml import html
+from pyes.query import MultiMatchQuery, Search
 from pymongo.errors import PyMongoError
 from settings import settings, elasticsearch, mongodb
 from urllib2 import HTTPError, URLError
@@ -27,6 +28,9 @@ class IQIYIMovieCrawler(threading.Thread):
     def run(self):
         page_index = 0
         while True:
+            if page_index == 0:
+                self.logger.info('==========IQIYIMovieCrawler Started=========')
+
             try:
                 page_index += 1
                 page = settings['online_movie_crawler']['iqiyi_movie_crawler']['page'] % page_index
@@ -59,6 +63,7 @@ class IQIYIMovieCrawler(threading.Thread):
 
                 if not find_movie:
                     page_index = 0
+                    self.logger.info('==========IQIYIMovieCrawler Finished=========')
 
             except HTTPError, e:
                 self.logger.error('Server cannot fulfill the request %s %s %s', page, e.code, e.msg)
@@ -66,8 +71,6 @@ class IQIYIMovieCrawler(threading.Thread):
                 self.logger.error('Failed to reach server %s %s', page, e.reason)
             except Exception, e:
                 self.logger.error(e)
-
-        self.logger.info('==========IQIYIMovieCrawler Finished=========')
 
 class PPTVMovieCrawler(threading.Thread):
     def __init__(self):
@@ -79,6 +82,9 @@ class PPTVMovieCrawler(threading.Thread):
     def run(self):
         page_index = 0
         while True:
+            if page_index == 0:
+                self.logger.info('==========PPTVMovieCrawler Started=========')
+
             try:
                 page_index += 1
                 page = settings['online_movie_crawler']['pptv_movie_crawler']['page'] % page_index
@@ -107,6 +113,7 @@ class PPTVMovieCrawler(threading.Thread):
 
                 if not find_movie:
                     page_index = 0
+                    self.logger.info('==========PPTVMovieCrawler Finished=========')
 
             except HTTPError, e:
                 self.logger.error('Server cannot fulfill the request %s %s %s', page, e.code, e.msg)
@@ -124,29 +131,18 @@ class OnlineMovieMatcher(threading.Thread):
         while True:
             try:
                 movie_item = movie_pool.get()
-                query = {
-                    'query': {
-                        'multi_match': {
-                            'query': movie_item.title,
-                            'fields': [
-                                'title',
-                                'original_title',
-                                'aka'
-                            ]
-                        }
-                    }
-                }
-                result = elasticsearch.search(query, index=settings['elasticsearch']['index'], doc_type='movie', size=10)
+                query = MultiMatchQuery(['title', 'original_title', 'aka'], movie_item.title)
+                results = elasticsearch.search(Search(query=query, size=10), indices=settings['elasticsearch']['index'], doc_types='movie')
                 max_score = 0
                 max_movie = None
-                for r in result.get('hits').get('hits'):
-                    title = r.get('_source').get('title')
-                    original_title = r.get('_source').get('original_title')
-                    aka = r.get('_source').get('aka')
-                    year = r.get('_source').get('year')
-                    countries = r.get('_source').get('countries')
-                    directors = r.get('_source').get('directors')
-                    casts = r.get('_source').get('casts')
+                for r in results:
+                    title = r.get('title')
+                    original_title = r.get('original_title')
+                    aka = r.get('aka')
+                    year = r.get('year')
+                    countries = r.get('countries')
+                    directors = r.get('directors')
+                    casts = r.get('casts')
 
                     score = 0
                     if title:
@@ -176,9 +172,9 @@ class OnlineMovieMatcher(threading.Thread):
                         max_movie = r
 
                 if max_movie:
-                    mongodb['movies'].update({'_id': ObjectId(max_movie.get('_source').get('_id'))},
+                    mongodb['movies'].update({'_id': ObjectId(max_movie.get('_id'))},
                                              {'$set': {'resources.online.%s' % movie_item.provider: {'url': movie_item.url, 'similarity': max_score, 'last_updated': datetime.datetime.utcnow()}}})
-                    self.logger.info('%s(%s) %s(douban) %s(similarity)', movie_item.title, movie_item.provider, max_movie.get('_source').get('title'), max_score)
+                    self.logger.info('%s(%s) %s(douban) %s(similarity)', movie_item.title, movie_item.provider, max_movie.get('title'), max_score)
                 else:
                     self.logger.warn('No similar movie for %s(%s)', movie_item.title, movie_item.provider)
             except PyMongoError, e:

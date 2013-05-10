@@ -37,25 +37,10 @@ high_priority_movie_pool = Queue()  # high priority
 # coming_soon_movie_ids = Queue()
 # top250_movie_ids = Queue()
 
-class DoubanCrawler():
-    def start(self):
-        threads = [
-            InitialCrawler(),
-            LowPriorityMovieFetcher(),
-            StatusReporter()
-#            InTheatersCrawler(),
-#            InTheatersMovieFetcher(),
-#            ComingSoonCrawler(),
-#            ComingSoonMovieFetcher(),
-#            Top250Crawler(),
-#            Top250MovieFetcher()
-        ]
-        for thread in threads:
-            thread.start()
-
 class InitialCrawler(threading.Thread):
     def __init__(self):
         self.logger = logger.getChild('InitialCrawler')
+        threading.Thread.__init__(self)
 
     def init(self):
         crawled_url_pool.clear()
@@ -164,6 +149,7 @@ class InitialCrawler(threading.Thread):
 class LowPriorityMovieFetcher(threading.Thread):
     def __init__(self):
         self.logger = logger.getChild('LowPriorityMovieFetcher')
+        threading.Thread.__init__(self)
 
     def run(self):
         while True:  # infinite loop
@@ -475,3 +461,18 @@ def construct_movie_api_url(movie_id):
     '''
 
     return 'https://api.douban.com/v2/movie/subject/%s' % movie_id
+
+if __name__ == '__main__':
+    threads = [
+        InitialCrawler(),
+        LowPriorityMovieFetcher(),
+        StatusReporter()
+#            InTheatersCrawler(),
+#            InTheatersMovieFetcher(),
+#            ComingSoonCrawler(),
+#            ComingSoonMovieFetcher(),
+#            Top250Crawler(),
+#            Top250MovieFetcher()
+    ]
+    for thread in threads:
+        thread.start()
