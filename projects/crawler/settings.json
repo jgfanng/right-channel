@@ -15,7 +15,6 @@
                 "http://movie.douban.com/tag/"
             ],
             "sitemaps": [
-                "sitemap_updated%s.xml",
                 "sitemap%s.xml"
             ]
         },

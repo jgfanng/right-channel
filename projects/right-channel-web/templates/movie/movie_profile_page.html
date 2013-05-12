@@ -68,6 +68,8 @@
           
           {% if movie.get('resources') and movie.get('resources').get('online') and movie.get('resources').get('online').keys() %}
             {% set playable = True %}
+          {% else %}
+          	{% set playable = False %}
           {% end %}
           <div class="row-fluid default-margin">
             {% if playable %}
@@ -126,6 +128,8 @@
         </div>
       </div>
     </div>
+    
+    {% include ../modules/operation_alert.html %}
   {% end %}
 {% end %}
 
@@ -133,7 +137,7 @@
   <script type="text/javascript" src="{{ static_url('js/jquery.raty.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/user-behaviors.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/user-behavior.js') }}"></script>
   <script type="text/javascript">
     $(function() {
     	/* initialize star rating */

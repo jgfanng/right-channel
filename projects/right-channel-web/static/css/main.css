@@ -429,8 +429,19 @@ form .help-error {
     font-weight: bold;
 }
 
-.operation-alert {
+.system-alert {
     margin: 10px 0;
+}
+
+.operation-alert {
+	position: fixed;
+	top: 40%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 300px;
+	text-align: center;
+    display: none;
 }
 
 /* .p-indent {
