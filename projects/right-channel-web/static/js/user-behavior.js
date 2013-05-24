@@ -53,14 +53,14 @@ function userBehaviorUnmark($btn) {
 		$btn.parent().children('.marked').hide();
 		$btn.parent().children('.unmarked').show();
 		
-		showOperationAlert(true, '删除成功');
+		showOperationAlert(true, '取消成功');
 	}).fail(function(jqXHR) {
 		if (jqXHR.status == 401) { // unauthorized
 			$.cookie.raw = true;
 			$.cookie('next', window.location.href);
 			window.location.href = '/login';
 		} else {
-			showOperationAlert(false, '删除失败');
+			showOperationAlert(false, '取消失败');
 		}
 	});
 }
