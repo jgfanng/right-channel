@@ -1,0 +1,20 @@
+1. 安装ElasticSearch MongoDB river
+https://github.com/richardwilly98/elasticsearch-river-mongodb
+https://github.com/richardwilly98/elasticsearch-river-mongodb/wiki
+http://docs.mongodb.org/manual/tutorial/deploy-replica-set/ # 配置MongoDB replica sets
+创建river
+curl -XPUT 'http://localhost:9200/_river/mongodb/_meta' -d '{ 
+    "type": "mongodb",
+    "mongodb": {
+        "db": "right-channel",
+        "collection": "movies"
+    },
+    "index": {
+        "name": "rightchannel",
+        "type": "movie"
+    }
+}'
+
+2. 安装Maven, Mahout
+https://cwiki.apache.org/MAHOUT/buildingmahout.html
+http://girlincomputerscience.blogspot.com/2010/11/apache-mahout.html
