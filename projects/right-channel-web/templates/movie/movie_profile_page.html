@@ -98,16 +98,16 @@
               </div>
             {% end %}
             
-            <div class="btn-group pull-right user-behaviors">
-              {% set user_behaviors = {'to_watch': '想看', 'watched': '看过', 'not_interested': '没兴趣'} %}
-              <button class="btn btn-small btn-primary disabled marked-hint" style="display: {{ '' if movie.get('my_behavior') else 'none' }};">已标记为{{ user_behaviors.get(movie.get('my_behavior')) }}</button>
-              <button data-movie-id="{{ movie.get('_id') }}" class="btn btn-small btn-primary marked" title="取消标记" style="display: {{ '' if movie.get('my_behavior') else 'none' }};"><i class="icon-remove icon-white"></i></button>
-              <button data-movie-id="{{ movie.get('_id') }}" data-behavior-type="to_watch" class="btn btn-small btn-primary unmarked" title="标记为想看" style="display: {{ 'none' if movie.get('my_behavior') else '' }};"><i class="icon-eye-open icon-white"></i> 想看</button>
-              <button data-movie-id="{{ movie.get('_id') }}" data-behavior-type="watched" class="btn btn-small btn-primary unmarked" title="标记为看过" style="display: {{ 'none' if movie.get('my_behavior') else '' }};"><i class="icon-check icon-white"></i> 看过</button>
-              <button data-movie-id="{{ movie.get('_id') }}" data-behavior-type="not_interested" class="btn btn-small btn-primary unmarked" title="标记为没兴趣" style="display: {{ 'none' if movie.get('my_behavior') else '' }};"><i class="icon-eye-close icon-white"></i> 没兴趣</button>
+            <div class="btn-group pull-right user-interest">
+              {% set user_interests = {'to_watch': '想看', 'watched': '看过', 'not_interested': '没兴趣'} %}
+              <button class="btn btn-small btn-primary disabled marked-hint" style="display: {{ '' if movie.get('user_interest') else 'none' }};">已标记为{{ user_interests.get(movie.get('user_interest')) }}</button>
+              <button data-movie-id="{{ movie.get('_id') }}" class="btn btn-small btn-primary marked" title="取消标记" style="display: {{ '' if movie.get('user_interest') else 'none' }};"><i class="icon-remove icon-white"></i></button>
+              <button data-movie-id="{{ movie.get('_id') }}" data-interest-type="to_watch" class="btn btn-small btn-primary unmarked" title="标记为想看" style="display: {{ 'none' if movie.get('user_interest') else '' }};"><i class="icon-eye-open icon-white"></i> 想看</button>
+              <button data-movie-id="{{ movie.get('_id') }}" data-interest-type="watched" class="btn btn-small btn-primary unmarked" title="标记为看过" style="display: {{ 'none' if movie.get('user_interest') else '' }};"><i class="icon-check icon-white"></i> 看过</button>
+              <button data-movie-id="{{ movie.get('_id') }}" data-interest-type="not_interested" class="btn btn-small btn-primary unmarked" title="标记为没兴趣" style="display: {{ 'none' if movie.get('user_interest') else '' }};"><i class="icon-eye-close icon-white"></i> 没兴趣</button>
             </div>
             
-            <div id="starRating" class="pull-right" data-movie-id="{{ movie.get('_id') }}" data-rating="{{ movie.get('my_rating') }}">
+            <div id="starRating" class="pull-right" data-movie-id="{{ movie.get('_id') }}" data-rating="{{ movie.get('user_rating') }}">
             </div>
           </div>
           
@@ -137,7 +137,8 @@
   <script type="text/javascript" src="{{ static_url('js/jquery.raty.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/user-behavior.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/rating.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/interest.js') }}"></script>
   <script type="text/javascript">
     $(function() {
     	/* initialize star rating */
@@ -151,15 +152,15 @@
             space    : false,
             score    : $('#starRating').attr('data-rating'),
             click    : function(score, evt) {
-                           rating($(this).attr('data-movie-id'), score);
+                           setRating($(this).attr('data-movie-id'), score);
                        }
         });
     	
-    	/* call function on click */
-        $('.user-behaviors').on('click', '.unmarked', function() {
-        	userBehaviorMark($(this));
+    	/* user interest */
+        $('.user-interest').on('click', '.unmarked', function() {
+        	markInterest($(this));
         }).on('click', '.marked', function() {
-        	userBehaviorUnmark($(this));
+        	unmarkInterest($(this));
         });
     });
   </script>

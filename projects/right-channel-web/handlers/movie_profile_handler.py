@@ -35,14 +35,22 @@ class MovieProfileHandler(BaseHandler):
         if user and movie:
             try:
                 user_id = user.get('_id')
-                result, error = yield tornado.gen.Task(mongodb['user_behaviors'].find_one,
+                result, error = yield tornado.gen.Task(mongodb['interests'].find_one,
                                                        {'user_id': user_id, 'movie_id': movie.get('_id')})
                 if result[0]:
-                    user_behavior = result[0]
-                    if user_behavior.get('behavior_type'):
-                        movie['my_behavior'] = user_behavior.get('behavior_type')
-                    if user_behavior.get('rating'):
-                        movie['my_rating'] = user_behavior.get('rating')
+                    movie['user_interest'] = result[0].get('type')
+            except:
+                raise tornado.web.HTTPError(500)
+
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
+
+            try:
+                user_id = user.get('_id')
+                result, error = yield tornado.gen.Task(mongodb['ratings'].find_one,
+                                                       {'user_id': user_id, 'movie_id': movie.get('_id')})
+                if result[0]:
+                    movie['user_rating'] = result[0].get('rating')
             except:
                 raise tornado.web.HTTPError(500)
 

@@ -11,23 +11,22 @@ import datetime
 import tornado.gen
 import tornado.web
 
-class MovieUserBehaviorHandler(BaseHandler):
+class InterestHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def post(self):
+    def post(self, movie_id):
         user = self.params.get('user')
         if user:
             user_id = user.get('_id')
-            movie_id = self.get_argument('movie_id')
-            behavior_type = self.get_argument('behavior_type')
-            if behavior_type not in ['to_watch', 'watched', 'not_interested']:
+            interest_type = self.get_argument('interest_type')
+            if interest_type not in ['to_watch', 'watched', 'not_interested']:
                 raise HTTPError(400)
 
             try:
-                _, error = yield tornado.gen.Task(mongodb['user_behaviors'].update,
+                _, error = yield tornado.gen.Task(mongodb['interests'].update,
                                                   {'user_id': user_id, 'movie_id': ObjectId(movie_id)},
-                                                  {'$set': {'behavior_type': behavior_type, 'last_updated': datetime.datetime.utcnow()}},
+                                                  {'$set': {'type': interest_type, 'last_updated': datetime.datetime.utcnow()}},
                                                   upsert=True)
             except:
                 raise tornado.web.HTTPError(500)
@@ -47,9 +46,8 @@ class MovieUserBehaviorHandler(BaseHandler):
         if user:
             try:
                 user_id = user.get('_id')
-                _, error = yield tornado.gen.Task(mongodb['user_behaviors'].update,
-                                                  {'user_id': user_id, 'movie_id': ObjectId(movie_id)},
-                                                  {'$unset': {'behavior_type': ''}, '$set': {'last_updated': datetime.datetime.utcnow()}})
+                _, error = yield tornado.gen.Task(mongodb['interests'].remove,
+                                                  {'user_id': user_id, 'movie_id': ObjectId(movie_id)})
             except:
                 raise tornado.web.HTTPError(500)
 
