@@ -18,3 +18,5 @@ curl -XPUT 'http://localhost:9200/_river/mongodb/_meta' -d '{
 2. 安装Maven, Mahout
 https://cwiki.apache.org/MAHOUT/buildingmahout.html
 http://girlincomputerscience.blogspot.com/2010/11/apache-mahout.html
+mvn eclipse:eclipse # 将目录转换为eclipse工程
+在eclipse中创建classpath变量M2_REPO

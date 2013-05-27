@@ -27,14 +27,16 @@ public class ItemBasedRecommender {
 	public static void main(String[] args) throws TasteException,
 			UnknownHostException, MongoException {
 		MongoDBDataModel model = new MongoDBDataModel("127.0.0.1", 27017,
-				"right-channel", "ratings", false, false, null, "user_id",
-				"movie_id", "rating", MongoDBDataModel.DEFAULT_MONGO_MAP_COLLECTION);
+				"right-channel", "ml_100k_ratings", false, false, null,
+				"user_id", "movie_id", "rating",
+				MongoDBDataModel.DEFAULT_MONGO_MAP_COLLECTION);
 		ItemSimilarity similarity = new PearsonCorrelationSimilarity(model);
 		Recommender recommender = new GenericItemBasedRecommender(model,
 				similarity);
-		List<RecommendedItem> recommendations = recommender.recommend(
-				Long.parseLong(model.fromIdToLong(
-						new ObjectId("51a0c3b3862f09377d7148d3").toStringMongod(), false)), 10);
+		List<RecommendedItem> recommendations = recommender.recommend(Long
+				.parseLong(model.fromIdToLong(new ObjectId(
+						"51a0c3b3862f09377d71493c").toStringMongod(), false)),
+				500);
 		for (RecommendedItem recommendation : recommendations)
 			System.out.println(recommendation);
 		// try {
