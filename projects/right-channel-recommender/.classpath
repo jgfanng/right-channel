@@ -2,8 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-distribution-0.7/core/target/mahout-core-0.7.jar"/>
-	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-distribution-0.7/math/target/mahout-math-0.7.jar"/>
-	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-distribution-0.7/integration/target/mahout-integration-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/mahout-core-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-nop-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/mahout-math-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/mahout-integration-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/mongo-java-driver-2.11.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
