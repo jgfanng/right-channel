@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-distribution-0.7/core/target/mahout-core-0.7.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-distribution-0.7/math/target/mahout-math-0.7.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-distribution-0.7/integration/target/mahout-integration-0.7.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
