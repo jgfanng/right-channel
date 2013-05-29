@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/mahout-math"/>
 	<classpathentry kind="var" path="M2_REPO/org/mongodb/bson/2.5/bson-2.5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/mongodb/mongo-java-driver/2.5/mongo-java-driver-2.5.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/mahout-examples"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
