@@ -1,0 +1,23 @@
+515fc65b56b0e7b4589478a4,4.2,燃情岁月 / Legends of the Fall
+515fe56656b0e7b4589489c6,4.3,十三度凶间 / The Thirteenth Floor
+515fccf856b0e7b458947cf2,3.7,最后的莫希干人 / The Last of the Mohicans
+51600f8756b0e7b45894a51e,4.0,冷山 / Cold Mountain
+515fc18456b0e7b458947573,3.5,天才瑞普利 / The Talented Mr. Ripley
+51601a2a56b0e7b45894abc5,3.9,八面埋伏 / Mindhunters
+516057fc56b0e7b45894cd40,4.6,致命魔术 / The Prestige
+51627b8856b0e7b4589576ed,3.7,死寂 / Dead Silence
+5160d35d56b0e7b458950b41,3.8,孤堡惊情 / El orfanato
+51601a0d56b0e7b45894abb3,4.4,V字仇杀队 / V for Vendetta
+516019ef56b0e7b45894aba0,3.6,罪恶之城 / Sin City
+515faceab28b9195a04b66b5,4.2,终结者2 / Terminator 2: Judgment Day
+515fb39756b0e7b458946c70,4.3,勇闯夺命岛 / The Rock
+515fd36d56b0e7b458948136,4.3,加勒比海盗 / Pirates of the Caribbean: The Curse of the Black Pearl
+515ffc4e56b0e7b458949894,4.4,谍影重重 / The Bourne Identity
+51605fdc56b0e7b45894d181,4.1,热血警探 / Hot Fuzz
+515fb84e56b0e7b458946f8e,4.5,角斗士 / Gladiator
+5160289556b0e7b45894b3dd,4.1,血钻 / Blood Diamond
+516010e656b0e7b45894a5e9,3.8,火柴人 / Matchstick Men
+515fba3556b0e7b4589470ac,3.3,钢琴课 / The Piano
+515fb13a56b0e7b458946af5,4.3,海上钢琴师 / La leggenda del pianista sull'oceano
+516067ca56b0e7b45894d619,5.0,蝙蝠侠：黑暗骑士 / The Dark Knight
+5160185056b0e7b45894aa94,4.0,僵尸肖恩 / Shaun of the Dead
