@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.common.Weighting;
 import org.apache.mahout.cf.taste.impl.model.mongodb.MongoDBDataModel;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
-import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.UncenteredCosineSimilarity;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
@@ -40,13 +41,22 @@ public class ItemBasedRecommender {
 				"right-channel", ratingCollection, false, false, null,
 				"user_id", "movie_id", "rating",
 				MongoDBDataModel.DEFAULT_MONGO_MAP_COLLECTION);
-		ItemSimilarity similarity = new PearsonCorrelationSimilarity(model);
+		ItemSimilarity similarity = new UncenteredCosineSimilarity(model);
 		Recommender recommender = new GenericItemBasedRecommender(model,
 				similarity);
 		List<RecommendedItem> recommendations = recommender.recommend(Long
 				.parseLong(model.fromIdToLong(new ObjectId(
 						"518ce9df4597b5adead4b61d").toStringMongod(), false)),
 				1000);
+		// UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+		// UserNeighborhood neighborhood = new NearestNUserNeighborhood(100,
+		// similarity, model);
+		// Recommender recommender = new GenericUserBasedRecommender(model,
+		// neighborhood, similarity);
+		// List<RecommendedItem> recommendations = recommender.recommend(Long
+		// .parseLong(model.fromIdToLong(new ObjectId(
+		// "518ce9df4597b5adead4b61d").toStringMongod(), false)),
+		// 1000);
 		// List<RecommendedItem> recommendations = recommender.recommend(4, 5);
 		for (RecommendedItem recommendation : recommendations) {
 			ObjectId movie_id = new ObjectId(model.fromLongToId(recommendation
@@ -80,5 +90,4 @@ public class ItemBasedRecommender {
 		// }
 
 	}
-
 }

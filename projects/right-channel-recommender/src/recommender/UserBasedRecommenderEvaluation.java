@@ -25,7 +25,7 @@ public class UserBasedRecommenderEvaluation {
 	 */
 	public static void main(String[] args) throws IOException, TasteException {
 		DataModel model = new GroupLensDataModel(new File(
-				"/home/yapianyu/Desktop/ml-10M100K/ratings.dat"));
+				"/home/yapianyu/Desktop/ml-1m/ratings.dat"));
 		// RecommenderEvaluator evaluator = new RMSRecommenderEvaluator();
 		RecommenderEvaluator evaluator = new AverageAbsoluteDifferenceRecommenderEvaluator();
 		RecommenderBuilder recommenderBuilder = new RecommenderBuilder() {

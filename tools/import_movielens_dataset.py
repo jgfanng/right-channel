@@ -16,7 +16,7 @@ ml_10m_folder = '/home/yapianyu/Desktop/movielens/ml-10M100K/'
 mongodb = Connection('127.0.0.1', 27017)['right-channel']
 elasticsearch = ES(('http', '127.0.0.1', 9200))
 
-def get_movie_num_each_year():
+def count_movie_num_each_year():
     movie_num = {}
     f = open(ml_10m_folder + 'movies.dat')
     for line in f:
@@ -28,7 +28,7 @@ def get_movie_num_each_year():
 
     d = collections.OrderedDict(sorted(movie_num.items(), key=lambda t:-t[0]))
     for year, num in d.items():
-        print year, num
+        print year, '\t', num
 
 def create_72000_users():
     for uid in range(1, 72001):
@@ -73,24 +73,23 @@ def find_most_similar_movie(movie_title, movie_year):
         original_title = r.get('original_title')
         aka = r.get('aka')
         year = r.get('year')
-
-        score = 0
-        if title:
-            score = max(calc_similarity(title, movie_title), score)
-        if original_title:
-            score = max(calc_similarity(original_title, movie_title), score)
-        if aka:
-            for t in aka:
-                score = max(calc_similarity(t, movie_title), score)
+        
         if year and year == movie_year:
-            score += 1
-
-        if score > max_score:
-            max_score = score
-            max_movie = r
-
-        if max_score > 1.9999:
-            break
+            score = 0
+            if title:
+                score = max(calc_similarity(title, movie_title), score)
+            if original_title:
+                score = max(calc_similarity(original_title, movie_title), score)
+            if aka:
+                for t in aka:
+                    score = max(calc_similarity(t, movie_title), score)
+    
+            if score > max_score:
+                max_score = score
+                max_movie = r
+    
+            if max_score > 0.9999:
+                break
 
     return max_movie, max_score
 
@@ -159,6 +158,10 @@ def import_ml_10m_to_mongodb():
         year = mid2year[mid]
         rating = float(rating)
 
+        if int(year) < 1990:  # need to ignore those early than 1990
+            print year, line.strip()
+            continue
+
         similar_movie, score = find_most_similar_movie(title, year)
         if similar_movie:
             mongodb['ratings'].update({'user_id': email2objid[email], 'movie_id': ObjectId(similar_movie['_id'])},
@@ -166,4 +169,4 @@ def import_ml_10m_to_mongodb():
                                       upsert=True)
             print score, uid, mid, rating
 
-import_ml_100k_to_mongodb()
+import_ml_10m_to_mongodb()
