@@ -5,27 +5,14 @@ Created on May 28, 2013
 '''
 from pymongo.connection import Connection
 
-data1 = """1,1,5.0
-1,2,3.0
-1,3,2.5
-2,1,2.0
-2,2,2.5
-2,3,5.0
-2,4,2.0
-3,1,2.5
-3,4,4.0
-3,5,4.5
-3,7,5.0
-4,1,5.0
-4,3,3.0
-4,4,4.5
-4,6,4.0
-5,1,4.0
-5,2,3.0
-5,3,2.0
-5,4,4.0
-5,5,3.5
-5,6,4.0
+data1 = """1,4,1.1
+1,5,4.8
+1,6,4.9
+2,4,1
+2,5,4.9
+2,6,4.8
+3,5,4.7
+3,6,4.85
 """
 
 data2 = """|       1 |     101 |          5 |
@@ -52,8 +39,9 @@ data2 = """|       1 |     101 |          5 |
 """
 
 db = Connection('127.0.0.1', 27017)['right-channel']
-for line in data2.splitlines():
-    fields = [field.strip() for field in line.split('|') if field.strip()]
+db['demo_ratings'].remove()
+for line in data1.splitlines():
+    fields = [field.strip() for field in line.split(',') if field.strip()]
     u = fields[0]
     m = fields[1]
     r = float(fields[2])
