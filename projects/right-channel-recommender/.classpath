@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" path="src/demo/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mahout-core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mahout-integration"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mahout-math"/>
 	<classpathentry kind="var" path="M2_REPO/org/mongodb/bson/2.5/bson-2.5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/mongodb/mongo-java-driver/2.5/mongo-java-driver-2.5.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mahout-examples"/>
+	<classpathentry kind="lib" path="lib/commons-math3-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/mongo-java-driver-2.11.1.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-nop-1.7.5.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/core/target/mahout-core-0.8-SNAPSHOT.jar" sourcepath="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/core/target/mahout-core-0.8-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/core/target/mahout-core-0.8-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/examples/target/mahout-examples-0.8-SNAPSHOT.jar" sourcepath="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/examples/target/mahout-examples-0.8-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/examples/target/mahout-examples-0.8-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/integration/target/mahout-integration-0.8-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/integration/target/mahout-integration-0.8-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/math/target/mahout-math-0.8-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/yapianyu/work/3rdparty/mahout-snapshot-0.8#2033/math/target/mahout-math-0.8-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

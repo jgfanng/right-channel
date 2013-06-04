@@ -66,7 +66,7 @@ def find_most_similar_movie(movie_title, movie_year):
 
     return max_movie
 
-def complete_movielens_movie_info():
+def refine_movielens_movie_info():
     # create mid dict
     fin = codecs.open(ml_10m_folder + 'movies.dat', encoding='utf-8')
     fout = codecs.open(ml_10m_folder + 'movies2.dat', mode='w', encoding='utf-8')
@@ -86,4 +86,4 @@ def complete_movielens_movie_info():
         line = line + '\n'
         fout.write(line)
 
-complete_movielens_movie_info()
+refine_movielens_movie_info()
