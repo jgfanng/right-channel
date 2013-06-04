@@ -32,14 +32,15 @@ public class ItemBasedRecommender {
 		List<RecommendedItem> recommendations = recommender.recommend(72000,
 				1000);
 
-		HashMap<String, String> mid2minfo = new HashMap<String, String>();
+		HashMap<Long, String> mid2minfo = new HashMap<Long, String>();
 		for (String line : new FileLineIterable(new File(movieFilePath), false)) {
 			String DELIMITER = "::";
-			String mid = line.substring(0, line.indexOf(DELIMITER));
+			Long mid = Long
+					.parseLong(line.substring(0, line.indexOf(DELIMITER)));
 			mid2minfo.put(mid, line);
 		}
 		for (RecommendedItem recommendation : recommendations) {
-			String mid = String.valueOf(recommendation.getItemID());
+			Long mid = recommendation.getItemID();
 			System.out.println(String.format("%.3f", recommendation.getValue())
 					+ "\t" + mid2minfo.get(mid));
 		}
