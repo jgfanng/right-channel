@@ -1,0 +1,10 @@
+=========Indexes============================================================
+db.recommendations.ensureIndex({"user_id": 1, "movie_id": 1}, {unique: true})
+db.recommendations.ensureIndex({"user_id": 1, "rating": -1})
+
+=========Schema=============================================================
+{
+    "user_id": ObjectId("50d078400c468ecda4b66a5a"),
+    "movie_id": ObjectId("50d078400c468ecda4b66a5a"),
+    "rating": 5
+}

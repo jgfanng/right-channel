@@ -1,4 +1,4 @@
-package com.rightchannel.demo;
+package com.rightchannel.demo.evaluation;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,19 +9,19 @@ import org.apache.mahout.cf.taste.eval.RecommenderBuilder;
 import org.apache.mahout.cf.taste.eval.RecommenderEvaluator;
 import org.apache.mahout.cf.taste.example.grouplens.GroupLensDataModel;
 import org.apache.mahout.cf.taste.impl.eval.AverageAbsoluteDifferenceRecommenderEvaluator;
-import org.apache.mahout.cf.taste.impl.recommender.BiasedItemBasedRecommender;
+import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 
-public class BiasedItemBasedRecommenderEvaluation {
+public class ItemBasedRecommenderEvaluation {
 
 	public final static String ratingsFilePath = "/home/yapianyu/Desktop/movielens/ml-10M100K/ratings.dat";
 
 	public static void main(String[] args) throws IOException, TasteException {
-		itemBasedUnweighted();// MAE: 0.667200291477032
-		itemBasedWeighted();// MAE: 0.668427549180065
+		itemBasedUnweighted();// MAE: 0.7429217218439857
+		itemBasedWeighted();// MAE: 0.7439015219258323
 	}
 
 	public static void itemBasedUnweighted() throws IOException, TasteException {
@@ -33,7 +33,7 @@ public class BiasedItemBasedRecommenderEvaluation {
 					throws TasteException {
 				ItemSimilarity similarity = new PearsonCorrelationSimilarity(
 						model);
-				return new BiasedItemBasedRecommender(model, similarity);
+				return new GenericItemBasedRecommender(model, similarity);
 			}
 		};
 		double score = evaluator.evaluate(recommenderBuilder, null, model,
@@ -50,7 +50,7 @@ public class BiasedItemBasedRecommenderEvaluation {
 					throws TasteException {
 				ItemSimilarity similarity = new PearsonCorrelationSimilarity(
 						model, Weighting.WEIGHTED);
-				return new BiasedItemBasedRecommender(model, similarity);
+				return new GenericItemBasedRecommender(model, similarity);
 			}
 		};
 		double score = evaluator.evaluate(recommenderBuilder, null, model,

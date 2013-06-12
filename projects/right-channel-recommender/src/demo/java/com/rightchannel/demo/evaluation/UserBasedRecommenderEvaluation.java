@@ -1,4 +1,4 @@
-package com.rightchannel.demo;
+package com.rightchannel.demo.evaluation;
 
 import java.io.File;
 import java.io.IOException;

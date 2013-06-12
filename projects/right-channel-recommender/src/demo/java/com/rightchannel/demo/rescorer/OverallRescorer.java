@@ -1,18 +1,15 @@
-package com.rightchannel.rescorer;
+package com.rightchannel.demo.rescorer;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.mahout.cf.taste.recommender.IDRescorer;
 
-import com.mongodb.MongoException;
-
 public class OverallRescorer implements IDRescorer {
 
 	private List<IDRescorer> rescorerPipeline;
 
-	public OverallRescorer() throws UnknownHostException, MongoException {
+	public OverallRescorer() {
 		rescorerPipeline = new ArrayList<IDRescorer>();
 		rescorerPipeline.add(new YearRescorer());
 		rescorerPipeline.add(new RatingRescorer());

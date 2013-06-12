@@ -6,12 +6,11 @@ Created on Mar 13, 2013
 from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler, user_profile
 from settings import mongodb
-from tornado.web import HTTPError
 import datetime
 import tornado.gen
 import tornado.web
 
-class RatingHandler(BaseHandler):
+class MovieRatingHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -23,9 +22,9 @@ class RatingHandler(BaseHandler):
             try:
                 rating = float(rating)
             except:
-                raise HTTPError(400)
+                raise tornado.web.HTTPError(400)
             if rating < 0 or rating > 5:
-                raise HTTPError(400)
+                raise tornado.web.HTTPError(400)
 
             try:
                 _, error = yield tornado.gen.Task(mongodb['ratings'].update,
@@ -40,4 +39,4 @@ class RatingHandler(BaseHandler):
 
             self.finish()
         else:
-            raise HTTPError(401)  # Unauthorized
+            raise tornado.web.HTTPError(401)  # Unauthorized

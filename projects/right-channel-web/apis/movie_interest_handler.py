@@ -6,12 +6,11 @@ Created on Mar 13, 2013
 from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler, user_profile
 from settings import mongodb
-from tornado.web import HTTPError
 import datetime
 import tornado.gen
 import tornado.web
 
-class InterestHandler(BaseHandler):
+class MovieInterestHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -21,7 +20,7 @@ class InterestHandler(BaseHandler):
             user_id = user.get('_id')
             interest_type = self.get_argument('interest_type')
             if interest_type not in ['to_watch', 'watched', 'not_interested']:
-                raise HTTPError(400)
+                raise tornado.web.HTTPError(400)
 
             try:
                 _, error = yield tornado.gen.Task(mongodb['interests'].update,
@@ -36,7 +35,7 @@ class InterestHandler(BaseHandler):
 
             self.finish()
         else:
-            raise HTTPError(401)  # Unauthorized
+            raise tornado.web.HTTPError(401)  # Unauthorized
 
     @user_profile
     @tornado.web.asynchronous
@@ -44,8 +43,8 @@ class InterestHandler(BaseHandler):
     def delete(self, movie_id):
         user = self.params.get('user')
         if user:
+            user_id = user.get('_id')
             try:
-                user_id = user.get('_id')
                 _, error = yield tornado.gen.Task(mongodb['interests'].remove,
                                                   {'user_id': user_id, 'movie_id': ObjectId(movie_id)})
             except:
@@ -56,4 +55,4 @@ class InterestHandler(BaseHandler):
 
             self.finish()
         else:
-            raise HTTPError(401)  # Unauthorized
+            raise tornado.web.HTTPError(401)  # Unauthorized

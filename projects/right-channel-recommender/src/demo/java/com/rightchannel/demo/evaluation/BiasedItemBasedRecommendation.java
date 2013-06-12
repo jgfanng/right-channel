@@ -1,4 +1,4 @@
-package com.rightchannel.recommender;
+package com.rightchannel.demo.evaluation;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +17,9 @@ import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.common.iterator.FileLineIterable;
 
 import com.mongodb.MongoException;
-import com.rightchannel.rescorer.OverallRescorer;
+import com.rightchannel.demo.rescorer.OverallRescorer;
 
-public class ItemBasedRecommender {
+public class BiasedItemBasedRecommendation {
 
 	public static HashMap<Long, Long> mid2year = new HashMap<Long, Long>();
 	public static HashMap<Long, String> mid2title = new HashMap<Long, String>();
