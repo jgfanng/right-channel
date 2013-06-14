@@ -163,7 +163,7 @@ $(function() {
 					$not_interested_btn.attr('title', '已标记为没兴趣');
 				}
 
-				var toolbar_div = '<div class="btn-group user-behaviors">{0}{1}{2}</div>'
+				var toolbar_div = '<div class="btn-group user-interest">{0}{1}{2}</div>'
 						.format($to_watch_btn.wrap('<div>').parent().html(), $watched_btn.wrap('<div>').parent().html(), $not_interested_btn.wrap('<div>').parent().html());
 			}
 
