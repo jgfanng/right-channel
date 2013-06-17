@@ -2,15 +2,15 @@
 {% block content %}
   {% if params.get('movie') %}
     {% set movie = params.get('movie') %}
-    <div class="row-fluid container-bordered default-margin default-padding">
+    <div class="row-fluid container-bordered margin-vertical padding-horizontal">
       <div class="row-fluid">
         <div class="span3">
-          <div class="row-fluid default-margin">
+          <div class="row-fluid margin-vertical">
             <a>
               <img src="http://img3.douban.com/lpic/s11356673.jpg">
             </a>
           </div>
-          <div class="row-fluid default-margin">
+          <div class="row-fluid margin-vertical">
             {% include ../modules/share.html %}
           </div>
         </div>
@@ -71,7 +71,7 @@
           {% else %}
           	{% set playable = False %}
           {% end %}
-          <div class="row-fluid default-margin">
+          <div class="row-fluid margin-vertical">
             {% if playable %}
               <div class="btn-group pull-left">
                 <button class="btn btn-small btn-primary"><i class="icon-play-circle icon-white"></i> 立即观看</button>
@@ -112,7 +112,7 @@
           </div>
           
           {% if playable %}
-            <div id="onlineResources" class="row-fluid default-margin collapse">
+            <div id="onlineResources" class="row-fluid margin-vertical collapse">
               <ul class="ul-horizontal">
                 {% from settings import settings %}
                 {% for provider in movie.get('resources').get('online').keys() %}

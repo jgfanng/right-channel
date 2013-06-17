@@ -10,7 +10,7 @@ import datetime
 import tornado.gen
 import tornado.web
 
-class MovieInterestHandler(BaseHandler):
+class MovieInterestAPIHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine

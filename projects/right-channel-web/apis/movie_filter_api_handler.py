@@ -11,7 +11,7 @@ import json
 import tornado.gen
 import tornado.web
 
-class MovieFilterHandler(BaseHandler):
+class MovieFilterAPIHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine

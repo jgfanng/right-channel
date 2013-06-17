@@ -1,0 +1,20 @@
+{% extends ../layout/layout.html %}
+
+{% block content %}
+
+  <div id="content" class="margin-vertical row">
+    <ul class="poster-gallery">
+    </ul>
+  </div>
+
+  <div id="ajaxLoader" class="row-fluid" style="display: none;">
+    {% include ../modules/ajax_loader.html %}
+  </div>
+
+{% end %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/load-more-recommendations.js') }}"></script>
+{% end %}

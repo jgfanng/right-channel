@@ -2,8 +2,8 @@
 
 {% block content %}
 
-  <div class="container-bordered default-margin default-padding category-selection">
-    <div class="row-fluid default-margin">
+  <div class="container-bordered margin-vertical padding-horizontal category-selection">
+    <div class="row-fluid margin-vertical">
       <strong class="pull-left">类型</strong>
       <ul id="genre" data="{{ params.get('genre') }}">
         {% from settings import settings %}
@@ -17,7 +17,7 @@
         {% end %}
       </ul>
     </div>
-    <div class="row-fluid default-margin">
+    <div class="row-fluid margin-vertical">
       <strong class="pull-left">地区</strong>
       <ul id="country" data="{{ params.get('country') }}">
         {% from settings import settings %}
@@ -31,7 +31,7 @@
         {% end %}
       </ul>
     </div>
-    <div class="row-fluid default-margin">
+    <div class="row-fluid margin-vertical">
       <strong class="pull-left">年份</strong>
       <ul id="year" data="{{ params.get('year') }}">
         {% from settings import settings %}
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <div class="row-fluid default-margin">
+  <div class="row-fluid margin-vertical">
     <div class="pull-right">
       {% include ../modules/sort_switcher.html %}
       {% include ../modules/resource_switcher.html %}

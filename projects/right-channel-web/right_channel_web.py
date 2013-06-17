@@ -3,10 +3,10 @@ Created on Jan 16, 2013
 
 @author: Fang Jiaguo
 '''
-from apis.movie_filter_handler import MovieFilterHandler
-from apis.movie_interest_handler import MovieInterestHandler
-from apis.movie_rating_handler import MovieRatingHandler
-from apis.movie_recommendation_handler import MovieRecommendationHandler
+from apis.movie_filter_api_handler import MovieFilterAPIHandler
+from apis.movie_interest_api_handler import MovieInterestAPIHandler
+from apis.movie_rating_api_handler import MovieRatingAPIHandler
+from apis.movie_recommendation_api_handler import MovieRecommendationAPIHandler
 from handlers.default_handler import DefaultHandler
 from handlers.edit_password_handler import EditPasswordHandler
 from handlers.edit_profile_handler import EditProfileHandler
@@ -16,6 +16,7 @@ from handlers.login_handler import LoginHandler
 from handlers.logout_handler import LogoutHandler
 from handlers.movie_category_handler import MovieCategoryHandler
 from handlers.movie_profile_handler import MovieProfileHandler
+from handlers.movie_recommendation_handler import MovieRecommendationHandler
 from handlers.register_handler import RegisterHandler
 from handlers.to_watch_handler import ToWatchHandler
 from handlers.watched_handler import WatchedHandler
@@ -26,6 +27,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', HomeHandler),
+            (r'/movie/recommendation', MovieRecommendationHandler),
             (r'/movie', MovieCategoryHandler),
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieProfileHandler),
@@ -37,10 +39,10 @@ class Application(tornado.web.Application):
             (r'/login', LoginHandler),
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
-            (r'/api/movie', MovieFilterHandler),
-            (r'/api/interest/([0-9a-f]{24})', MovieInterestHandler),
-            (r'/api/rating/([0-9a-f]{24})', MovieRatingHandler),
-            (r'/api/movie/recommendation', MovieRecommendationHandler),
+            (r'/api/movie', MovieFilterAPIHandler),
+            (r'/api/interest/([0-9a-f]{24})', MovieInterestAPIHandler),
+            (r'/api/rating/([0-9a-f]{24})', MovieRatingAPIHandler),
+            (r'/api/movie/recommendation', MovieRecommendationAPIHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

@@ -310,28 +310,44 @@ strong {
   border-radius: 3px;
 } */
 
-/***** poster *****/
+/***** poster gallery *****/
 
-.poster-container {
+.poster-gallery {
+    margin-left: 5px;
+    list-style: none;
+}
+
+.poster-gallery > li {
+    margin: 0 0 15px 14px;
+    float: left;
+}
+
+.poster-gallery-element {
     position: relative;
 }
 
+/***** poster *****/
+
+/*.poster-container {
+    position: relative;
+}*/
+
 .poster-medium {
-    width: 100px;
-    height: 145px;
+    width: 143px;
+    height: 210px;
 }
 
-.poster-play-mask {
+/*.poster-play-mask {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 0;gallery
     bottom: 0;
     left: 0;
     background-image: url("../img/play-white.png");
     background-repeat: no-repeat;
     background-position: center;
     background-color: rgba(0, 0, 0, .5);
-}
+}*/
 
 .poster-badge {
     position: absolute;
@@ -340,7 +356,7 @@ strong {
     right: 0;
     color: white;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, .75);
 }
 
 .poster-badge-top {
@@ -351,8 +367,7 @@ strong {
     bottom: 0;
 }
 
-.poster-container .caption,
-.poster-container .duration {
+.poster-gallery-element .caption {
     text-align: center;
 }
 
@@ -411,11 +426,12 @@ form .help-error {
 
 /***** misc ******/
 
-.default-margin {
-    margin: 10px 0;
+.margin-vertical {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-.default-padding {
+.padding-horizontal {
     padding: 0 10px;
 }
 
