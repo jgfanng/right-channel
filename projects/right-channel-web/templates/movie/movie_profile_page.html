@@ -133,8 +133,11 @@
   {% end %}
 {% end %}
 
+{% block extra_links %}
+  <link rel="stylesheet" type="text/css" href="{{ static_url('css/star-rating.css') }}">
+{% end %}
+
 {% block extra_scripts %}
-  <script type="text/javascript" src="{{ static_url('js/jquery.raty.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/rating.js') }}"></script>

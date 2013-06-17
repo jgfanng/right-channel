@@ -1,0 +1,73 @@
+/* star rating code - use lists because its more semantic */
+/* No javascript required */
+
+/* the default rating is placed as a background image in the ul */
+/* use the background position according to the table above to display the required images*/
+.star-rating{
+	width:80px;
+	height:16px;
+	margin:0;
+	padding:0;
+	list-style:none;
+	clear:both;
+	position:relative;
+	background: url(../img/star-matrix.png) no-repeat 0 0;
+}
+
+/* add these classes to the ul to effect the change to the correct number of stars */
+.star-rating00 {background-position:0 0}
+.star-rating05 {background-position:0 -16px}
+.star-rating10 {background-position:0 -32px}
+.star-rating15 {background-position:0 -48px}
+.star-rating20 {background-position:0 -64px}
+.star-rating25 {background-position:0 -80px}
+.star-rating30 {background-position:0 -96px}
+.star-rating35 {background-position:0 -112px}
+.star-rating40 {background-position:0 -128px}
+.star-rating45 {background-position:0 -144px}
+.star-rating50 {background-position:0 -160px}
+
+ul.star-rating li {
+	cursor: pointer;
+ /*ie5 mac doesn't like it if the list is floated\*/
+	float:left;
+	/* end hide*/
+	text-indent:-999em;
+}
+ul.star-rating li a {
+	position:absolute;
+	left:0;
+	top:0;
+	width:8px;
+	height:16px;
+	text-decoration:none;
+	z-index: 200;
+}
+ul.star-rating li.star05 a {left:0}
+ul.star-rating li.star10 a {left:8px}
+ul.star-rating li.star15 a {left:16px}
+ul.star-rating li.star20 a {left:24px}
+ul.star-rating li.star25 a {left:32px}
+ul.star-rating li.star30 a {left:40px}
+ul.star-rating li.star35 a {left:48px}
+ul.star-rating li.star40 a {left:56px}
+ul.star-rating li.star45 a {left:64px}
+ul.star-rating li.star50 a {left:72px}
+ul.star-rating li a:hover {
+	z-index:2;
+	width:80px;
+	height:16px;
+	/*overflow:hidden;*/
+	left:0;	
+	background: url(../img/star-matrix.png) no-repeat 0 0;
+}
+ul.star-rating li.star05 a:hover {background-position:0 -16px;}
+ul.star-rating li.star10 a:hover {background-position:0 -32px;}
+ul.star-rating li.star15 a:hover {background-position:0 -48px;}
+ul.star-rating li.star20 a:hover {background-position:0 -64px;}
+ul.star-rating li.star25 a:hover {background-position:0 -80px;}
+ul.star-rating li.star30 a:hover {background-position:0 -96px;}
+ul.star-rating li.star35 a:hover {background-position:0 -112px;}
+ul.star-rating li.star40 a:hover {background-position:0 -128px;}
+ul.star-rating li.star45 a:hover {background-position:0 -144px;}
+ul.star-rating li.star50 a:hover {background-position:0 -160px;}
