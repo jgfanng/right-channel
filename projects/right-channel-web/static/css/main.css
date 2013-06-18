@@ -1,5 +1,4 @@
 /***** bootstrap styles *****/
-
 .navbar-inner {
     min-height: 40px
 }
@@ -12,14 +11,12 @@
     padding: 10px 15px 10px
 }
 
-.navbar-fixed-top .navbar-inner,
-.navbar-static-top .navbar-inner {
+.navbar-fixed-top .navbar-inner,.navbar-static-top .navbar-inner {
     border-bottom: 3px solid #f89406
 }
 
-.navbar .nav>.active>a,
-.navbar .nav>.active>a:hover,
-.navbar .nav>.active>a:focus {
+.navbar .nav>.active>a,.navbar .nav>.active>a:hover,.navbar .nav>.active>a:focus
+    {
     background-color: #333
 }
 
@@ -33,8 +30,8 @@
     padding: 0px 6px
 }
 
-.dropdown-menu > li > a {
-  color: #333;
+.dropdown-menu>li>a {
+    color: #333;
 }
 
 .badge {
@@ -43,13 +40,12 @@
 }
 
 .muted {
-  color: #999;
+    color: #999;
 }
 
-[class^="icon-"],
-[class*=" icon-"] {
+[class^="icon-"],[class*=" icon-"] {
     margin: 0;
-/*     vertical-align: text-top; */
+    /*     vertical-align: text-top; */
 }
 
 /* legend {
@@ -58,14 +54,13 @@
 } */
 
 /***** generic styles *****/
-
 body {
     padding-top: 43px;
     color: #555;
     background-color: #dce0d3;
 }
 
-a:link, a:visited, a:hover, a:active {
+a:link,a:visited,a:hover,a:active {
     text-decoration: none
 }
 
@@ -84,7 +79,6 @@ strong {
 } */
 
 /***** table *****/
-
 .table {
     margin-bottom: 0px
 }
@@ -106,13 +100,11 @@ strong {
     border-top: 1px dashed #ababab
 }
 
-.table-hover tbody tr:hover > td,
-.table-hover tbody tr:hover > th {
+.table-hover tbody tr:hover>td,.table-hover tbody tr:hover>th {
     background-color: #f3f3f3;
 }
 
 /***** category selection *****/
-
 .category-selection {
     font-size: 12px;
 }
@@ -185,13 +177,12 @@ strong {
 } */
 
 /***** gallery *****/
-
 .gallery {
     margin-left: 12px;
     list-style: none;
 }
 
-.gallery > li {
+.gallery>li {
     margin: 0 0 8px 8px;
     float: left;
 }
@@ -208,7 +199,6 @@ strong {
   margin-right: 0;
   float: right;
 } */
-
 .gallery-element {
     padding: 10px;
     font-size: 12px;
@@ -310,31 +300,48 @@ strong {
   border-radius: 3px;
 } */
 
-/***** poster gallery *****/
-
-.poster-gallery {
+/* poster thumbnails */
+.poster-thumbnails {
     margin-left: 5px;
     list-style: none;
 }
 
-.poster-gallery > li {
+.poster-thumbnails > li {
     margin: 0 0 15px 14px;
     float: left;
 }
 
-.poster-gallery-element {
+.poster-thumbnail {
     position: relative;
 }
-
-/***** poster *****/
-
-/*.poster-container {
-    position: relative;
-}*/
 
 .poster-medium {
     width: 143px;
     height: 210px;
+}
+
+.poster-badge {
+    position: absolute;
+    padding: 2px 4px;
+    left: 0;
+    right: 0;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, .75);
+}
+
+.poster-badge-top {
+    top: 0;
+}
+
+.poster-badge-bottom {
+    bottom: 0;
+}
+
+.poster-badge-caption {
+    text-align: center;
 }
 
 /*.poster-play-mask {
@@ -349,35 +356,12 @@ strong {
     background-color: rgba(0, 0, 0, .5);
 }*/
 
-.poster-badge {
-    position: absolute;
-    padding: 0 4px;
-    left: 0;
-    right: 0;
-    color: white;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, .75);
-}
-
-.poster-badge-top {
-    top: 0;
-}
-
-.poster-badge-bottom {
-    bottom: 0;
-}
-
-.poster-gallery-element .caption {
-    text-align: center;
-}
-
 /* .poster-large {
     width: 220px;
     height: 330px;
 } */
 
 /***** movie profile *****/
-
 .profile h2 {
     margin: 0 0 5px 0;
 }
@@ -396,24 +380,22 @@ strong {
 } */
 
 /* horizontal ul */
-
 .ul-horizontal {
     list-style: none;
     margin: 0;
 }
 
-.ul-horizontal > li {
+.ul-horizontal>li {
     float: left;
     padding: 0 10px;
 }
 
-.ul-horizontal > li > a {
+.ul-horizontal>li>a {
     color: inherit;
     display: block;
 }
 
 /***** form *****/
-
 form .help-info {
     color: #999;
     font-size: 12px;
@@ -425,7 +407,6 @@ form .help-error {
 }
 
 /***** misc ******/
-
 .margin-vertical {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -440,23 +421,23 @@ form .help-error {
     border: 1px solid #bbb;
 }
 
-.douban-rating {
+/* .douban-rating {
     color: #007711;
     font-weight: bold;
-}
+} */
 
 .system-alert {
     margin: 10px 0;
 }
 
 .operation-alert {
-	position: fixed;
-	top: 20%;
-	left: 0;
-	right: 0;
-	margin: 0 auto;
-	width: 300px;
-	text-align: center;
+    position: fixed;
+    top: 20%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 300px;
+    text-align: center;
     display: none;
     opacity: 0.75;
 }
@@ -470,7 +451,6 @@ form .help-error {
 } */
 
 /***** images *****/
-
 .ajax-loader {
     background-image: url("../img/ajax-loader.gif");
     background-repeat: no-repeat;
@@ -481,9 +461,7 @@ form .help-error {
 }
 
 /* platform logos */
-
-[class^="logo-platform-"],
-[class*=" logo-platform-"] {
+[class^="logo-platform-"],[class*=" logo-platform-"] {
     background: url(../img/platform-logos.png) no-repeat;
     display: inline-block;
     vertical-align: text-top;
@@ -495,7 +473,6 @@ form .help-error {
     vertical-align: -2px;
     vertical-align: text-top;
 } */
-
 .logo-platform-douban {
     width: 16px;
     height: 16px;
@@ -519,7 +496,6 @@ form .help-error {
     height: 16px;
     background-position: -0px -48px;
 }
-
 
 /* th {
 background-color: #dce9f9;

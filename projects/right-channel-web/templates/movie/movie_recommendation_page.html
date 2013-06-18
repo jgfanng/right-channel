@@ -2,19 +2,33 @@
 
 {% block content %}
 
-  <div id="content" class="margin-vertical row">
-    <ul class="poster-gallery">
-    </ul>
-  </div>
+	<div class="margin-vertical row poster-thumbnails-container">
+	   <ul class="poster-thumbnails">
+	   </ul>
+	</div>
 
-  <div id="ajaxLoader" class="row-fluid" style="display: none;">
-    {% include ../modules/ajax_loader.html %}
-  </div>
+	<div class="row-fluid ajax-loader" style="display: none;">
+	</div>
 
 {% end %}
 
+{% block extra_links %}
+    <link rel="stylesheet" type="text/css" href="{{ static_url('css/star-rating.css') }}">
+{% end %}
+
 {% block extra_scripts %}
-  <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
-  <script type="text/javascript" src="{{ static_url('js/load-more-recommendations.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
+	<script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
+	<script type="text/javascript" src="{{ static_url('js/load-more-rcmds.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.poster-thumbnails-container').on('mouseenter', '.poster-thumbnail', function() {
+            	$(this).children('.douban-rating').fadeOut();
+            	$(this).children('.user-rating').fadeIn();
+            }).on('mouseleave', '.playable', function() {
+            	$(this).children('.douban-rating').fadeIn();
+            	$(this).children('.user-rating').fadeOut();
+            });
+        });
+    </script>
 {% end %}
