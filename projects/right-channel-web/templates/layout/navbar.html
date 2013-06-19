@@ -1,12 +1,16 @@
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="/">Right Channel</a>
+      <a class="brand" href="/">电影来了</a>
       <div class="pull-right">
         <ul class="nav">
           <li {% if params.get('site_nav') == '/' %} class="active" {% end %}><a href="/">首页</a></li>
-          <li {% if params.get('site_nav') == 'rating' %} class="active" {% end %}><a href="/movie/rating">我来评分</a></li>
-          <li {% if params.get('site_nav') == 'recommendation' %} class="active" {% end %}><a href="/movie/recommendation">给我推荐</a></li>
+          <li {% if params.get('site_nav') == 'rating' %} class="active" {% end %}>
+            <a href="/movie/rating"><i class="icon-star-empty icon-white"></i> 我来评分</a>
+          </li>
+          <li {% if params.get('site_nav') == 'recommendation' %} class="active" {% end %}>
+            <a href="/movie/recommendation"><i class="icon-thumbs-up icon-white"></i> 给我推荐</a>
+          </li>
           <li {% if params.get('site_nav') == 'movie' %} class="active" {% end %}><a href="/movie">电影</a></li>
           <li class="divider-vertical"></li>
           {% if 'user' in params and params.get('user') %}

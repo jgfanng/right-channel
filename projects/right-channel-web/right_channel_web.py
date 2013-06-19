@@ -6,7 +6,7 @@ Created on Jan 16, 2013
 from apis.movie_filter_api_handler import MovieFilterAPIHandler
 from apis.movie_interest_api_handler import MovieInterestAPIHandler
 from apis.movie_rating_api_handler import MovieRatingAPIHandler
-from apis.movie_recommendation_api_handler import MovieRecommendationAPIHandler
+from apis.movie_rcmd_api_handler import MovieRcmdAPIHandler
 from handlers.default_handler import DefaultHandler
 from handlers.edit_password_handler import EditPasswordHandler
 from handlers.edit_profile_handler import EditProfileHandler
@@ -40,9 +40,9 @@ class Application(tornado.web.Application):
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
             (r'/api/movie', MovieFilterAPIHandler),
-            (r'/api/interest/([0-9a-f]{24})', MovieInterestAPIHandler),
-            (r'/api/rating/([0-9a-f]{24})', MovieRatingAPIHandler),
-            (r'/api/movie/recommendation', MovieRecommendationAPIHandler),
+            (r'/api/movie/interest', MovieInterestAPIHandler),
+            (r'/api/movie/rating', MovieRatingAPIHandler),
+            (r'/api/movie/recommendation', MovieRcmdAPIHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

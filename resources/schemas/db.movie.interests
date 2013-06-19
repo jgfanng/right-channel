@@ -1,5 +1,5 @@
 =========Indexes============================================================
-db.interests.ensureIndex({"user_id": 1, "movie_id": 1}, {unique: true})
+db.movie.interests.ensureIndex({"user_id": 1, "movie_id": 1}, {unique: true})
 
 =========Schema=============================================================
 {

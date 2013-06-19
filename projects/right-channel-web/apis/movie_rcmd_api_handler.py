@@ -11,30 +11,32 @@ import json
 import tornado.gen
 import tornado.web
 
-class MovieRecommendationAPIHandler(BaseHandler):
+class MovieRcmdAPIHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
         """Get recommendations for current user.
-        
+
         :query string start: Start index of the recommendation list (optional, $start >= 0).
         :query string limit: Limited number of recommendations in a single request (optional, $upper_bound >= $limit > 0).
+
+        This API need to be authorized.
         """
         user = self.params.get('user')
         if not user:
             raise tornado.web.HTTPError(401)  # Unauthorized
 
         user_id = user.get('_id')
+        start = self.get_argument('start', 0)
         try:
-            start = self.get_argument('start', 0)
             start = int(start)
         except:
             start = 0
         if start < 0:
             start = 0
+        limit = self.get_argument('limit', settings['movie']['page_size'])
         try:
-            limit = self.get_argument('limit', settings['movie']['page_size'])
             limit = int(limit)
         except:
             limit = settings['application']['page_size']

@@ -1,7 +1,7 @@
 =========Indexes============================================================
-db.ratings.ensureIndex({"user_id": 1, "movie_id": 1}, {unique: true})
-db.ratings.ensureIndex({"user_id": 1})
-db.ratings.ensureIndex({"movie_id": 1})
+db.movie.ratings.ensureIndex({"user_id": 1, "movie_id": 1}, {unique: true})
+db.movie.ratings.ensureIndex({"user_id": 1})
+db.movie.ratings.ensureIndex({"movie_id": 1})
 
 =========Schema=============================================================
 {

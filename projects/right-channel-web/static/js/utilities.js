@@ -1,4 +1,3 @@
-/** *** utilities **** */
 $(function() {
 	String.prototype.format = function() {
 		var s = this;
@@ -11,7 +10,7 @@ $(function() {
 	};
 });
 
-function showOperationAlert(success, message) {
+/*function promptOperationAlert(success, message) {
     if (success) {
     	$('.operation-alert').removeClass('alert-error');
     	$('.operation-alert').addClass('alert-success');
@@ -21,4 +20,4 @@ function showOperationAlert(success, message) {
     }
     $('.operation-alert-msg').text(message);
     $('.operation-alert').fadeIn().delay(500).fadeOut();
-}
+}*/

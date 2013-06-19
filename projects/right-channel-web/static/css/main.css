@@ -1,4 +1,7 @@
 /***** bootstrap styles *****/
+.navbar {
+    font-size: 14px;
+}
 .navbar-inner {
     min-height: 40px
 }
@@ -58,6 +61,7 @@ body {
     padding-top: 43px;
     color: #555;
     background-color: #dce0d3;
+    font-size: 12px;
 }
 
 a:link,a:visited,a:hover,a:active {
@@ -322,11 +326,10 @@ strong {
 
 .poster-badge {
     position: absolute;
-    padding: 2px 4px;
+    padding: 2px 2px;
     left: 0;
     right: 0;
     color: white;
-    font-size: 12px;
     font-weight: bold;
     overflow: hidden;
     background-color: rgba(0, 0, 0, .75);
@@ -340,8 +343,18 @@ strong {
     bottom: 0;
 }
 
-.poster-badge-caption {
+.poster-badge .caption {
     text-align: center;
+}
+
+.poster-badge .douban-rating {
+    text-align: center;
+}
+
+.poster-badge .user-rating .star-rating {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 15px;
 }
 
 /*.poster-play-mask {
@@ -430,7 +443,7 @@ form .help-error {
     margin: 10px 0;
 }
 
-.operation-alert {
+/* .operation-alert {
     position: fixed;
     top: 20%;
     left: 0;
@@ -438,9 +451,8 @@ form .help-error {
     margin: 0 auto;
     width: 300px;
     text-align: center;
-    display: none;
     opacity: 0.75;
-}
+} */
 
 /* .p-indent {
     text-indent: 2em

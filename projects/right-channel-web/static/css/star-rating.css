@@ -10,10 +10,9 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    clear: both;
+    /*clear: both;*/
     position: relative;
     background: url(../img/star-matrix.png) no-repeat 0 0;
-    clear: both;
 }
 
 /* add these classes to the ul to effect the change to the correct number of stars */
