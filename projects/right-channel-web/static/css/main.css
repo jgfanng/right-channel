@@ -343,11 +343,9 @@ strong {
     bottom: 0;
 }
 
-.poster-badge .caption {
-    text-align: center;
-}
-
-.poster-badge .douban-rating {
+.poster-badge .caption,
+.poster-badge .douban-rating,
+.poster-badge .user-rating {
     text-align: center;
 }
 

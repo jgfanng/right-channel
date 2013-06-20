@@ -7,8 +7,10 @@
 .star-rating {
     width: 80px;
     height: 16px;
+    list-style: none;
     margin: 0;
     padding: 0;
+    /*clear: both;*/
     position: relative;
     background: url(../img/star-matrix.png) no-repeat 0 0;
 }
@@ -58,114 +60,107 @@
     background-position: 0 -160px
 }
 
-.star-rating a {
-    position: absolute;
+ul.star-rating li {
     cursor: pointer;
+    float: left;
+    /*text-indent:-999em;*/
+}
+
+ul.star-rating li a {
+    position: absolute;
     left: 0;
     top: 0;
     width: 8px;
     height: 16px;
     text-decoration: none;
-    z-index: 2;
-    /*     float: left; */
-    /*text-indent:-999em;*/
+    z-index: 200;
 }
 
-/* ul.star-rating li a { */
-/*     position: absolute; */
-/*     left: 0; */
-/*     top: 0; */
-/*     width: 8px; */
-/*     height: 16px; */
-/*     text-decoration: none; */
-/*     z-index: 200; */
-/* } */
-
-.star-rating a.r05 {
+ul.star-rating li.star05 a {
     left: 0
 }
 
-.star-rating a.r10 {
+ul.star-rating li.star10 a {
     left: 8px
 }
 
-.star-rating a.r15 {
+ul.star-rating li.star15 a {
     left: 16px
 }
 
-.star-rating a.r20 {
+ul.star-rating li.star20 a {
     left: 24px
 }
 
-.star-rating a.r25 {
+ul.star-rating li.star25 a {
     left: 32px
 }
 
-.star-rating a.r30 {
+ul.star-rating li.star30 a {
     left: 40px
 }
 
-.star-rating a.r35 {
+ul.star-rating li.star35 a {
     left: 48px
 }
 
-.star-rating a.r40 {
+ul.star-rating li.star40 a {
     left: 56px
 }
 
-.star-rating a.r45 {
+ul.star-rating li.star45 a {
     left: 64px
 }
 
-.star-rating a.r50 {
+ul.star-rating li.star50 a {
     left: 72px
 }
 
-.star-rating a:hover {
+ul.star-rating li a:hover {
+    z-index: 2;
     width: 80px;
     height: 16px;
     /*overflow:hidden;*/
     left: 0;
-    z-index: 1;
     background: url(../img/star-matrix.png) no-repeat 0 0;
 }
 
-.star-rating a.r05:hover {
+ul.star-rating li.star05 a:hover {
     background-position: 0 -16px;
 }
 
-.star-rating a.r10:hover {
+ul.star-rating li.star10 a:hover {
     background-position: 0 -32px;
 }
 
-.star-rating a.r15:hover {
+ul.star-rating li.star15 a:hover {
     background-position: 0 -48px;
 }
 
-.star-rating a.r20:hover {
+ul.star-rating li.star20 a:hover {
     background-position: 0 -64px;
 }
 
-.star-rating a.r25:hover {
+ul.star-rating li.star25 a:hover {
     background-position: 0 -80px;
 }
 
-.star-rating a.r30:hover {
+ul.star-rating li.star30 a:hover {
     background-position: 0 -96px;
 }
 
-.star-rating a.r35:hover {
+ul.star-rating li.star35 a:hover {
     background-position: 0 -112px;
 }
 
-.star-rating a.r40:hover {
+ul.star-rating li.star40 a:hover {
     background-position: 0 -128px;
 }
 
-.star-rating a.r45:hover {
+ul.star-rating li.star45 a:hover {
     background-position: 0 -144px;
 }
 
-.star-rating a.r50:hover {
+ul.star-rating li.star50 a:hover {
     background-position: 0 -160px;
 }

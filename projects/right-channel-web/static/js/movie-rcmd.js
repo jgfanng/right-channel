@@ -65,20 +65,20 @@ $(function() {
                 +                   '豆瓣评分: {0}'.format(('douban' in movie && 'rating' in movie.douban) ? movie.douban.rating : '未知')
                 +                '</div>'
                 +                '<div class="user-rating hide">'
-                +                    '<a href="/movie" title="立即观看" class="pull-left" target="_blank"><i class="icon-plus-sign icon-white"></i></a>'
-                +                    '<ul class="star-rating pull-left">'
-                +                        '<li class="star05"><a title="给电影打0.5分" data-rating="0.5"></a></li>'
-                +                        '<li class="star10"><a title="给电影打1分" data-rating="1"></a></li>'
-                +                        '<li class="star15"><a title="给电影打1.5分" data-rating="1.5"></a></li>'
-                +                        '<li class="star20"><a title="给电影打2分" data-rating="2"></a></li>'
-                +                        '<li class="star25"><a title="给电影打2.5分" data-rating="2.5"></a></li>'
-                +                        '<li class="star30"><a title="给电影打3分" data-rating="3"></a></li>'
-                +                        '<li class="star35"><a title="给电影打3.5分" data-rating="3.5"></a></li>'
-                +                        '<li class="star40"><a title="给电影打4.0分" data-rating="4"></a></li>'
-                +                        '<li class="star45"><a title="给电影打4.5分" data-rating="4.5"></a></li>'
-                +                        '<li class="star50"><a title="给电影打5分" data-rating="5"></a></li>'
-                +                    '</ul>'
-                +                    '<a href="/movie" title="立即观看" class="pull-right" target="_blank"><i class="icon-minus-sign icon-white"></i></a>'
+                +                    '<a title="想看" class="pull-left" data-interest-type="wish" href="javascript:void(0)"><i class="icon-plus-sign icon-white"></i></a>'
+                +                    '<div class="star-rating star-rating35 pull-left">'
+                +                        '<a class="r05" title="给电影打0.5分" data-rating="0.5"></a>'
+                +                        '<a class="r10" title="给电影打1分" data-rating="1"></a>'
+                +                        '<a class="r15" title="给电影打1.5分" data-rating="1.5"></a>'
+                +                        '<a class="r20" title="给电影打2分" data-rating="2"></a>'
+                +                        '<a class="r25" title="给电影打2.5分" data-rating="2.5"></a>'
+                +                        '<a class="r30" title="给电影打3分" data-rating="3"></a>'
+                +                        '<a class="r35" title="给电影打3.5分" data-rating="3.5"></a>'
+                +                        '<a class="r40" title="给电影打4.0分" data-rating="4"></a>'
+                +                        '<a class="r45" title="给电影打4.5分" data-rating="4.5"></a>'
+                +                        '<a class="r50" title="给电影打5分" data-rating="5"></a>'
+                +                    '</div>'
+                +                    '<a title="没兴趣" class="pull-right" data-interest-type="dislike" href="javascript:void(0)"><i class="icon-minus-sign icon-white"></i></a>'
                 +                '</div>'
                 +            '</div>';
             html += '<li><div class="poster-thumbnail" data-movie-id="{0}">{1}{2}{3}</div></li>'.format(movie._id, posterImg, topBadge, bottomBadge);
@@ -102,6 +102,28 @@ $(function() {
             data : {
                 movie_id: movieId,
                 rating: rating
+            },
+            context : $(this).closest('.poster-thumbnail').closest("li") /* specify the DOM element as the context */
+        }).done(function() {
+            $(this).fadeOut(function() {
+                loadNextRcmd();
+            });
+        }).fail(function(jqXHR) {
+            if (jqXHR.status == 401) { // unauthorized
+                $.cookie.raw = true;
+                $.cookie('next', window.location.href);
+                window.location.href = '/login';
+            }
+        });
+    }).on('click', 'a[data-interest-type]', function() {
+        var interestType = $(this).attr('data-interest-type');
+        var movieId = $(this).closest('.poster-thumbnail').attr('data-movie-id');
+        $.ajax({
+            type : 'POST',
+            url : '/api/movie/interest',
+            data : {
+                movie_id: movieId,
+                type: interestType
             },
             context : $(this).closest('.poster-thumbnail').closest("li")
         }).done(function() {

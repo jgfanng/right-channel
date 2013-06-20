@@ -1,5 +1,7 @@
 {% extends ../layout/layout.html %}
+
 {% block content %}
+
   {% if params.get('movie') %}
     {% set movie = params.get('movie') %}
     <div class="row-fluid container-bordered margin-vertical padding-horizontal">
@@ -134,7 +136,7 @@
 {% end %}
 
 {% block extra_links %}
-  <link rel="stylesheet" type="text/css" href="{{ static_url('css/star-rating.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ static_url('css/star-rating2.css') }}">
 {% end %}
 
 {% block extra_scripts %}
