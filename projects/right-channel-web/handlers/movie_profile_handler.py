@@ -9,9 +9,6 @@ from settings import mongodb
 import tornado.web
 
 class MovieProfileHandler(BaseHandler):
-    def initialize(self):
-        self.params['site_nav'] = 'movie'
-
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -30,27 +27,27 @@ class MovieProfileHandler(BaseHandler):
         if not movie:  # None or []
             raise tornado.web.HTTPError(404)
 
-        # set user behaviors: to_watch, watched and not_interested
         user = self.params.get('user')
-        if user and movie:
+        if user:
+            # set user interest: wish, dislike
+            user_id = user.get('_id')
             try:
-                user_id = user.get('_id')
-                result, error = yield tornado.gen.Task(mongodb['interests'].find_one,
+                result, error = yield tornado.gen.Task(mongodb['movie.interests'].find_one,
                                                        {'user_id': user_id, 'movie_id': movie.get('_id')})
                 if result[0]:
-                    movie['user_interest'] = result[0].get('type')
+                    movie['user']['interest'] = result[0].get('type')
             except:
                 raise tornado.web.HTTPError(500)
 
             if error.get('error'):
                 raise tornado.web.HTTPError(500)
 
+            # set rating
             try:
-                user_id = user.get('_id')
-                result, error = yield tornado.gen.Task(mongodb['ratings'].find_one,
+                result, error = yield tornado.gen.Task(mongodb['movie.ratings'].find_one,
                                                        {'user_id': user_id, 'movie_id': movie.get('_id')})
                 if result[0]:
-                    movie['user_rating'] = result[0].get('rating')
+                    movie['user']['rating'] = result[0].get('rating')
             except:
                 raise tornado.web.HTTPError(500)
 

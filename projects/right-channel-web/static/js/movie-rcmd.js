@@ -66,17 +66,17 @@ $(function() {
                 +                '</div>'
                 +                '<div class="user-rating hide">'
                 +                    '<a title="想看" class="pull-left" data-interest-type="wish" href="javascript:void(0)"><i class="icon-plus-sign icon-white"></i></a>'
-                +                    '<div class="star-rating star-rating35 pull-left">'
-                +                        '<a class="r05" title="给电影打0.5分" data-rating="0.5"></a>'
-                +                        '<a class="r10" title="给电影打1分" data-rating="1"></a>'
-                +                        '<a class="r15" title="给电影打1.5分" data-rating="1.5"></a>'
-                +                        '<a class="r20" title="给电影打2分" data-rating="2"></a>'
-                +                        '<a class="r25" title="给电影打2.5分" data-rating="2.5"></a>'
-                +                        '<a class="r30" title="给电影打3分" data-rating="3"></a>'
-                +                        '<a class="r35" title="给电影打3.5分" data-rating="3.5"></a>'
-                +                        '<a class="r40" title="给电影打4.0分" data-rating="4"></a>'
-                +                        '<a class="r45" title="给电影打4.5分" data-rating="4.5"></a>'
-                +                        '<a class="r50" title="给电影打5分" data-rating="5"></a>'
+                +                    '<div class="star-rating pull-left">'
+                +                        '<a class="r1" title="给电影打0.5分" data-rating="0.5"></a>'
+                +                        '<a class="r2" title="给电影打1分" data-rating="1"></a>'
+                +                        '<a class="r3" title="给电影打1.5分" data-rating="1.5"></a>'
+                +                        '<a class="r4" title="给电影打2分" data-rating="2"></a>'
+                +                        '<a class="r5" title="给电影打2.5分" data-rating="2.5"></a>'
+                +                        '<a class="r6" title="给电影打3分" data-rating="3"></a>'
+                +                        '<a class="r7" title="给电影打3.5分" data-rating="3.5"></a>'
+                +                        '<a class="r8" title="给电影打4.0分" data-rating="4"></a>'
+                +                        '<a class="r9" title="给电影打4.5分" data-rating="4.5"></a>'
+                +                        '<a class="r10" title="给电影打5分" data-rating="5"></a>'
                 +                    '</div>'
                 +                    '<a title="没兴趣" class="pull-right" data-interest-type="dislike" href="javascript:void(0)"><i class="icon-minus-sign icon-white"></i></a>'
                 +                '</div>'
@@ -94,8 +94,8 @@ $(function() {
     });
 
     $('.poster-thumbnails').on('click', '.star-rating', function(event) {
-        var rating = $(event.target).attr('data-rating');
         var movieId = $(this).closest('.poster-thumbnail').attr('data-movie-id');
+        var rating = $(event.target).attr('data-rating');
         $.ajax({
             type : 'POST',
             url : '/api/movie/rating',
@@ -116,8 +116,8 @@ $(function() {
             }
         });
     }).on('click', 'a[data-interest-type]', function() {
-        var interestType = $(this).attr('data-interest-type');
         var movieId = $(this).closest('.poster-thumbnail').attr('data-movie-id');
+        var interestType = $(this).attr('data-interest-type');
         $.ajax({
             type : 'POST',
             url : '/api/movie/interest',

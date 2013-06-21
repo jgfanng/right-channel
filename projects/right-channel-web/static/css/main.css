@@ -2,6 +2,7 @@
 .navbar {
     font-size: 14px;
 }
+
 .navbar-inner {
     min-height: 40px
 }
@@ -66,6 +67,10 @@ body {
 
 a:link,a:visited,a:hover,a:active {
     text-decoration: none
+}
+
+p { /* font-size: 12px; */
+    margin: 0 0 5px 0;
 }
 
 /* h1,
@@ -310,7 +315,7 @@ strong {
     list-style: none;
 }
 
-.poster-thumbnails > li {
+.poster-thumbnails>li {
     margin: 0 0 15px 14px;
     float: left;
 }
@@ -330,9 +335,9 @@ strong {
     left: 0;
     right: 0;
     color: white;
-    font-weight: bold;
-    overflow: hidden;
+    font-weight: bold; overflow : hidden;
     background-color: rgba(0, 0, 0, .75);
+    overflow: hidden;
 }
 
 .poster-badge-top {
@@ -343,9 +348,8 @@ strong {
     bottom: 0;
 }
 
-.poster-badge .caption,
-.poster-badge .douban-rating,
-.poster-badge .user-rating {
+.poster-badge .caption,.poster-badge .douban-rating,.poster-badge .user-rating
+    {
     text-align: center;
 }
 
@@ -377,10 +381,10 @@ strong {
     margin: 0 0 5px 0;
 } */
 
-.profile p {
-    /* font-size: 12px; */
+/* p {
+    font-size: 12px;
     margin: 0 0 5px 0;
-}
+} */
 
 /* .profile .douban-rating {
     font-size: 15px;
@@ -436,7 +440,6 @@ form .help-error {
     color: #007711;
     font-weight: bold;
 } */
-
 .system-alert {
     margin: 10px 0;
 }

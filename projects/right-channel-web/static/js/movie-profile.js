@@ -1,3 +1,26 @@
+$(function() {
+    $('.interest-unmarked').on('click', 'button', function(event) {
+        var movieId = $(this).attr('data-movie-id');
+        var interestType = $(this).attr('data-interest-type');
+        $.ajax({
+            type : 'POST',
+            url : '/api/movie/interest',
+            data : {
+                movie_id: movieId,
+                type: interestType
+            }
+        }).done(function() {
+            $('.interest-unmarked').hide();
+            $('.interest-marked').fadeIn();
+        }).fail(function(jqXHR) {
+            if (jqXHR.status == 401) { // unauthorized
+                $.cookie.raw = true;
+                $.cookie('next', window.location.href);
+                window.location.href = '/login';
+            }
+        });
+    })
+});
 function markInterest($btn) {
 	var movieId = $btn.attr('data-movie-id');
 	var interestType = $btn.attr('data-interest-type');

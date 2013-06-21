@@ -1,9 +1,3 @@
-/* http://www.pmob.co.uk/temp/star-rating2.htm */
-/* star rating code - use lists because its more semantic */
-/* No javascript required */
-
-/* the default rating is placed as a background image in the ul */
-/* use the background position according to the table above to display the required images*/
 .star-rating {
     width: 80px;
     height: 16px;
@@ -13,48 +7,47 @@
     background: url(../img/star-matrix.png) no-repeat 0 0;
 }
 
-/* add these classes to the ul to effect the change to the correct number of stars */
-.star-rating00 {
+.star-rating0 {
     background-position: 0 0
 }
 
-.star-rating05 {
+.star-rating1 {
     background-position: 0 -16px
 }
 
-.star-rating10 {
+.star-rating2 {
     background-position: 0 -32px
 }
 
-.star-rating15 {
+.star-rating3 {
     background-position: 0 -48px
 }
 
-.star-rating20 {
+.star-rating4 {
     background-position: 0 -64px
 }
 
-.star-rating25 {
+.star-rating5 {
     background-position: 0 -80px
 }
 
-.star-rating30 {
+.star-rating6 {
     background-position: 0 -96px
 }
 
-.star-rating35 {
+.star-rating7 {
     background-position: 0 -112px
 }
 
-.star-rating40 {
+.star-rating8 {
     background-position: 0 -128px
 }
 
-.star-rating45 {
+.star-rating9 {
     background-position: 0 -144px
 }
 
-.star-rating50 {
+.star-rating10 {
     background-position: 0 -160px
 }
 
@@ -67,105 +60,92 @@
     height: 16px;
     text-decoration: none;
     z-index: 2;
-    /*     float: left; */
-    /*text-indent:-999em;*/
 }
 
-/* ul.star-rating li a { */
-/*     position: absolute; */
-/*     left: 0; */
-/*     top: 0; */
-/*     width: 8px; */
-/*     height: 16px; */
-/*     text-decoration: none; */
-/*     z-index: 200; */
-/* } */
-
-.star-rating a.r05 {
+.star-rating a.r1 {
     left: 0
 }
 
-.star-rating a.r10 {
+.star-rating a.r2 {
     left: 8px
 }
 
-.star-rating a.r15 {
+.star-rating a.r3 {
     left: 16px
 }
 
-.star-rating a.r20 {
+.star-rating a.r4 {
     left: 24px
 }
 
-.star-rating a.r25 {
+.star-rating a.r5 {
     left: 32px
 }
 
-.star-rating a.r30 {
+.star-rating a.r6 {
     left: 40px
 }
 
-.star-rating a.r35 {
+.star-rating a.r7 {
     left: 48px
 }
 
-.star-rating a.r40 {
+.star-rating a.r8 {
     left: 56px
 }
 
-.star-rating a.r45 {
+.star-rating a.r9 {
     left: 64px
 }
 
-.star-rating a.r50 {
+.star-rating a.r10 {
     left: 72px
 }
 
 .star-rating a:hover {
     width: 80px;
     height: 16px;
-    /*overflow:hidden;*/
     left: 0;
     z-index: 1;
     background: url(../img/star-matrix.png) no-repeat 0 0;
 }
 
-.star-rating a.r05:hover {
+.star-rating a.r1:hover {
     background-position: 0 -16px;
 }
 
-.star-rating a.r10:hover {
+.star-rating a.r2:hover {
     background-position: 0 -32px;
 }
 
-.star-rating a.r15:hover {
+.star-rating a.r3:hover {
     background-position: 0 -48px;
 }
 
-.star-rating a.r20:hover {
+.star-rating a.r4:hover {
     background-position: 0 -64px;
 }
 
-.star-rating a.r25:hover {
+.star-rating a.r5:hover {
     background-position: 0 -80px;
 }
 
-.star-rating a.r30:hover {
+.star-rating a.r6:hover {
     background-position: 0 -96px;
 }
 
-.star-rating a.r35:hover {
+.star-rating a.r7:hover {
     background-position: 0 -112px;
 }
 
-.star-rating a.r40:hover {
+.star-rating a.r8:hover {
     background-position: 0 -128px;
 }
 
-.star-rating a.r45:hover {
+.star-rating a.r9:hover {
     background-position: 0 -144px;
 }
 
-.star-rating a.r50:hover {
+.star-rating a.r10:hover {
     background-position: 0 -160px;
 }
