@@ -14,10 +14,10 @@ class MovieRatingAPIHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def post(self):
-        """Rate a movie for current user.
+    def post(self, movie_id):
+        """Rate on a movie for current user.
 
-        :post data movie_id: Movie id.
+        :URL path movie_id: Movie id.
         :post data rating: Movie rating (5.0 >= rating >= 0).
 
         This API need to be authorized.
@@ -27,7 +27,6 @@ class MovieRatingAPIHandler(BaseHandler):
             raise tornado.web.HTTPError(401)  # Unauthorized
 
         user_id = user.get('_id')
-        movie_id = self.get_argument('movie_id')
         rating = self.get_argument('rating')
         try:
             rating = float(rating)

@@ -98,9 +98,8 @@ $(function() {
         var rating = $(event.target).attr('data-rating');
         $.ajax({
             type : 'POST',
-            url : '/api/movie/rating',
+            url : '/api/movie/{0}/rating'.format(movieId),
             data : {
-                movie_id: movieId,
                 rating: rating
             },
             context : $(this).closest('.poster-thumbnail').closest("li") /* specify the DOM element as the context */
@@ -120,9 +119,8 @@ $(function() {
         var interestType = $(this).attr('data-interest-type');
         $.ajax({
             type : 'POST',
-            url : '/api/movie/interest',
+            url : '/api/movie/{0}/interest'.format(movieId),
             data : {
-                movie_id: movieId,
                 type: interestType
             },
             context : $(this).closest('.poster-thumbnail').closest("li")

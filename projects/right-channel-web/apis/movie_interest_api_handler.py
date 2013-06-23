@@ -14,10 +14,10 @@ class MovieInterestAPIHandler(BaseHandler):
     @user_profile
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def post(self):
-        """Set interest type to a movie for current user.
+    def post(self, movie_id):
+        """Set interest on a movie for current user.
 
-        :post data movie_id: Movie id.
+        :URL path movie_id: Movie id.
         :post data type: Interest type ('wish', 'dislike').
 
         This API need to be authorized.
@@ -27,7 +27,6 @@ class MovieInterestAPIHandler(BaseHandler):
             raise tornado.web.HTTPError(401)  # Unauthorized
 
         user_id = user.get('_id')
-        movie_id = self.get_argument('movie_id')
         interest_type = self.get_argument('type')
         if interest_type not in ['wish', 'dislike']:
             raise tornado.web.HTTPError(400)
@@ -49,18 +48,24 @@ class MovieInterestAPIHandler(BaseHandler):
     @tornado.web.asynchronous
     @tornado.gen.engine
     def delete(self, movie_id):
+        """Delete interest on a movie for current user.
+
+        :URL path movie_id: Movie id.
+
+        This API need to be authorized.
+        """
         user = self.params.get('user')
-        if user:
-            user_id = user.get('_id')
-            try:
-                _, error = yield tornado.gen.Task(mongodb['interests'].remove,
-                                                  {'user_id': user_id, 'movie_id': ObjectId(movie_id)})
-            except:
-                raise tornado.web.HTTPError(500)
-
-            if error.get('error'):
-                raise tornado.web.HTTPError(500)
-
-            self.finish()
-        else:
+        if not user:
             raise tornado.web.HTTPError(401)  # Unauthorized
+
+        user_id = user.get('_id')
+        try:
+            _, error = yield tornado.gen.Task(mongodb['movie.interests'].remove,
+                                              {'user_id': user_id, 'movie_id': ObjectId(movie_id)})
+        except:
+            raise tornado.web.HTTPError(500)
+
+        if error.get('error'):
+            raise tornado.web.HTTPError(500)
+
+        self.finish()

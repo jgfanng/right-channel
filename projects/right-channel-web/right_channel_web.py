@@ -40,8 +40,8 @@ class Application(tornado.web.Application):
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
             (r'/api/movie', MovieFilterAPIHandler),
-            (r'/api/movie/interest', MovieInterestAPIHandler),
-            (r'/api/movie/rating', MovieRatingAPIHandler),
+            (r'/api/movie/([0-9a-f]{24})/interest', MovieInterestAPIHandler),
+            (r'/api/movie/([0-9a-f]{24})/rating', MovieRatingAPIHandler),
             (r'/api/movie/recommendation', MovieRcmdAPIHandler),
             (r'/(.*)', DefaultHandler)
         ]

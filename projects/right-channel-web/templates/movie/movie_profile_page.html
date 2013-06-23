@@ -78,7 +78,7 @@
             <button data-movie-id="{{ movie.get('_id') }}" data-interest-type="dislike" class="btn btn-small btn-primary" title="没兴趣"><i class="icon-minus-sign icon-white"></i> 没兴趣</button>
           </div>
           
-          <div class="star-rating-large pull-right {{ 'star-rating-large' + str(movie.get('user').get('rating')) if movie.get('user') and movie.get('user').get('rating') else '' }}">
+          <div class="star-rating-large pull-right {{ 'star-rating-large' + str(int(movie.get('user').get('rating') * 2)) if movie.get('user') and movie.get('user').get('rating') else '' }}">
             <a class="r1" title="给电影打0.5分" data-rating="0.5"></a>
             <a class="r2" title="给电影打1分" data-rating="1"></a>
             <a class="r3" title="给电影打1.5分" data-rating="1.5"></a>
