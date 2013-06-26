@@ -27,15 +27,15 @@ $(function() {
                 dataType : 'json'
             }).done(function(data) {
                 manipulateView(data.movies);
-                more = data.more;
-                if (more) {
-                    nextStart = start + limit;
-                }
-                if (data.movies.length == 0 && nextStart == 0) {
+                nextStart = data.start + data.total;
+                if (nextStart == 0) {
                     var $container = $('.poster-thumbnails').parent();
                     $container.empty();
                     $container.css('text-align', 'center');
                     $container.append('没有找到值得推荐的电影');
+                }
+                if (data.total < limit) {
+                	more = false;
                 }
             }).fail(function(jqXHR) {
                 if (jqXHR.status == 401) { // unauthorized

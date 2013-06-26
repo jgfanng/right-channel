@@ -71,7 +71,9 @@ class MovieRcmdAPIHandler(BaseHandler):
         movies = result[0]
         response = {
             'movies': movies,
-            'more': False if len(movies) < limit else True
+            'start': start,
+            'limit': limit,
+            'total': len(movies)
         }
 
         self.write(json.dumps(response, cls=JSONEncoderExt))

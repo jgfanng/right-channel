@@ -6,6 +6,7 @@ db.movies.ensureIndex({"year": 1})
 db.movies.ensureIndex({"title": 1})
 db.movies.ensureIndex({"original_title": 1})
 db.movies.ensureIndex({"aka": 1})
+db.movies.ensureIndex({"douban.collect_count": -1})
 
 =========Schema=============================================================
 {
