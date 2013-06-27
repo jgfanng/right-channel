@@ -6,6 +6,8 @@ Created on Jan 16, 2013
 from apis.movie_filter_api_handler import MovieFilterAPIHandler
 from apis.movie_interest_api_handler import MovieInterestAPIHandler
 from apis.movie_rating_api_handler import MovieRatingAPIHandler
+from apis.movie_rating_candidate_api_handler import \
+    MovieRatingCandidateAPIHandler
 from apis.movie_rcmd_api_handler import MovieRcmdAPIHandler
 from handlers.default_handler import DefaultHandler
 from handlers.edit_password_handler import EditPasswordHandler
@@ -43,6 +45,7 @@ class Application(tornado.web.Application):
             (r'/api/movie/([0-9a-f]{24})/interest', MovieInterestAPIHandler),
             (r'/api/movie/([0-9a-f]{24})/rating', MovieRatingAPIHandler),
             (r'/api/movie/recommendation', MovieRcmdAPIHandler),
+            (r'/api/movie/rating-candidate', MovieRatingCandidateAPIHandler),
             (r'/(.*)', DefaultHandler)
         ]
         settings = {

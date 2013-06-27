@@ -19,7 +19,7 @@ class MovieRcmdAPIHandler(BaseHandler):
         """Get recommendations for current user.
 
         :query string start: Start index of the recommendation list (optional, $start >= 0).
-        :query string limit: Limited number of recommendations in a single request (optional, $upper_bound >= $limit > 0).
+        :query string limit: Limited number of recommendations in a single request (optional, $movies_per_page >= $limit > 0).
 
         This API need to be authorized.
         """
@@ -28,6 +28,7 @@ class MovieRcmdAPIHandler(BaseHandler):
             raise tornado.web.HTTPError(401)  # Unauthorized
 
         user_id = user.get('_id')
+        # ensure start
         start = self.get_argument('start', 0)
         try:
             start = int(start)
@@ -35,17 +36,18 @@ class MovieRcmdAPIHandler(BaseHandler):
             start = 0
         if start < 0:
             start = 0
-        limit = self.get_argument('limit', settings['movie']['page_size'])
+        # ensure limit
+        limit = self.get_argument('limit', settings['movie']['movies_per_page'])
         try:
             limit = int(limit)
         except:
-            limit = settings['application']['page_size']
-        if limit <= 0 or limit > settings['movie']['page_size']:
-            limit = settings['application']['page_size']
+            limit = settings['movie']['movies_per_page']
+        if limit <= 0 or limit > settings['movie']['movies_per_page']:
+            limit = settings['movie']['movies_per_page']
 
-        # get movie ids from "recommendations" collection
+        # get movie ids
         try:
-            result, error = yield tornado.gen.Task(mongodb['recommendations'].find,
+            result, error = yield tornado.gen.Task(mongodb['movie.recommendations'].find,
                                                    {'user_id': user_id},
                                                    skip=start,
                                                    limit=limit,
@@ -56,7 +58,7 @@ class MovieRcmdAPIHandler(BaseHandler):
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
-        # get real movie info from "movies" collection
+        # get real movie info
         movies = result[0]
         try:
             # TODO: order by predicted rating
@@ -71,9 +73,9 @@ class MovieRcmdAPIHandler(BaseHandler):
         movies = result[0]
         response = {
             'movies': movies,
+            'total': len(movies),
             'start': start,
-            'limit': limit,
-            'total': len(movies)
+            'limit': limit
         }
 
         self.write(json.dumps(response, cls=JSONEncoderExt))

@@ -5,7 +5,7 @@
         "db": "right-channel"
     },
     "movie": {
-    	"page_size": 30,
+    	"movies_per_page": 30,
     	"max_page": 30,
         "filters": {
             "genres": [
