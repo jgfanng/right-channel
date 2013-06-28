@@ -18,6 +18,7 @@ from handlers.login_handler import LoginHandler
 from handlers.logout_handler import LogoutHandler
 from handlers.movie_category_handler import MovieCategoryHandler
 from handlers.movie_profile_handler import MovieProfileHandler
+from handlers.movie_rating_handler import MovieRatingHandler
 from handlers.movie_recommendation_handler import MovieRecommendationHandler
 from handlers.register_handler import RegisterHandler
 from handlers.to_watch_handler import ToWatchHandler
@@ -30,6 +31,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r'/', HomeHandler),
             (r'/movie/recommendation', MovieRecommendationHandler),
+            (r'/movie/rating', MovieRatingHandler),
             (r'/movie', MovieCategoryHandler),
             (r'/movie/hot', HotMovieHandler),
             (r'/movie/([0-9a-f]{24})', MovieProfileHandler),

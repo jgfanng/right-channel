@@ -13,6 +13,7 @@ import tornado.gen
 import tornado.web
 
 class MovieRatingCandidateAPIHandler(BaseHandler):
+
     MAX_CANIDIDATES = 100
 
     @user_profile
