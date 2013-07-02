@@ -329,6 +329,15 @@ strong {
     height: 210px;
 }
 
+.poster-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .5);
+}
+
 .poster-badge {
     position: absolute;
     padding: 2px 2px;
@@ -337,12 +346,16 @@ strong {
     color: white;
     font-weight: bold;
     overflow : hidden;
-    background: black;
+    background-color: black;
     opacity: 0.75;
 }
 
 .poster-badge-top {
     top: 0;
+}
+
+.poster-badge-middle {
+    top: 89px;
 }
 
 .poster-badge-bottom {
@@ -358,26 +371,51 @@ strong {
     margin: 2px auto;
 }
 
-.poster-thumbnail .interest-btn-wish {
+.poster-thumbnail .char-btn-plus {
     position: absolute;
     top: 95px;
     left: 10px;
 }
 
-.poster-thumbnail .interest-btn-dislike {
+.poster-thumbnail .char-btn-minus {
     position: absolute;
     top: 95px;
     right: 10px;
 }
 
-.poster-thumbnail .interest-btn-close {
+.poster-thumbnail .char-btn-close {
     position: absolute;
     top: -10px;
     right: -10px;
 }
 
 /* interest button */
-.interest-btn {
+.char-btn {
+    width: 16px;
+    height: 16px;
+    font-size: 20px;
+    line-height: 15px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    background: rgba(60, 60, 60, 0.75);
+    border: 2px solid #ffffff;
+    -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+            border-radius: 10px;
+    -webkit-box-shadow: 0 1px 3px 2px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 0 1px 3px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 1px 3px 2px rgba(0, 0, 0, 0.5);
+}
+
+.char-btn:hover,
+.char-btn:focus {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    text-decoration: none;
+}
+
+/* .interest-btn {
     width: 20px;
     height: 20px;
     opacity: 0.7;
@@ -398,7 +436,7 @@ strong {
 
 .interest-btn-close {
     background-image: url("../img/close.png");
-}
+} */
 /*.poster-play-mask {
     position: absolute;
     top: 0;
