@@ -50,7 +50,7 @@ $(function() {
             var movie = movies[i];
             html += '<li>'
                 +       '<div class="poster-thumbnail" data-movie-id="{0}">'.format(movie._id)
-                +           '<img class="poster-medium" src="http://img3.douban.com/lpic/s11356673.jpg">'
+                +           '<img class="poster-medium" src="http://img3.douban.com/lpic/s25462984.jpg">'
                 +           '<a class="poster-mask hide" href="/movie/{0}" title="{1}" target="_blank"></a>'.format(movie._id, movie.title)
                 +           '<div class="poster-badge poster-badge-top">'
                 +               '<div class="caption">{0}</div>'.format(movie.title)
@@ -74,8 +74,8 @@ $(function() {
                 +                    '<a class="r10" title="给电影打5分" data-rating="5"></a>'
                 +               '</div>'
                 +           '</div>'
-                +           '<a title="想看" class="char-btn char-btn-plus hide" data-interest-type="wish" href="javascript:void(0)">&plus;</a>'
-                +           '<a title="没兴趣" class="char-btn char-btn-minus hide" data-interest-type="dislike" href="javascript:void(0)">&minus;</a>'
+                +           '<a title="想看" class="sign-btn sign-btn-plus hide" data-interest-type="wish" href="javascript:void(0)">&plus;</a>'
+                +           '<a title="没兴趣" class="sign-btn sign-btn-minus hide" data-interest-type="dislike" href="javascript:void(0)">&minus;</a>'
                 +       '</div>'
                 +   '</li>';
         }
@@ -135,12 +135,12 @@ $(function() {
         $(this).find('.poster-mask').show();
         $(this).find('.douban-rating').hide();
         $(this).find('.user-rating').show();
-        $(this).find('.char-btn').show();
+        $(this).find('.sign-btn').show();
     }).on('mouseleave', '.poster-thumbnail', function() {
         $(this).find('.poster-mask').hide();
         $(this).find('.douban-rating').show();
         $(this).find('.user-rating').hide();
-        $(this).find('.char-btn').hide();
+        $(this).find('.sign-btn').hide();
     });
     
     loadNextPage();

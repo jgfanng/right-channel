@@ -311,12 +311,12 @@ strong {
 
 /* poster thumbnails */
 .poster-thumbnails {
-    margin-left: 5px;
+    margin-left: 6px;
     list-style: none;
 }
 
 .poster-thumbnails > li {
-    margin: 0 0 15px 14px;
+    margin: 0 0 14px 14px;
     float: left;
 }
 
@@ -325,7 +325,7 @@ strong {
 }
 
 .poster-medium {
-    width: 143px;
+    width: 145px;
     height: 210px;
 }
 
@@ -340,18 +340,17 @@ strong {
 
 .poster-badge {
     position: absolute;
-    padding: 2px 2px;
     left: 0;
     right: 0;
     color: white;
+    padding: 2px 2px;
     font-weight: bold;
     overflow : hidden;
-    background-color: black;
-    opacity: 0.75;
 }
 
 .poster-badge-top {
     top: 0;
+    background: rgba(0, 0, 0, .75);
 }
 
 .poster-badge-middle {
@@ -360,6 +359,7 @@ strong {
 
 .poster-badge-bottom {
     bottom: 0;
+    background: rgba(0, 0, 0, .75);
 }
 
 .poster-badge .caption,
@@ -371,26 +371,26 @@ strong {
     margin: 2px auto;
 }
 
-.poster-thumbnail .char-btn-plus {
+.poster-thumbnail .sign-btn-plus {
     position: absolute;
     top: 95px;
     left: 10px;
 }
 
-.poster-thumbnail .char-btn-minus {
+.poster-thumbnail .sign-btn-minus {
     position: absolute;
     top: 95px;
     right: 10px;
 }
 
-.poster-thumbnail .char-btn-close {
+.poster-thumbnail .sign-btn-close {
     position: absolute;
     top: -10px;
     right: -10px;
 }
 
 /* interest button */
-.char-btn {
+.sign-btn {
     width: 16px;
     height: 16px;
     font-size: 20px;
@@ -408,9 +408,9 @@ strong {
             box-shadow: 0 1px 3px 2px rgba(0, 0, 0, 0.5);
 }
 
-.char-btn:hover,
-.char-btn:focus {
-    background: rgba(0, 0, 0, 0.9);
+.sign-btn:hover,
+.sign-btn:focus {
+    background: rgba(0, 0, 0, 1);
     color: white;
     text-decoration: none;
 }

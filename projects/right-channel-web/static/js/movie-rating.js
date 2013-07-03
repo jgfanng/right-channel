@@ -71,7 +71,7 @@ $(function() {
                 +                    '<a class="r10" title="给电影打5分" data-rating="5"></a>'
                 +               '</div>'
                 +           '</div>'
-                +           '<a title="没看过" class="char-btn char-btn-close hide" data-interest-type="wish" href="javascript:void(0)">&times;</a>';
+                +           '<a title="没看过" class="sign-btn sign-btn-close hide" data-interest-type="wish" href="javascript:void(0)">&times;</a>';
                 +       '</div>'
                 +   '</li>';
         }
@@ -110,12 +110,12 @@ $(function() {
         $(this).find('.poster-badge-top').hide();
         $(this).find('.poster-mask').show();
         $(this).find('.poster-badge-middle').show();
-        $(this).find('.char-btn').show();
+        $(this).find('.sign-btn').show();
     }).on('mouseleave', '.poster-thumbnail', function() {
         $(this).find('.poster-badge-top').show();
         $(this).find('.poster-mask').hide();
         $(this).find('.poster-badge-middle').hide();
-        $(this).find('.char-btn').hide();
+        $(this).find('.sign-btn').hide();
     });
     
     loadNextPage();
