@@ -9,20 +9,20 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.moviecomes.recommender.MovieRecommender;
 
 public class RatingRescorer implements IDRescorer {
 
-	private Mongo mongoDB;
+	private MongoClient mongoClient;
 	private DB db;
-	private DBCollection movieCollection;
+	private DBCollection movieColl;
 
 	public RatingRescorer() throws UnknownHostException, MongoException {
-		mongoDB = new Mongo("127.0.0.1", 27017);
-		db = mongoDB.getDB("right-channel");
-		movieCollection = db.getCollection("movies");
+		mongoClient = new MongoClient("127.0.0.1", 27017);
+		db = mongoClient.getDB("right-channel");
+		movieColl = db.getCollection("movies");
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class RatingRescorer implements IDRescorer {
 			return true;
 
 		ObjectId movieIdObj = new ObjectId(movieIdStr);
-		DBObject movieObj = movieCollection.findOne(new BasicDBObject("_id",
+		DBObject movieObj = movieColl.findOne(new BasicDBObject("_id",
 				movieIdObj));
 		if (movieObj == null
 				|| movieObj.get("douban") == null
