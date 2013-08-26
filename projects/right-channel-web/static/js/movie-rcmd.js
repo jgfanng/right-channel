@@ -28,7 +28,7 @@ $(function() {
             }).done(function(data) {
                 manipulateView(data.movies);
                 nextStart = data.start + data.total;
-                if (data.total == 0) {
+                if (data.limit != data.total) {
                 	more = false;
                 }
             }).fail(function(jqXHR) {

@@ -62,6 +62,7 @@ class MovieRcmdAPIHandler(BaseHandler):
         movies = result[0]
         try:
             # TODO: order by predicted rating
+            # TODO: filtering
             result, error = yield tornado.gen.Task(mongodb['movies'].find,
                                                    {'_id': {'$in': [movie.get('movie_id') for movie in movies]}})
         except:
