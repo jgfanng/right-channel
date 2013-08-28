@@ -40,6 +40,7 @@ db.movies.ensureIndex({"douban.collect_count": -1})
         "large": "http://img3.douban.com/lpic/s10392260.jpg",
         "medium": "http://img3.douban.com/mpic/s10392260.jpg"
     },
+    "is_movie": true,
     "douban": {
         "id": "4807924",
         "rating": 7,
@@ -51,19 +52,8 @@ db.movies.ensureIndex({"douban.collect_count": -1})
         "comments_count": 0,
         "url": "http://movie.douban.com/subject/4807924/"
     },
-    "resources": {
-        "online": {
-            "pptv": {
-                "title": "泰迪熊",
-                "url": "http://movie.pptv.com/123",
-                "similarity": 1.0,
-                "watch_times": 0,
-                "last_updated": "2012-12-29"
-            }
-        },
-        "offline": {
-        }
-    }
+    "playable": false,
+    "downloadable": false,
     "watched": {
         "last_week": 0,
         "last_month": 0,
