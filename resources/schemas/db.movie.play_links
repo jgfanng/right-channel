@@ -1,0 +1,25 @@
+=========Indexes============================================================
+db.movie.play_links.ensureIndex({"movie_id": 1})
+db.movie.play_links.ensureIndex({"movie_id": 1, "source": 1}, {unique: true})
+
+=========Update=============================================================
+db.movie.play_links.update(
+  { "movie_id": ObjectId("50d078400c468ecda4b66a5a"), "source": "pptv", "links.url": { $ne: "http://blabla" } }, 
+  { $push: { "links": { "title": "泰迪熊", "url": "http://blabla" } } }
+);
+
+=========Schema=============================================================
+{
+    "movie_id": ObjectId("50d078400c468ecda4b66a5a"),
+    "source": "pptv",
+    "links": [
+        {
+            "title": "泰迪熊",
+            "episode": 3, (tv only)
+            "url": "http://blabla",
+            "similarity": 1.0,
+            "watch_times": 0,
+            "last_updated": "2012-12-29"
+        }
+    ]
+}
