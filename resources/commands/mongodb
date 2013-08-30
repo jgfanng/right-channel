@@ -6,3 +6,12 @@ db.movies.find({"resources.online.pptv": {$exists: true}}).forEach(function(u) {
 db.movies.find({"resources.online.iqiyi": {$exists: true}}).forEach(function(u) {db.movie.play_links.insert({"movie_id": u._id, "source": "iqiyi", "url": u.resources.online.iqiyi.url, "last_updated": u.resources.online.iqiyi.last_updated, "similarity": u.resources.online.iqiyi.similarity, "title": u.title})})
 db.movie.play_links.find().forEach(function(u) {db.movies.update({"_id": u.movie_id}, {$set: {"playable": true}})})
 db.movies.update({"resources": {$exists: true}}, {$unset: {"resources": ""}}, {multi: true})
+
+db.movie.play_links.find().forEach(
+	function(u) {
+		db.movies.update(
+			{"_id": u.movie_id, "play_links.url": { $ne: u.url }},
+			{ $push: { "play_links": { "source": u.source, "url": u.url, "title": u.title, "similarity": u.similarity, "last_updated": u.last_updated } } }
+		)
+	}
+);

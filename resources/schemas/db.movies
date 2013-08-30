@@ -8,6 +8,13 @@ db.movies.ensureIndex({"original_title": 1})
 db.movies.ensureIndex({"aka": 1})
 db.movies.ensureIndex({"douban.collect_count": -1})
 
+=========Update=============================================================
+# 增加播放链接，暂时只能增加不能更新
+db.movies.update(
+  { "_id": ObjectId("123456"), "play_links.url": { $ne: "http://blabla" } },
+  { $push: { "play_links": { "source": "pptv", "url": "http://blabla", "title": "泰迪熊", "similarity": 1, "last_updated": "2012-12-29" } } }
+);
+
 =========Schema=============================================================
 {
     "year": "2012",
@@ -52,9 +59,20 @@ db.movies.ensureIndex({"douban.collect_count": -1})
         "comments_count": 0,
         "url": "http://movie.douban.com/subject/4807924/"
     },
-    "playable": false,
-    "downloadable": false,
-    "watched": {
+    "play_links": [
+    	{
+    	"source": "pptv",
+	    "url": "http://blabla",
+	    "title": "泰迪熊",
+	    "similarity": 1.0,
+	    "watch_times": 0,
+	    "last_updated": "2012-12-29",
+	    "episode": 3 (tv only)
+    	}
+    ],
+    "download_links": [
+    ],
+    "watch_history": {
         "last_week": 0,
         "last_month": 0,
         "history": 0,
