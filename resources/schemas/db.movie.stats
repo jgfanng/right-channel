@@ -1,0 +1,27 @@
+=========Indexes============================================================
+db.movie.stats.ensureIndex({"movie_id": 1})
+db.movie.stats.ensureIndex({"movie_id": 1, "date": -1}, {unique: true})
+
+=========Operations=========================================================
+# 记录用户每天的点击量
+db.movie.stats.update(
+  { "movie_id": ObjectId("50d078400c468ecda4b66a5a"), "date": DATE_STRING }, 
+  { $inc: { "hits": 1 } },
+  { upsert: true }
+);
+# 查询最近30天每天的点击量
+db.movie.stats.find(
+  { "movie_id": ObjectId("50d078400c468ecda4b66a5a"), "date": { $gt: DATE_STRING } }
+);
+# 更新最近30天总点击量
+db.movies.update(
+  { "_id": ObjectId("50d078400c468ecda4b66a5a") }, 
+  { $set: { "hits": COUNT } }
+);
+
+=========Schema=============================================================
+{
+    "movie_id": ObjectId("50d078400c468ecda4b66a5a"),
+    "date": "20130902",
+    "hits": 99
+}

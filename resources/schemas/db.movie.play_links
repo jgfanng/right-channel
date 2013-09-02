@@ -9,6 +9,14 @@ db.movie.play_links.update(
   { $set: { "title": "泰迪熊", "similarity": 1, "last_updated": "2012-12-29" } },
   { upsert: true }
 );
+db.movies.update(
+  { "_id": ObjectId("50d078400c468ecda4b66a5a"), "playable": { $ne: true } },
+  { $set: { "playable": true } }
+);
+db.movies.update(
+  { "_id": ObjectId("50d078400c468ecda4b66a5a"), "available_at": { $exists: false } },
+  { $set: { "available_at": Date() } }
+);
 
 =========Schema=============================================================
 {

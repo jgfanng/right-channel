@@ -14,3 +14,18 @@ db.movie.play_links.find().forEach(
 		)
 	}
 );
+
+db.movies.find({"play_links": {$exists: true}}).forEach(
+	function(u) {
+		for (var i = 0; i < u.play_links.length; i++) {
+			var p = u.play_links[i];
+			db.movie.play_links.insert({"movie_id": u._id, "source": p.source, "url": p.url, "last_updated": p.last_updated, "similarity": p.similarity, "title": p.title})
+		}
+	}
+);
+db.movies.update(
+	{"play_links": {$exists: true}},
+	{$set: {"playable": true}},
+	{multi: true}
+);
+db.movies.update({"play_links": {$exists: true}}, {$unset: {"play_links": ""}}, {multi: true})

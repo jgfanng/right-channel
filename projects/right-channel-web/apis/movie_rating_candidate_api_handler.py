@@ -26,7 +26,7 @@ class MovieRatingCandidateAPIHandler(BaseHandler):
         :query string end: End index (exclusive) of the rating candidates (optional, MAX_CANIDIDATES+$start >= $end > $start).
         :query string pick: Number of candidates randomly picked within [$start, $end) (optional, $movies_per_page >= $pick > 0).
 
-        This API don't need to be authorized.
+        This API doesn't need to be authorized.
         """
 #         user = self.params.get('user')
 #         if not user:
