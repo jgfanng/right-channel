@@ -3,11 +3,9 @@ Created on Mar 13, 2013
 
 @author: Fang Jiaguo
 '''
-from bson.objectid import ObjectId
 from handlers.base_handler import BaseHandler, user_profile
 from settings import mongodb, settings
 from utilities import JSONEncoderExt
-import datetime
 import json
 import tornado.gen
 import tornado.web

@@ -8,6 +8,11 @@ import functools
 import tornado.web
 
 class BaseHandler(tornado.web.RequestHandler):
+
+    MOVIES_PER_REQUEST = 30
+    TOTAL_ACCESSABLE_MOVIES = 1000
+    SORT_FIELDS = ['available_at', 'hits']
+
     def __init__(self, application, request, **kwargs):
         self.params = {}
         super(BaseHandler, self).__init__(application, request, **kwargs)

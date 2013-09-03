@@ -3,7 +3,7 @@ Created on Jan 16, 2013
 
 @author: Fang Jiaguo
 '''
-from apis.movie_filter_api_handler import MovieFilterAPIHandler
+from apis.movie_category_api_handler import MovieCategoryAPIHandler
 from apis.movie_interest_api_handler import MovieInterestAPIHandler
 from apis.movie_rating_api_handler import MovieRatingAPIHandler
 from apis.movie_rating_candidate_api_handler import \
@@ -43,7 +43,7 @@ class Application(tornado.web.Application):
             (r'/login', LoginHandler),
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),
-            (r'/api/movie', MovieFilterAPIHandler),
+            (r'/api/movie/category', MovieCategoryAPIHandler),
             (r'/api/movie/([0-9a-f]{24})/interest', MovieInterestAPIHandler),
             (r'/api/movie/([0-9a-f]{24})/rating', MovieRatingAPIHandler),
             (r'/api/movie/recommendation', MovieRcmdAPIHandler),
