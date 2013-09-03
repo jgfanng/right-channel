@@ -51,14 +51,22 @@ class MovieCategoryAPIHandler(BaseHandler):
         if limit <= 0 or limit > self.MOVIES_PER_REQUEST:
             limit = self.MOVIES_PER_REQUEST
 
-        try:
-            result, error = yield tornado.gen.Task(mongodb['movies'].find, fields={'summary': 0}, skip=start, limit=limit, sort=sort)
-        except:
-            raise tornado.web.HTTPError(500)
-        if error.get('error'):
-            raise tornado.web.HTTPError(500)
+        # User can only access a fixed amount of movies.
+        if start < self.TOTAL_ACCESSABLE_MOVIES:
+            try:
+                result, error = yield tornado.gen.Task(mongodb['movies'].find,
+                                                       fields={'summary': 0},
+                                                       skip=start,
+                                                       limit=min(limit, self.TOTAL_ACCESSABLE_MOVIES - start),  # important!
+                                                       sort=sort)
+                movies = result[0]
+            except:
+                raise tornado.web.HTTPError(500)
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
+        else:
+            movies = []
 
-        movies = result[0]
         response = {
             'movies': movies,
             'total': len(movies),
