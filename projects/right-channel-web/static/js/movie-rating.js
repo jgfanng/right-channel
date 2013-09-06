@@ -107,15 +107,15 @@ $(function() {
             }
         });
     }).on('mouseenter', '.poster-thumbnail', function() {
-        $(this).find('.poster-badge-top').hide();
-        $(this).find('.poster-mask').show();
-        $(this).find('.poster-badge-middle').show();
-        $(this).find('.sign-btn').show();
+        $(this).find('.poster-badge-top').addClass('hide');
+        $(this).find('.poster-mask').removeClass('hide');
+        $(this).find('.poster-badge-middle').removeClass('hide');
+        $(this).find('.sign-btn').removeClass('hide');
     }).on('mouseleave', '.poster-thumbnail', function() {
-        $(this).find('.poster-badge-top').show();
-        $(this).find('.poster-mask').hide();
-        $(this).find('.poster-badge-middle').hide();
-        $(this).find('.sign-btn').hide();
+        $(this).find('.poster-badge-top').removeClass('hide');
+        $(this).find('.poster-mask').addClass('hide');
+        $(this).find('.poster-badge-middle').addClass('hide');
+        $(this).find('.sign-btn').addClass('hide');
     });
     
     loadNextPage();

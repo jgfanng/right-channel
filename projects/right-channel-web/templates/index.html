@@ -1,1 +1,21 @@
-{% include layout/layout.html %}
+{% extends layout/layout.html %}
+
+{% block content %}
+  <div class="callout callout-success margin-vertical">
+    <h4>每日更新</h4>
+  </div>
+  <div class="callout callout-success margin-vertical">
+    <h4>热门电影</h4>
+  </div>
+  <div class="callout callout-success margin-vertical">
+    <h4>热门电视剧</h4>
+  </div>
+{% end %}
+
+{% block extra_links %}
+{% end %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
+  <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
+{% end %}

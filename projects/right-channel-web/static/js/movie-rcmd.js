@@ -132,15 +132,15 @@ $(function() {
             }
         });
     }).on('mouseenter', '.poster-thumbnail', function() {
-        $(this).find('.poster-mask').show();
-        $(this).find('.douban-rating').hide();
-        $(this).find('.user-rating').show();
-        $(this).find('.sign-btn').show();
+        $(this).find('.poster-mask').removeClass('hide');
+        $(this).find('.douban-rating').addClass('hide');
+        $(this).find('.user-rating').removeClass('hide');
+        $(this).find('.sign-btn').removeClass('hide');
     }).on('mouseleave', '.poster-thumbnail', function() {
-        $(this).find('.poster-mask').hide();
-        $(this).find('.douban-rating').show();
-        $(this).find('.user-rating').hide();
-        $(this).find('.sign-btn').hide();
+        $(this).find('.poster-mask').addClass('hide');
+        $(this).find('.douban-rating').removeClass('hide');
+        $(this).find('.user-rating').addClass('hide');
+        $(this).find('.sign-btn').addClass('hide');
     });
     
     loadNextPage();

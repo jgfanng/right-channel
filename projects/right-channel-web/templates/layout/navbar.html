@@ -1,29 +1,38 @@
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href="/">电影来了</a>
-      <div class="pull-right">
-        <ul class="nav">
-          <li {% if params.get('site_nav') == '/' %} class="active" {% end %}><a href="/">首页</a></li>
-          <li {% if params.get('site_nav') == 'rating' %} class="active" {% end %}>
-            <a href="/movie/rating"><i class="icon-star-empty icon-white"></i> 我来评分</a>
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">电影来了</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li {% if params.get('site_nav') == '/' %} class="active" {% end %}>
+          <a href="/"><span class="glyphicon glyphicon-home"></span> 首页</a>
+        </li>
+        <li {% if params.get('site_nav') == 'rating' %} class="active" {% end %}>
+          <a href="/movie/rating"><span class="glyphicon glyphicon-star-empty"></span> 我来评分</a>
+        </li>
+        <li {% if params.get('site_nav') == 'recommendation' %} class="active" {% end %}>
+          <a href="/movie/recommendation"><span class="glyphicon glyphicon-thumbs-up"></span> 给我推荐</a>
+        </li>
+        <li {% if params.get('site_nav') == 'movie' %} class="active" {% end %}><a href="/movie">电影</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if 'user' in params and params.get('user') %}
+          <li {% if params.get('site_nav') == 'account' %} class="active" {% end %}>
+            <a href="/account"><span class="glyphicon glyphicon-user"></span> {{ params.get('user').get('nick_name') }}</a>
           </li>
-          <li {% if params.get('site_nav') == 'recommendation' %} class="active" {% end %}>
-            <a href="/movie/recommendation"><i class="icon-thumbs-up icon-white"></i> 给我推荐</a>
-          </li>
-          <li {% if params.get('site_nav') == 'movie' %} class="active" {% end %}><a href="/movie">电影</a></li>
-          <li class="divider-vertical"></li>
-          {% if 'user' in params and params.get('user') %}
-            <li {% if params.get('site_nav') == 'account' %} class="active" {% end %}>
-              <a href="/account"><i class="icon-user icon-white"></i> {{ params.get('user').get('nick_name') }}</a>
-            </li>
-            <li><a href="/logout"><i class="icon-off icon-white"></i> 退出</a></li>
-          {% else %}
-            <li {% if params.get('site_nav') == 'login' %} class="active" {% end %}><a href="/login"><i class="icon-user icon-white"></i> 登录</a></li>
-            <li {% if params.get('site_nav') == 'register' %} class="active" {% end %}><a href="/register"><i class="icon-edit icon-white"></i> 注册</a></li>
-          {% end %}
-        </ul>
-      </div>
+          <li><a href="/logout"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
+        {% else %}
+          <li {% if params.get('site_nav') == 'login' %} class="active" {% end %}><a href="/login"><span class="glyphicon glyphicon-user"></span> 登录</a></li>
+          <li {% if params.get('site_nav') == 'register' %} class="active" {% end %}><a href="/register"><span class="glyphicon glyphicon-edit"></span> 注册</a></li>
+        {% end %}
+      </ul>
     </div>
   </div>
 </div>
