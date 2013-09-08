@@ -52,7 +52,7 @@ $(function() {
             var movie = movies[i];
             html += '<li>'
                 +       '<div class="poster-thumbnail" data-movie-id="{0}">'.format(movie._id)
-                +           '<img class="poster-medium" src="http://img3.douban.com/lpic/s11356673.jpg">'
+                +           '<img class="poster-img" src="http://img3.douban.com/lpic/s11356673.jpg">'
                 +           '<a class="poster-mask hide" href="/movie/{0}" title="{1}" target="_blank"></a>'.format(movie._id, movie.title)
                 +           '<div class="poster-badge poster-badge-top">'
                 +               '<div class="caption">{0}</div>'.format(movie.title)
@@ -75,7 +75,7 @@ $(function() {
                 +       '</div>'
                 +   '</li>';
         }
-        $('.poster-thumbnails').append(html);
+        $('.poster-thumbnails-sparse').append(html);
     }
 
     $(window).scroll(function() {
@@ -85,7 +85,7 @@ $(function() {
         }
     });
 
-    $('.poster-thumbnails').on('click', '.star-rating-large', function(event) {
+    $('.poster-thumbnails-sparse').on('click', '.star-rating-large', function(event) {
         var movieId = $(this).closest('.poster-thumbnail').attr('data-movie-id');
         var rating = $(event.target).attr('data-rating');
         $.ajax({

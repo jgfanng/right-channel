@@ -43,7 +43,7 @@ $(function() {
 
 			{
 				var playable = 'resources' in movie && 'online' in movie.resources;
-				var poster_img = '<a href="/movie/{0}" class="{1}" target="_blank"><img src="{2}" class="poster-medium"><div class="poster-play-mask" style="display: none;"></div></a>'
+				var poster_img = '<a href="/movie/{0}" class="{1}" target="_blank"><img src="{2}" class="poster-img"><div class="poster-play-mask" style="display: none;"></div></a>'
 					.format(
 						movie._id,
 						playable ? 'playable' : 'notplayable',

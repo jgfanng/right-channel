@@ -310,12 +310,12 @@ strong {
 } */
 
 /* poster thumbnails */
-.poster-thumbnails {
+.poster-thumbnails-sparse {
     margin-left: 6px;
     list-style: none;
 }
 
-.poster-thumbnails > li {
+.poster-thumbnails-sparse > li {
     margin: 0 0 14px 14px;
     float: left;
 }
@@ -324,7 +324,7 @@ strong {
     position: relative;
 }
 
-.poster-medium {
+.poster-img {
     width: 145px;
     height: 210px;
 }

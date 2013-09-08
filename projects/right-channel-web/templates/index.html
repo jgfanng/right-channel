@@ -1,12 +1,129 @@
 {% extends layout/layout.html %}
 
 {% block content %}
+  <!-- Newest movies -->
   <div class="callout callout-success margin-vertical">
     <h4>每日更新</h4>
   </div>
+  {% if params.get('newest_movies') %}
+    {% set newest_movies = params.get('newest_movies') %}
+    {% set MOVIES_PER_SLIDE = 6 %}
+    {% if len(newest_movies) % MOVIES_PER_SLIDE == 0 %}
+      {% set TOTAL_SLIDES = len(newest_movies) / MOVIES_PER_SLIDE %}
+    {% else %}
+      {% set TOTAL_SLIDES = len(newest_movies) / MOVIES_PER_SLIDE + 1 %}
+    {% end %}
+    <div id="newest-movie-carousel" class="carousel slide margin-vertical">
+      <div class="carousel-inner">
+      {% for slide in range(0, TOTAL_SLIDES) %}
+        <div class="item {{ 'active' if slide == 0 else '' }}">
+          <ul class="poster-thumbnails-dense">
+            {% for item in range(0, MOVIES_PER_SLIDE) %}
+              {% if slide * MOVIES_PER_SLIDE + item == len(newest_movies) %}
+                {% break %}
+              {% end %}
+              {% set movie = newest_movies[slide * MOVIES_PER_SLIDE + item] %}
+              <li>
+                <div class="poster-thumbnail" data-movie-id="{{ movie.get('_id') }}">
+                  <a href="/movie/{{ movie.get('_id') }}" title="{{ movie.get('title') }}"  target="_blank">
+                    <img class="poster-img" src="http://img3.douban.com/lpic/s25462984.jpg">
+                  </a>
+                  <div class="poster-badge poster-badge-top">
+                    <div class="caption">{{ movie.get('title') }}</div>
+                  </div>
+                  <div class="poster-badge poster-badge-bottom">
+                    <div class="douban-rating">
+                      {% if movie.get('douban') and 'rating' in movie.get('douban') %}
+                        豆瓣评分: {{ movie.get('douban').get('rating') }}
+                      {% else %}
+                        豆瓣评分: 未知
+                      {% end %}
+                      {% if movie.get('downloadable') %}
+                        <a class="pull-right"><span class="glyphicon glyphicon-download-alt"></span></a>
+                      {% end %}
+                      {% if movie.get('playable') %}
+                        <a class="pull-right"><span class="glyphicon glyphicon-play-circle"></span></a>
+                      {% end %}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% end %}
+          </ul>
+        </div>
+      {% end %}
+      </div>
+      <a class="carousel-control2 left" href="#newest-movie-carousel" data-slide="prev">
+        <span class="icon-prev"></span>
+      </a>
+      <a class="carousel-control2 right" href="#newest-movie-carousel" data-slide="next">
+        <span class="icon-next"></span>
+      </a>
+    </div>
+  {% end %}
+  
+  <!-- Hottest movies -->
   <div class="callout callout-success margin-vertical">
     <h4>热门电影</h4>
   </div>
+  {% if params.get('hottest_movies') %}
+    {% set hottest_movies = params.get('hottest_movies') %}
+    {% set MOVIES_PER_SLIDE = 12 %}
+    {% if len(hottest_movies) % MOVIES_PER_SLIDE == 0 %}
+      {% set TOTAL_SLIDES = len(hottest_movies) / MOVIES_PER_SLIDE %}
+    {% else %}
+      {% set TOTAL_SLIDES = len(hottest_movies) / MOVIES_PER_SLIDE + 1 %}
+    {% end %}
+    <div id="hottest-movie-carousel" class="carousel slide margin-vertical">
+      <div class="carousel-inner">
+      {% for slide in range(0, TOTAL_SLIDES) %}
+        <div class="item {{ 'active' if slide == 0 else '' }}">
+          <ul class="poster-thumbnails-dense">
+            {% for item in range(0, MOVIES_PER_SLIDE) %}
+              {% if slide * MOVIES_PER_SLIDE + item == len(hottest_movies) %}
+                {% break %}
+              {% end %}
+              {% set movie = hottest_movies[slide * MOVIES_PER_SLIDE + item] %}
+              <li>
+                <div class="poster-thumbnail" data-movie-id="{{ movie.get('_id') }}">
+                  <a href="/movie/{{ movie.get('_id') }}" title="{{ movie.get('title') }}"  target="_blank">
+                    <img class="poster-img" src="http://img3.douban.com/lpic/s25462984.jpg">
+                  </a>
+                  <div class="poster-badge poster-badge-top">
+                    <div class="caption">{{ movie.get('title') }}</div>
+                  </div>
+                  <div class="poster-badge poster-badge-bottom">
+                    <div class="douban-rating">
+                      {% if movie.get('douban') and 'rating' in movie.get('douban') %}
+                        豆瓣评分: {{ movie.get('douban').get('rating') }}
+                      {% else %}
+                        豆瓣评分: 未知
+                      {% end %}
+                      {% if movie.get('downloadable') %}
+                        <a class="pull-right"><span class="glyphicon glyphicon-download-alt"></span></a>
+                      {% end %}
+                      {% if movie.get('playable') %}
+                        <a class="pull-right"><span class="glyphicon glyphicon-play-circle"></span></a>
+                      {% end %}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% end %}
+          </ul>
+        </div>
+      {% end %}
+      </div>
+      <a class="carousel-control2 left" href="#hottest-movie-carousel" data-slide="prev">
+        <span class="icon-prev"></span>
+      </a>
+      <a class="carousel-control2 right" href="#hottest-movie-carousel" data-slide="next">
+        <span class="icon-next"></span>
+      </a>
+    </div>
+  {% end %}
+  
+  <!-- Hottest TV serials -->
   <div class="callout callout-success margin-vertical">
     <h4>热门电视剧</h4>
   </div>
@@ -18,4 +135,9 @@
 {% block extra_scripts %}
   <script type="text/javascript" src="{{ static_url('js/jquery.cookie.js') }}"></script>
   <script type="text/javascript" src="{{ static_url('js/utilities.js') }}"></script>
+  <script type="text/javascript">
+    $(function() {
+      $('.carousel').carousel();
+    });
+  </script>
 {% end %}
