@@ -179,12 +179,12 @@
 .carousel-control2 {
   position: absolute;
   top: 50%;
-  width: 30px;
-  height: 60px;
-  margin-top: -30px;
+  width: 25px;
+  height: 50px;
+  margin-top: -26px;
   font-size: 40px;
   font-family: serif;
-  line-height: 50px;
+  line-height: 40px;
   color: white;
   text-align: center;
   background: #5aac41;
@@ -204,16 +204,16 @@
 
 .carousel-control2.left {
   left: 0;
-  -webkit-border-radius: 0 60px 60px 0;
-     -moz-border-radius: 0 60px 60px 0;
-          border-radius: 0 60px 60px 0;
+  -webkit-border-radius: 0 50px 50px 0;
+     -moz-border-radius: 0 50px 50px 0;
+          border-radius: 0 50px 50px 0;
 }
 
 .carousel-control2.right {
   right: 0;
-  -webkit-border-radius: 60px 0 0 60px;
-     -moz-border-radius: 60px 0 0 60px;
-          border-radius: 60px 0 0 60px;
+  -webkit-border-radius: 50px 0 0 50px;
+     -moz-border-radius: 50px 0 0 50px;
+          border-radius: 50px 0 0 50px;
 }
 
 .carousel-control2 .icon-prev:before {

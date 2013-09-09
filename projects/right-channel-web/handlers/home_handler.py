@@ -36,7 +36,6 @@ class HomeHandler(BaseHandler):
         # Hottest movies
         try:
             result, error = yield tornado.gen.Task(mongodb['movies'].find,
-                                                   spec={'is_movie': True},
                                                    fields={'summary': 0},
                                                    limit=self.HOTEST_MOVIES,
                                                    sort=[('hits', -1)])
