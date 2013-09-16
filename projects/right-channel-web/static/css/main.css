@@ -186,7 +186,6 @@
   font-family: serif;
   line-height: 40px;
   color: white;
-  text-align: center;
   background: #5aac41;
   opacity: 0.75;
   filter: alpha(opacity=75);
@@ -204,6 +203,8 @@
 
 .carousel-control2.left {
   left: 0;
+  text-align: left;
+  padding-left: 2px;
   -webkit-border-radius: 0 50px 50px 0;
      -moz-border-radius: 0 50px 50px 0;
           border-radius: 0 50px 50px 0;
@@ -211,6 +212,8 @@
 
 .carousel-control2.right {
   right: 0;
+  text-align: right;
+  padding-right: 2px;
   -webkit-border-radius: 50px 0 0 50px;
      -moz-border-radius: 50px 0 0 50px;
           border-radius: 50px 0 0 50px;

@@ -4,29 +4,29 @@
 
   {% if params.get('movie') %}
     {% set movie = params.get('movie') %}
-    <div class="row-fluid container-bordered margin-vertical padding-horizontal">
-      <div class="span3">
-        <div class="row-fluid margin-vertical">
+    <div class="container-bordered margin-vertical clearfix">
+      <div class="col-md-3">
+        <div class="margin-vertical">
           <a>
             <img src="http://img3.douban.com/lpic/s11356673.jpg">
           </a>
         </div>
-        <div class="row-fluid margin-vertical">
+        <div class="margin-vertical">
           {% include ../modules/share.html %}
         </div>
       </div>
       
-      <div class="span9">
-        <div class="row-fluid">
-          <h2>
+      <div class="col-md-9">
+        <div class="margin-vertical">
+          <h3>
             {% from utilities import combine_titles %}
             {{ combine_titles(movie.get('title'), movie.get('original_title')) }}
             {% if movie.get('year') %}
-              <small class="muted">
+              <span class="text-muted">
                 ({{ movie.get('year') }})
-              </small>
+              </span>
             {% end %}
-          </h2>
+          </h3>
           {% if movie.get('directors') %}
             <p>
               <strong>导演:</strong> {{ ' / '.join(movie.get('directors')) }}
@@ -65,7 +65,7 @@
           {% end %}
         </div>
         
-        <div class="row-fluid margin-vertical">
+        <div class="margin-vertical clearfix">
           {% set interested = movie.get('user') and movie.get('user').get('interest') %}
           <div class="btn-group pull-right interest-marked {{ 'show' if interested else 'hide' }}">
             {% set interest_descs = {'wish': '想看', 'dislike': '没兴趣'} %}
