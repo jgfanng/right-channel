@@ -45,5 +45,4 @@ class HomeHandler(BaseHandler):
             raise tornado.web.HTTPError(500)
 
         self.params['hottest_movies'] = result[0]
-        # Hottest TV serials
         self.render('index.html')

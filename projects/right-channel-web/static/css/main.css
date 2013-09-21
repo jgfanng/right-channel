@@ -227,6 +227,39 @@
   content: '\203a';
 }
 
+/*
+ * platform icons
+ */
+[class^="icon-website-"],[class*=" icon-website-"] {
+    background: url(../img/website-icons.png) no-repeat;
+    display: inline-block;
+    vertical-align: text-top;
+}
+
+.icon-website-douban {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -0px;
+}
+
+.icon-website-imdb {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -16px;
+}
+
+.icon-website-iqiyi {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -32px;
+}
+
+.icon-website-pptv {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -48px;
+}
+
 /***** misc ******/
 .margin-vertical {
   margin-top: 10px;

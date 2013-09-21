@@ -18,7 +18,6 @@ class MovieProfileHandler(BaseHandler):
                                                    {'_id': ObjectId(movie_id)})
         except:
             raise tornado.web.HTTPError(500)
-
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
@@ -26,6 +25,17 @@ class MovieProfileHandler(BaseHandler):
         movie = result[0]
         if not movie:  # None or []
             raise tornado.web.HTTPError(404)
+
+        # If the movie is playable, get all play links.
+        if movie.get('playable'):
+            try:
+                result, error = yield tornado.gen.Task(mongodb['movie.play_links'].find,
+                                                       spec={'movie_id': movie.get('_id')})
+                self.params['play_links'] = result[0]
+            except:
+                raise tornado.web.HTTPError(500)
+            if error.get('error'):
+                raise tornado.web.HTTPError(500)
 
         user = self.params.get('user')
         if user:

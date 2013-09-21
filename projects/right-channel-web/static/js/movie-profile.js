@@ -1,4 +1,11 @@
 $(function() {
+	// resource tab
+	$('#resourceTab a:first').tab('show');
+	$('#resourceTab').on('mouseenter', 'a', function(event) {
+		event.preventDefault()
+		$(this).tab('show')
+	})
+	
     $('.interest-unmarked').on('click', 'button', function(event) {
         var movieId = $(this).attr('data-movie-id');
         var interestType = $(this).attr('data-interest-type');

@@ -95,14 +95,14 @@
             ]
         }
     },
-    "providers": {
+    "websites": {
     	"iqiyi": {
     		"name": "爱奇艺",
-    		"logo": "logo-platform-iqiyi"
+    		"icon": "icon-website-iqiyi"
     	},
         "pptv": {
         	"name": "PPTV",
-        	"logo": "logo-platform-pptv"
+        	"icon": "icon-website-pptv"
         }
     },
     "email_regex": "^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,4}$"

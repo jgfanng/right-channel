@@ -4,7 +4,7 @@
 
   {% if params.get('movie') %}
     {% set movie = params.get('movie') %}
-    <div class="container-bordered margin-vertical clearfix">
+    <div class="margin-vertical container-bordered clearfix">
       <div class="col-md-2">
         <div class="margin-vertical">
           <a>
@@ -90,7 +90,18 @@
         </div>
       </div>
     </div>
-
+    
+    {% if params.get('play_links') %}
+      <div class="margin-vertical padding-horizontal container-bordered clearfix">
+        <ul id="resourceTab" class="margin-vertical nav nav-tabs">
+          {% from settings import settings %}
+          {% for link in params.get('play_links') %}
+            <li><a href="#"><i class="{{ settings['websites'][link.get('source')]['icon'] }}"></i> {{ settings['websites'][link.get('source')]['name'] }}</a></li>
+            <li><a href="#"><i class="{{ settings['websites'][link.get('source')]['icon'] }}"></i> {{ settings['websites'][link.get('source')]['name'] }}</a></li>
+          {% end %}
+        </ul>
+      </div>
+    {% end %}
   {% end %}
 
 {% end %}
