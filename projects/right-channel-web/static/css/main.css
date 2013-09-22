@@ -228,7 +228,7 @@
 }
 
 /*
- * platform icons
+ * website icons
  */
 [class^="icon-website-"],[class*=" icon-website-"] {
     background: url(../img/website-icons.png) no-repeat;
@@ -267,12 +267,23 @@
 }
 
 .padding-horizontal {
-  padding: 0 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .container-bordered {
   background-color: white;
   border: 1px solid #bbb;
+}
+
+.full-fill-img {
+  width: 100%;
+  height: 100%;
+}
+
+.star-rating-label {
+  font-size: 14px;
+  vertical-align: middle;
 }
 
 .system-alert {

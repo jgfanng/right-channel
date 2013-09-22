@@ -100,7 +100,7 @@ body {
   color: #555;
   background-color: #e9e9e9;
   font-size: 12px;
-  line-height: 20px;
+  /* line-height: 20px; */
 }
 
 .navbar {
@@ -115,9 +115,4 @@ body {
 
 p {
   margin: 0 0 5px 0;
-}
-
-img {
-  width: 100%;
-  height: 100%;
 }
