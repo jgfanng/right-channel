@@ -31,7 +31,7 @@ class MovieRatingAPIHandler(BaseHandler):
         try:
             rating = float(rating)
         except:
-            raise tornado.web.HTTPError(400)
+            raise tornado.web.HTTPError(400)  # Bad Request
         if rating < 0 or rating > 5:
             raise tornado.web.HTTPError(400)
 
@@ -42,7 +42,6 @@ class MovieRatingAPIHandler(BaseHandler):
                                               upsert=True)
         except:
             raise tornado.web.HTTPError(500)
-
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
