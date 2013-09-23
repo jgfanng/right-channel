@@ -26,7 +26,7 @@ class MovieProfileHandler(BaseHandler):
         if not movie:  # None or []
             raise tornado.web.HTTPError(404)
 
-        # If the movie is playable, get all play links.
+        # If movie is playable, get all play links.
         if movie.get('playable'):
             try:
                 result, error = yield tornado.gen.Task(mongodb['movie.play_links'].find,
@@ -37,32 +37,29 @@ class MovieProfileHandler(BaseHandler):
             if error.get('error'):
                 raise tornado.web.HTTPError(500)
 
+        # If user is logged in, get user interest and rating.
         user = self.params.get('user')
         if user:
             # set user interest: wish, dislike
-            user_id = user.get('_id')
             try:
                 result, error = yield tornado.gen.Task(mongodb['movie.interests'].find_one,
-                                                       {'user_id': user_id, 'movie_id': movie.get('_id')})
+                                                       {'user_id': user.get('_id'), 'movie_id': movie.get('_id')})
                 if result[0]:
-                    movie.setdefault('user', {})
-                    movie['user']['interest'] = result[0].get('type')
+                    movie['user_interest'] = result[0].get('type')
             except:
                 raise tornado.web.HTTPError(500)
 
             if error.get('error'):
                 raise tornado.web.HTTPError(500)
 
-            # set rating
+            # set user rating
             try:
                 result, error = yield tornado.gen.Task(mongodb['movie.ratings'].find_one,
-                                                       {'user_id': user_id, 'movie_id': movie.get('_id')})
+                                                       {'user_id': user.get('_id'), 'movie_id': movie.get('_id')})
                 if result[0]:
-                    movie.setdefault('user', {})
-                    movie['user']['rating'] = result[0].get('rating')
+                    movie['user_rating'] = result[0].get('rating')
             except:
                 raise tornado.web.HTTPError(500)
-
             if error.get('error'):
                 raise tornado.web.HTTPError(500)
 

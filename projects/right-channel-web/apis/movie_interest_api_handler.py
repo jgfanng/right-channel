@@ -29,7 +29,7 @@ class MovieInterestAPIHandler(BaseHandler):
         user_id = user.get('_id')
         interest_type = self.get_argument('type')
         if interest_type not in ['wish', 'dislike']:
-            raise tornado.web.HTTPError(400)
+            raise tornado.web.HTTPError(400)  # Bad Request
 
         try:
             _, error = yield tornado.gen.Task(mongodb['movie.interests'].update,
@@ -38,7 +38,6 @@ class MovieInterestAPIHandler(BaseHandler):
                                               upsert=True)
         except:
             raise tornado.web.HTTPError(500)
-
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
@@ -64,7 +63,6 @@ class MovieInterestAPIHandler(BaseHandler):
                                               {'user_id': user_id, 'movie_id': ObjectId(movie_id)})
         except:
             raise tornado.web.HTTPError(500)
-
         if error.get('error'):
             raise tornado.web.HTTPError(500)
 
