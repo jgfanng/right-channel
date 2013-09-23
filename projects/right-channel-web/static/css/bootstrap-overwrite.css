@@ -116,3 +116,7 @@ body {
 p {
   margin: 0 0 5px 0;
 }
+
+.dropdown-menu {
+  font-size: 12px;
+}

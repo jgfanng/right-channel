@@ -6,7 +6,8 @@ $(function() {
 		$(this).tab('show')
 	});
 	
-    $('#interestUnmarked').on('click', 'button', function(event) {
+	// set interest: wish/dislike
+    $('#setInterest').on('click', 'button', function(event) {
         var movieId = $(this).attr('data-movie-id');
         var interestType = $(this).attr('data-interest-type');
         $.ajax({
@@ -16,14 +17,14 @@ $(function() {
                 type: interestType
             }
         }).done(function() {
-            $('#interestUnmarked').addClass('hide');
-            $('#interestMarked').removeClass('hide');
+            $('#setInterest').addClass('hide');
+            $('#removeInterest').removeClass('hide');
             if (interestType == 'wish') {
-                $('#dislikeMarked').addClass('hide');
-                $('#wishMarked').removeClass('hide');
+                $('#disliked').addClass('hide');
+                $('#wished').removeClass('hide');
             } else if (interestType == 'dislike') {
-                $('#wishMarked').addClass('hide');
-                $('#dislikeMarked').removeClass('hide');
+                $('#wished').addClass('hide');
+                $('#disliked').removeClass('hide');
             }
         }).fail(function(jqXHR) {
             if (jqXHR.status == 401) { // unauthorized
@@ -34,15 +35,15 @@ $(function() {
         });
     });
     
-    $('#interestMarked').on('click', 'button', function(event) {
+    // remove interest
+    $('#removeInterest').on('click', 'button', function(event) {
         var movieId = $(this).attr('data-movie-id');
         $.ajax({
             type : 'DELETE',
             url : '/api/movie/{0}/interest'.format(movieId),
         }).done(function() {
-            $('#interestMarked').addClass('hide');
-            $('#interestUnmarked').removeClass('hide');
-            $('#interestUnmarked').fadeIn();
+            $('#removeInterest').addClass('hide');
+            $('#setInterest').removeClass('hide');
         }).fail(function(jqXHR) {
             if (jqXHR.status == 401) { // unauthorized
                 $.cookie.raw = true;
@@ -52,7 +53,7 @@ $(function() {
         });
     });
     
-    // click on star-rating-large
+    // set rating
     $('.star-rating-large').on('click', function(event) {
         var movieId = $(this).attr('data-movie-id');
         var rating = $(event.target).attr('data-rating');
